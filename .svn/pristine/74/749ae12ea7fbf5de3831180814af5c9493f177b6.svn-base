@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <title>工厂店订单-{$tpshop_config['shop_info_store_title']}</title>
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+<body>
+<div id="order_list">
+    <include file="user/header" />
+
+    <div class="container">
+        <adv pid="407" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%" /></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10">
+                <div>
+                    <ol class="breadcrumb">
+                        <li><i class="glyphicon glyphicon-home"></i></li>
+                        <li><a href="{:U('Home/User/index')}">用户中心</a></li>
+                        <li class="active">工厂店订单</li>
+                    </ol>
+                </div>
+                <div class="my_right">
+                    <div class="per_main_r">
+                        <ul class="list-inline order_title">
+                                <li>
+                                    <a href="{:U('Store/order_list')}" class="<if condition="$Request.param.type eq ''">selected</if>"><span>全部订单</span></a>
+                                </li>
+                                <li>
+                                    <a href="{:U('Store/order_list',array('type'=>'WAITPAY'))}" class="<if condition="$Request.param.type eq 'WAITPAY'">selected</if>"><span>待付款</span></a>
+                                </li>
+                                <li>
+                                    <a href="{:U('Store/order_list',array('type'=>'WAITSEND'))}" class="<if condition="$Request.param.type eq 'WAITSEND'">selected</if>"><span>待发货</span></a>
+                                </li>
+                                <li>
+                                    <a href="{:U('Store/order_list',array('type'=>'WAITRECEIVE'))}" class="<if condition="$Request.param.type eq 'WAITRECEIVE'">selected</if>""><span>待收货</span></a>
+                                </li>
+                                <li>
+                                    <a href="{:U('Store/order_list',array('type'=>'FINISH'))}" class="<if condition="$Request.param.type eq 'FINISH'">selected</if>""><span>已完成</span></a>
+                                </li>
+                                <li><a href="{:U('Store/return_goods_list')}"><span>退货</span></a></li>
+                            </ul>
+
+                        <div class="good_back">
+                            <div class="pull-left">
+                                <form id="search_order" action="{:U('Store/order_list')}" method="post">
+                                    <ul>
+                                        <li>
+                                            <label>订单编号:</label>
+                                            <input type="text" class="form-control" value="{$Request.param.search_key}" name="search_key" />
+                                        </li>
+                                        <li>
+                                            <label>下单时间:</label>
+                                            <select class="form-control" name="time">
+                                                <option value="0">全部</option>
+                                                <option value="1" <if condition="$Request.param.time eq 1">selected</if>>近三个月</option>
+                                                <option value="2" <if condition="$Request.param.time eq 2">selected</if>>三个月以前</option>
+                                            </select>
+                                        </li>
+                                        <li><input type="submit" value="搜索" class="btn btn-danger" /></li>
+                                    </ul>
+                                </form>
+                            </div>
+                            <h4 class="pull-right">收益总金额：<a href="" class="style-red"><b>￥{$moneys}</b></a></h4>
+                        </div>
+
+                        <div class="stock_list_main">
+                            <ul class="text-center order_list_title">
+                                <li class="fx1">商品信息</li>
+                                <li class="fx2">单价</li>
+                                <li class="fx3">数量</li>
+                                <li class="fx4">订单总金额</li>
+                                <li class="fx5">订单状态</li>
+                            </ul>
+                            <empty name="lists">
+                                <h5 class="text-center">您的工厂店下暂无订单</h5>
+                            <else />
+                                <volist name="lists" id="list">
+                                    <div class="goods_list">
+                                        <table class="table order_list_goods">
+                                            <tr class="active">
+                                                <td colspan="5">
+                                                    <div class="pull-left">
+														<span>订单编号：<a href="{:U('Store/order_detail',array('id'=>$list['order_id']))}">{$list.order_sn}</a></span>
+                                                        <span>下单时间：{$list.add_time|date='Y-m-d H:i:s',###}</span>
+                                                        <if condition="$list.order_status neq 0 && $list.order_status neq 3 && $list.order_status neq 5">
+                                                            <span>获利统计：<if condition="$list.income eq ''">等待分成<else /><em class="style-red">￥{$list.income}</em></if></span>
+                                                        </if>
+                                                    </div>
+
+                                                    <div class="pull-right order-btn">
+                                                        <if condition="$list.order_status eq 0 || $list.order_status eq 1">
+                                                            <if condition="$list.pay_status eq 1">
+                                                                <if condition="$list.shipping_status eq 0">
+                                                                    <a href="javascript:void(0);" onClick="send_goods({$list['order_id']})" class="style-red">发货</a>
+                                                                <elseif condition="$list.shipping_status eq 1 && $list.shop_way eq 2" />
+                                                                    <a href="javascript:void(0);" onClick="confirm({$list['order_id']})" class="btn btn-danger">确认收货</a>
+                                                                <elseif condition="$list.shipping_status eq 1 && $list.shop_way eq 3" />
+                                                                    <a href="javascript:check_safecode({$list['order_id']})" class="style-red">自提校验</a>
+                                                                </if>
+                                                            </if>
+                                                        </if>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <volist name="list.goods_list" id="goods" key="k">
+                                                <if condition="$k eq 1">
+                                                    <tr>
+                                                        <td width="36%" align="left">
+                                                            <div class="goods_img">
+                                                                <div class="goods_img_pic">
+                                                                    <a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}"><img src="{$goods.goods_id|goods_thum_images=60,60}" width="60" height="60" /></a>
+                                                                </div>
+                                                                <div class="goods_img_title">
+                                                                    <p>
+                                                                        <a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name}</a>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="clearfix"></div>
+                                                                <div class="text-left goods_sn">商品货号：{$goods.goods_sn}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td width="17%"><p>￥{$goods.member_goods_price}</p></td>
+                                                        <td width="17%">
+                                                            <p>x{$goods.goods_num}</p>
+                                                            <if condition="$goods[is_send] gt 1">
+                                                                <p class="fsx-1">已申请售后</p>
+                                                            </if>
+                                                        </td>
+                                                        <td width="15%" rowspan="{$list.goods_list|count}" class="sx1">
+                                                            <p>￥{$list.total_amount}</p>
+                                                            <p class="fsx-1">{$list.pay_name}</p>
+                                                        </td>
+                                                        <td width="15%" rowspan="{$list.goods_list|count}" class="sx1">
+                                                            <p class="fsx-1">
+                                                                <if condition="$list.order_status eq 6">
+                                                                    工厂店已发货
+                                                                <elseif condition="$list.order_status eq 2">
+                                                                    用户已收货
+                                                                <else/>
+                                                                    {$list['order_status_desc']}
+                                                                </if>
+                                                            </p>
+                                                            <p>
+                                                                <a href="{:U('Store/order_detail',array('id'=>$list['order_id']))}">订单详情</a>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                <else />
+                                                    <tr>
+                                                        <td width="36%" align="left">
+                                                            <div class="goods_img">
+                                                                <div class="goods_img_pic">
+                                                                    <a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}"><img src="{$goods.goods_id|goods_thum_images=60,60}" width="60" height="60" /></a>
+                                                                </div>
+                                                                <div class="goods_img_title">
+                                                                    <p>
+                                                                        <a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name}</a>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="clearfix"></div>
+                                                                <div class="text-left goods_sn">商品货号：{$goods.goods_sn}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td width="17%"><p>￥{$goods.member_goods_price}</p></td>
+                                                        <td width="17%">
+                                                            <p>x{$goods.goods_num}</p>
+                                                            <if condition="$goods[is_send] gt 1">
+                                                                <p class="fsx-1">已申请售后</p>
+                                                            </if>
+                                                        </td>
+                                                    </tr>
+                                                </if>
+                                            </volist>
+                                        </table>
+                                    </div>
+                                </volist>
+                            </empty>
+                        </div>
+                    </div>
+                    <div class="eva_page">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>
+
+<script type="text/javascript">
+    /**
+     * 校验自提码
+     * 使用 公共的 layer 弹窗插件  参考官方手册 http://layer.layui.com/
+     */
+    function check_safecode(id) {
+        if (id > 0) {
+            var url = "/index.php?m=Home&c=Store&a=check_safecode&call_back=call_back_fun&id=" + id;
+            layer.open({
+                type: 2,
+                title: '自提订单',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['780px', '300px'],
+                content: url,
+            });
+        } else {
+            alert("订单选择错误");
+        }
+
+    }
+    // 校验自提码正确 回调函数
+    function call_back_fun(v) {
+        layer.closeAll(); // 关闭窗口
+        location.href = location.href;
+    }
+
+    //非自提 工厂店确认收货
+    function confirm(id) {
+        layer.confirm('确定收货?', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            // 确定
+            location.href = "/index.php?m=Home&c=Store&a=confirm&id=" + id;
+        }, function (index) {
+            layer.close(index);
+        });
+    }
+
+    //工厂店发货并生成发货单
+    function send_goods(id) {
+        layer.confirm('确定发货并生成发货单?', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            // 确定
+            location.href = "/index.php?m=Home&c=Store&a=send_goods&id=" + id;
+        }, function (index) {
+            layer.close(index);
+        });
+    }
+</script>

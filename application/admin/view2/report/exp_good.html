@@ -1,0 +1,124 @@
+<include file="public/layout"/>
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255,255,255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>报表统计 - 体验品统计</h3>
+                <h5>网站系统报表统计</h5>
+            </div>
+        </div>
+    </div>
+     <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44,188,163); background-color: rgb(237,251,248); width:99%; height:100%;">
+        <div id="checkZoom" class="title">
+            <i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" style="display:block;"></span>
+        </div>
+        <ul><li>体验品统计,由平台运营人员统计分析。</li></ul>
+    </div>
+    <!-- 统计内容 -->
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>体验品销售排行统计</h3>
+                <!--<h5>共($pager->totalRows)条记录</h5>-->
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <form class="nabar-form form-inline" id="search-form" method="get" action="{:U('Report/exp_good')}" onsubmit="return check_form();">
+                <div class="sDiv">
+                    <div class="sDiv2" style="margin-right: 10px;">
+                        <input type="text" size="30" id="start_time" name="start_time" value="{$start_time}" placeholder="起始时间" class="qsbox"/>
+                        <input type="button" class="btn" value="起始时间"/>
+                    </div>
+                    <div class="sDiv2" style="margin-right: 10px;">
+                        <input type="text" size="30" name="end_time" id="end_time" value="{$end_time}" placeholder="截止时间" class="qsbox"/>
+                        <input type="button" class="btn" value="截止时间"/>
+                    </div>
+                    <div class="sDiv2">
+                        <input class="btn" value="搜索" type="submit"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="sign" axis="col0">
+                                <div style="width:24px;"><i class="ico-check"></i></div>
+                            </th>
+                            <th align="center" abbr="good_sort" axis="col3">
+                                <div style="text-align: center; width:50px;">排行</div>
+                            </th>
+                            <th align="center" abbr="goods_name" axis="col4">
+                                <div style="text-align:center; width:600px;">商品名称</div>
+                            </th>
+                            <th align="center" abbr="goods_sn" axis="col5">
+                                <div style="text-align: center; width: 100px;">货号</div>
+                            </th>
+                            <th algin="center" abbr="goods_num" axis="col6">
+                                <div style="text-align: center; width: 100px;">数量</div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="bDiv" style="height: auto;">
+            <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+                <table>
+                    <tbody>
+                        <volist name="exp_good" id="ex" key="k" empty="$empty">
+                            <tr>
+                                <td class="sign">
+                                    <div style="width:24px;"><i class="ico-check"></i></div>
+                                </td>
+                                <td align="left">
+                                    <div style="text-align:left; width:50px;">{$k+1}</div>
+                                </td>
+                                <td align="left">
+                                    <div style="text-align: left; width:600px;">{$ex.goods_name}</div>
+                                </td>
+                                <td align="left">
+                                    <div style="text-algin: center; width:100px;">{$ex.goods_sn}</div>
+                                </td>
+                                <td align="center">
+                                    <div style="text-align: center; width: 100px;">{$ex.sale_num}</div>
+                                </td>
+                            </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        //点击刷新
+        $('.fa-refresh').click(function(){
+            location.href = location.href;
+        });
+
+        $('#start_time').layDate();
+        $('#end_time').layDate();
+    });
+
+    function check_form(){
+        var start_time = $.trim($('#start_time').val());
+        var end_time = $.trim($('#end_time').val());
+        if (start_time == '' ^ end_time == ''){
+            layer.alert('请选择完整的时间间隔',{icon: 2});
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

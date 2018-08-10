@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+	<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<title>我的订单-{$tpshop_config['shop_info_store_title']}</title>
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<script src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+<body>
+<div id="order_list">
+	<include file="user/header" />
+
+	<div class="container">
+		<adv pid="407" limit="1" item="v">
+			<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%" /></a>
+		</adv>
+	</div>
+
+	<div class="container mine">
+		<div class="row my_mall">
+			<include file="user/menu" />
+			<div class="col-md-10 col-sm-9 col-lg-10">
+				<div>
+					<ol class="breadcrumb">
+						<li><i class="glyphicon glyphicon-home"></i></li>
+						<li><a href="{:U('Home/User/index')}">用户中心</a></li>
+						<li class="active">我的订单</li>
+					</ol>
+				</div>
+				<div class="my_right">
+					<div class="per_main_r">
+						<ul class="list-inline order_title">
+							<li>
+								<a href="{:U('Order/order_list')}" class="<if condition="$Request.param.type eq ''">selected</if>"><span>全部订单</span></a>
+							</li>
+							<li>
+								<a href="{:U('Order/order_list',array('type'=>'WAITPAY'))}" class="<if condition="$Request.param.type eq 'WAITPAY'">selected</if>"><span>待付款</span></a>
+							</li>
+							<li>
+								<a href="{:U('Order/order_list',array('type'=>'WAITSEND'))}" class="<if condition="$Request.param.type eq 'WAITSEND'">selected</if>"><span>待发货</span></a>
+							</li>
+							<li>
+								<a href="{:U('Order/order_list',array('type'=>'WAITRECEIVE'))}" class="<if condition="$Request.param.type eq 'WAITRECEIVE'">selected</if>""><span>待收货</span></a>
+							</li>
+							<li><a href="{:U('Order/comment',array('status'=>'0'))}"><span>待评价</span></a></li>
+							<li><a href="{:U('Order/return_goods_list')}"><span>退货</span></a></li>
+						</ul>
+
+						<form id="search_order" action="{:U('Order/order_list')}" method="post">
+							<ul class="good_back">
+								<li>
+									<label>订单编号:</label>
+									<input type="text" class="form-control" value="{$Request.param.search_key}" name="search_key" />
+								</li>
+								<li>
+									<label>下单时间:</label>
+									<select class="form-control" name="time">
+										<option value="0">全部</option>
+										<option value="1" <if condition="$Request.param.time eq 1">selected</if>>近三个月</option>
+										<option value="2" <if condition="$Request.param.time eq 2">selected</if>>三个月以前</option>
+									</select>
+								</li>
+								<li><input type="submit" value="搜索" class="btn btn-danger" /></li>
+							</ul>
+						</form>
+						<div class="stock_list_main">
+							<ul class="text-center order_list_title">
+								<li class="fx1">商品信息</li>
+								<li class="fx2">单价</li>
+								<li class="fx3">数量</li>
+								<li class="fx4">订单总金额</li>
+								<li class="fx5">订单状态</li>
+							</ul>
+							<empty name="lists">
+								<h5 class="text-center">
+									您还没有订单，<a href="/">快去逛逛吧~</a>
+								</h5>
+							<else />
+								<volist name="lists" id="list">
+									<div class="goods_list">
+										<table class="table order_list_goods">
+											<tr class="active">
+												<td colspan="5">
+													<div class="pull-left">
+														<span>
+															订单编号：
+															<if condition="$list[order_prom_type] eq 5">
+																<a href="{:U('Order/virtual_order',array('order_id'=>$list['order_id']))}">{$list.order_sn}</a>
+																<else />
+																<a href="{:U('Order/order_detail',array('id'=>$list['order_id']))}">{$list.order_sn}</a>
+															</if>
+														</span>
+														<span>下单时间：{$list.add_time|date='Y-m-d H:i:s',###}</span>
+													</div>
+
+													<div class="pull-right order-btn">
+														<if condition="$list.pay_btn eq 1">
+															<a class="btn btn-danger" href="{:U('Home/Cart/cart4',array('order_id'=>$list[order_id]))}" target="_blank">立即支付</a>
+														</if>
+
+														<if condition="$list.shop_way eq 1">
+															<if condition="($list.order_status eq 1) and ($list.shipping_status eq 1)">
+																<a class="btn btn-danger" href="javascript:;" onclick="order_confirm({$list.order_id});">确认收货</a>
+															</if>
+														<elseif condition="$list.shop_way neq 1" />
+															<if condition="$list.order_status eq 6">
+																<a class="btn btn-danger" href="javascript:;" onclick="order_confirm({$list.order_id});">确认收货</a>
+															</if>
+														</if>
+
+														<if condition="$list.cancel_btn eq 1">
+															<if condition="$list[pay_status] eq 0">
+																<a href="javascript:void(0);" onClick="cancel_order({$list.order_id})">取消订单</a>
+															<else />
+																<a href="javascript:void(0);" data-url="{:U('Home/Order/refund_order',array('order_id'=>$list[order_id]))}" onClick="refund_order(this)">取消订单</a>
+															</if>
+														</if>
+
+														<if condition="$list.cancel_info eq 1">
+															<a href="{:U('Order/cancel_order_info',array('order_id'=>$list[order_id]))}">取消详情</a>
+														</if>
+
+														<if condition="($list[comment_btn] eq 1) and ($goods[is_comment] eq 0)">
+															<a href="{:U('Home/Order/comment',array('status'=>0))}" class="style-red">评价晒单</a>
+														</if>
+													</div>
+												</td>
+											</tr>
+
+											<volist name="list.goods_list" id="goods" key="k">
+												<if condition="$k eq 1">
+													<tr>
+														<td width="36%" align="left">
+															<div class="goods_img">
+																<div class="goods_img_pic">
+																	<a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}"><img src="{$goods.goods_id|goods_thum_images=60,60}" width="60" height="60" /></a>
+																</div>
+																<div class="goods_img_title">
+																	<p>
+																		<a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name}</a>
+																	</p>
+																</div>
+																<div class="clearfix"></div>
+																<div class="text-left goods_sn">商品货号：{$goods.goods_sn}</div>
+															</div>
+														</td>
+														<td width="17%"><p>￥{$goods.member_goods_price}</p></td>
+														<td width="17%">
+															<p>x{$goods.goods_num}</p>
+															<if condition="$goods[is_send] gt 1">
+																<p class="fsx-1">已申请售后</p>
+															<elseif condition="($list[return_btn] eq 1) and ($list[shipping_status] eq 1)" />
+																<p><a href="{:U('Home/Order/return_goods',array('rec_id'=>$goods['rec_id']))}" class="fsx-1">申请售后</a></p>
+															</if>
+														</td>
+														<td width="15%" rowspan="{$list.goods_list|count}" class="sx1">
+															<p>￥{$list.total_amount}</p>
+															<p class="fsx-1">{$list.pay_name}</p>
+														</td>
+														<td width="15%" rowspan="{$list.goods_list|count}" class="sx1">
+															<p class="fsx-1">{$list['order_status_desc']}</p>
+															<p>
+																<if condition="$list[order_prom_type] eq 5">
+																	<a href="{:U('Order/virtual_order',array('order_id'=>$list['order_id']))}">订单详情</a>
+																<else/>
+																	<a href="{:U('Order/order_detail',array('id'=>$list['order_id']))}">订单详情</a>
+																</if>
+															</p>
+														</td>
+													</tr>
+												<else />
+													<tr>
+														<td width="36%" align="left">
+															<div class="goods_img">
+																<div class="goods_img_pic">
+																	<a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}"><img src="{$goods.goods_id|goods_thum_images=60,60}" width="60" height="60" /></a>
+																</div>
+																<div class="goods_img_title">
+																	<p>
+																		<a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name}</a>
+																	</p>
+																</div>
+																<div class="clearfix"></div>
+																<div class="text-left goods_sn">商品货号：{$goods.goods_sn}</div>
+															</div>
+														</td>
+														<td width="17%"><p>￥{$goods.member_goods_price}</p></td>
+														<td width="17%">
+															<p>x{$goods.goods_num}</p>
+															<if condition="$goods[is_send] gt 1">
+																<p class="fsx-1">已申请售后</p>
+															<elseif condition="($list[return_btn] eq 1) and ($list[shipping_status] eq 1)" />
+																<p><a href="{:U('Home/Order/return_goods',array('rec_id'=>$goods['rec_id']))}" class="fsx-1">申请售后</a></p>
+															</if>
+														</td>
+													</tr>
+												</if>
+											</volist>
+										</table>
+									</div>
+								</volist>
+							</empty>
+						</div>
+					</div>
+					<div class="eva_page">
+						{$page}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>
+
+<script type="text/javascript">
+	//取消订单
+	function cancel_order(id) {
+		layer.confirm('确定取消订单?', {
+					btn: ['确定', '取消'] //按钮
+				}, function () {
+					// 确定
+					location.href = "/index.php?m=Home&c=Order&a=cancel_order&id=" + id;
+				}, function (index) {
+					layer.close(index);
+				}
+		);
+	}
+
+	//确定收货
+	function order_confirm(order_id) {
+		layer.confirm("你确定收到货了吗?", {
+			btn: ['确定', '取消']
+		}, function () {
+			$.ajax({
+				type: 'post',
+				url: '/index.php?m=Home&c=Order&a=order_confirm&order_id=' + order_id,
+				dataType: 'json',
+				success: function (data) {
+					if (data.status == 1) {
+						window.location.href = data.url;
+					} else {
+						layer.open({content: data.msg, time: 2});
+						verify();
+					}
+				},
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					layer.alert('网络失败，请刷新页面后重试', {icon: 2});
+				}
+			})
+		}, function (index) {
+			layer.close(index);
+		});
+	}
+
+	function refund_order(obj) {
+		layer.open({
+			type: 2,
+			title: '<b>订单取消申请</b>',
+			shadeClose: true,
+			shade: 0.5,
+			area: ['600px', '500px'],
+			content: $(obj).attr('data-url'),
+		});
+	}
+</script>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>个人首页</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 cen_user">
+                <div class="cen_user_top">
+                    <div class="cen_user_info">
+                        <div class="cen_user_pic"><a href="#"><img src="{$user.head_pic|default='__STATIC__/images/cenuser_bg_03.jpg'}"/>
+                            <div class="cen_user_post"><img src="__STATIC__/images/cen_user_touxiang-bg.png"/></a>
+                            </div>
+                        </div>
+                        <div class="cen_user_xinxi">
+                            <div class="cen_user_con"><h5>{$user.nickname}</h5><a href="{:U('Home/User/info')}">编辑资料</a></div>
+                            <div class="cen_user_safe"><a href="{:U('Home/User/safety_settings')}">账户安全：</a><span class="u_safe_img"><i width="0" style="
+                            <if condition="($user['mobile_validated'] eq 0) or ($user['email_validated'] eq 0)">
+                               width: 30%; background-color: #d9534f;">30%</i></span><p>较低</p>
+                            </if>
+                            <if condition="($user['mobile_validated'] eq 1) and ($user['email_validated'] eq 1) and ($user[paypwd] eq null)">
+                               width: 60%; background-color: #f0ad4e;">60%</i></span><p>一般</p>
+                            </if>
+                            <if condition="($user['mobile_validated'] eq 1) and ($user['email_validated'] eq 1) and ($user[paypwd] neq null)">
+                               width: 90%; background-color: #5bc0de;">90%</i></span><p>较高</p>
+                            </if> 
+                            <a href="{:U('Home/User/safety_settings')}">立即提升</a></div>
+                        </div>
+                    </div>
+                    <div class="cen_user_asset"><h5>我的资产</h5>
+                        <div class="u_integral"><a href="{:U('Home/User/account')}">可用积分:<span>{$user.pay_points}</span>分</a></div>
+                        <div class="u_integral"><a href="{:U('Home/User/coupon')}">优惠券:     <span>{$user['coupon_count']}</span>张</a><a href="{:U('Home/Activity/coupon_list')}"><span>领取</span></a><a href="{:U('Home/Index/index')}"><span>去使用</span></a></div>
+                        <div class="u_integral"><a href="{:U('Home/User/recharge')}">账户余额:<span>{$user.user_money}</span>元</a></div>
+                    </div>
+                </div>
+
+                <div class="cen_u_order"><h5>我的订单</h5><a href="{:U('Home/Order/order_list')}">更 多 ></a></div>
+                <tpshop sql="select * from `__PREFIX__order` where user_id = $user[user_id] order by order_id desc limit 1" result_name="order_list"></tpshop>
+                <empty name="order_list">
+                    <div class="car-none-pl">
+                        <span style="padding-left:26px; color:#FF0000;"><font style="">您最近没有待处理订单&nbsp;&nbsp;<a href="/">快去逛逛吧~</a></font></span>
+                    </div>
+                <else/>
+                
+                    <div class="cen_u_bill">
+                        <volist name="order_list" id="list">
+                        <div class="cen_u_num"><a href="{:U('Order/order_detail',array('id'=>$list['order_id']))}">订单编号：{$list.order_sn}</a><p>{$list.add_time|date='Y-m-d H:i:s',###}</p></div>
+                        <div class="order_tab">
+                        <table>
+                            <?php
+                                $list = set_btn_order_status($list);  // 添加属性  包括按钮显示属性 和 订单状态显示属性
+                            ?>
+                            <tpshop sql="select * from `__PREFIX__order_goods` where order_id = $list[order_id]" item="goods" result_name="goods_list">
+                            </tpshop>
+
+                            <volist name="goods_list" id="goods">
+                                <tr class="cen_u_goods">
+                                    <td class="cen_bill_con">
+                                        <div class="cen_bill_detail">
+                                            <div class="cen_bill_pic"><a href="#"><img src="{$goods.goods_id|goods_thum_images=100,100}" width="80" height="80"></a></div>
+                                            <div class="cen_bill_txt"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods[goods_id]))}">{$goods.goods_name|getSubstr=0,18}</a><span>商品货号：{$goods.goods_sn}</span></div>
+                                        </div>
+                                     </td>
+                                     <td>￥{$goods.goods_price}</td>
+                                     <td>{$list.order_status_desc}</td>
+                                     <td><a href="{:U('Home/User/comment')}">评价</a></td>
+                                     <td><a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods[goods_id]))}">查看详情</a></td>
+                                </tr>
+                            </volist>
+                        </table>
+                        </div>
+                        </volist>
+                    </div>
+                </empty>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>个人信息-修改手机</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <!--<script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>-->
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="change_phone_main">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 add_g_main">
+                <div class="change_phone_title"><h4><h4><a href="{:U('Home/User/safety_settings')}">安全设置</a> / 修改绑定手机</h4></div>
+                    
+                    <div class="change_phone_con">
+                        <div class="change_pho_cue">
+                            <div class="change_pho_one">
+                                <div class="change_pho_line1"></div>
+                                <div class="change_pho_num1">1</div>
+                                <div class="change_pho_wor1">验证身份</div>
+                            </div>
+                            <div class="change_pho_two">
+                                <div class="change_pho_line1"></div>
+                                <div class="change_pho_num1">2</div>
+                                <div class="change_pho_wor1">设置手机号码</div>
+                            </div>
+                            <div class="change_pho_thr">
+                                <div class="change_pho_line2"></div>
+                                <div class="change_pho_num2">3</div>
+                                <div class="change_pho_wor1">已完成</div>
+                            </div>
+                        </div>
+                        <div class="change_phone_item">
+                        <form action="" method="post" id="checkform">
+                        <input type="hidden" value="{$user_info['mobile']}" name="old_mobile" id="old_mobile" />
+                            <div class="change_item_one">
+                                <div class="div_fix"></div>
+                                <span class="change_item_label">新手机号码：</span>
+                                <div class="cha_one_tel1"><input id="cha_tel_inp1" placeholder="请输入新手机号码" type="text" value="" name="new_mobile" /></div>
+                            </div>
+                            <div class="change_item_one">
+                                <span class="change_item_label">短信验证码：</span>
+                                <div class="cha_one_tel2"><input id="cha_tel_inp" name="code" placeholder="请输入短信验证码" type="text">
+                                <input type="button" intervaltime="{$time}" value="获取验证码 " id="btnemailAuthCode2" onClick="sendCode(this,'cha_tel_inp1')" class="btn btn-info" /></div>
+                            </div>
+                            <div class="change_item_one">
+                                <span class="change_item_label">验证码：</span>
+                                <div class="cha_one_tel3">
+                                <input id="cha_tel_inp2" placeholder="请输入验证码" type="text" name="verify_code" id="verify_code" />
+                                <label><img src="/index.php?m=Home&c=User&a=verify" id="verify_code_img" onclick="verify()" height="30" width="100"></label><span></span></div>
+                            </div>
+                        <div class="change_pho_next"><a href="javascript:void(0);" onClick="checkSubmit();">下一步</a></div>
+                            <!-- <button type="submit"> 下一步 </button> -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>
+
+<script type="text/javascript">
+    // 表单提交验证
+    function checkSubmit()
+    {
+        if($.trim($('#cha_tel_inp').val()) == '')
+        {
+            layer.alert('验证码不能为空', {icon: 2});//alert('验证码不能为空');
+            return false;
+        }
+        $.ajax({
+            type: 'post',
+            url: '/index.php?m=Home&c=User&a=mobile_validate_2',
+            data: $('#checkform').serialize(),
+            dataType: 'json',
+            success: function (res) {
+                if(res.status == 2){
+                    layer.alert('手机号已存在', {icon: 2});//alert('验证码不能为空');
+                    return false;
+                }
+                if (res.status == 1) {
+                    window.location.href = res.url;
+                } else {
+                    showErrorMsg(res.msg);
+                    verify();
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                showErrorMsg('网络失败，请刷新页面后重试');
+            }
+        })
+    }
+
+    function sendCode(obj,input_id){
+        var id = $(obj).attr('id');
+        var input = $('#'+input_id).val();
+        var old_mobile = $('#old_mobile').val();
+
+        if(input == old_mobile){
+            layer.alert('新手机号不能与原手机号相同', {icon: 2});
+            return false;
+        }
+
+        if(!checkMobile(input)){
+            layer.alert('手机号码格式错误', {icon: 2});//alert('手机号码格式错误');
+            return false;
+        }
+        // alert(input);
+        // return false;
+        var url = "/index.php?m=Home&c=Api&a=send_validate_code&scene=6&type=mobile&send="+input;
+        //发送验证码
+        $.ajax({
+            type : "GET",
+            url  : url,
+            dataType : 'json',
+            error: function(request) {
+                layer.alert('服务器繁忙, 请联系管理员!', {icon: 2});//alert("服务器繁忙, 请联系管理员!");
+                return;
+            },
+            success: function(res) {
+                if(res.status == 1){
+                    layer.alert(res.msg,{icon: 1});
+                    jsInnerTimeout(id);
+                }else{
+                    layer.alert(res.msg,{icon: 2});//alert('发送失败');
+                }
+            }
+        });
+    }
+
+    //倒计时函数
+    function jsInnerTimeout(id)
+    {
+        var codeObj=$("#"+id);
+        var intAs= parseInt(codeObj.attr("IntervalTime"));
+
+        intAs--;
+        codeObj.attr("disabled","disabled");
+        if(intAs<=-1)
+        {
+            codeObj.removeAttr("disabled");
+            codeObj.attr("IntervalTime",{$time});
+            codeObj.val("获取验证码");
+            return true;
+        }
+
+        codeObj.val(intAs+'s后再次获取');
+        codeObj.attr("IntervalTime",intAs);
+
+        setTimeout("jsInnerTimeout('"+id+"')",1000);
+    };
+
+    $("#btnemailAuthCode2").removeAttr("disabled");
+
+    function verify() {
+        $('#verify_code_img').attr('src', '/index.php?m=Home&c=User&a=verify&r=' + Math.random());
+    }
+
+    function showErrorMsg(msg) {
+        layer.alert(msg, {icon: 2});
+    }
+
+    function checkMobile(tel) {
+        var reg = /(^1[3|4|5|7|8][0-9]{9}$)/;
+        if (reg.test(tel)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

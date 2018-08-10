@@ -1,0 +1,82 @@
+<?php
+/**
+ * 肽风尚APP测肤扫码登录
+ * User: ShenCheng
+ */
+namespace app\home\controller;
+
+use app\common\logic\JssdkLogic;
+use think\Db;
+
+class Tfsapi extends Base
+{   
+    /**
+     * 通用统一入口
+     */
+    private $api_sign = 'af074e8dc858c7e8fdd27bb14152f26d';
+
+    public function index(){
+        if(IS_POST){
+            $key = $_POST['key'] ? $_POST['key'] : "key";
+            $act = $_POST['act'] ? $_POST['act'] : "act"; 
+            if(!$this->checkApi($key)){
+                $data = array('msg'=>'Key Error');
+                $this->ajaxReturn($data);
+            }
+
+            switch($act){
+                case 'get_qrcode':
+                    $sarkcode = $_POST['sarkcode'] ? $_POST['sarkcode'] : '';
+                    $this -> get_qrcode($sarkcode);
+                    break;
+                default:
+                    $data = array('msg'=>'Action Error');
+                    $this->ajaxReturn($data);
+            }
+        }else{
+            return $this->fetch('test');
+        }
+    }
+
+    /**
+     * 接口验证
+     */
+    private function checkApi($key){
+        $api = $this->api_sign;
+        if($key!=$api){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 获取测肤登录二维码
+     */
+    private function get_qrcode($sarkcode){
+        if(empty($sarkcode)){ //没有平板code
+            $data = array('res'=>2);
+        }else{
+            $code = 'skinapp_'.$sarkcode;
+            //微信公众号带参数二维码
+            $config = M('wx_user')->find();
+            $Wechat = new JssdkLogic($config['appid'],$config['appsecret']);
+            //永久带参数二维码(公众号)s
+            $qrcode = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"$code\"}}}";
+            $qrcode_url = $Wechat->get_qrcode($qrcode);
+            $data = array('qrcode'=>$qrcode_url, 'res'=>1);
+            
+        }
+
+        // $code = 'skinapp_'.$sarkcode;
+        // //微信公众号带参数二维码
+        // $config = M('wx_user')->find();
+        // $Wechat = new JssdkLogic($config['appid'],$config['appsecret']);
+        // //永久带参数二维码(公众号)s
+        // $qrcode = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"$code\"}}}";
+        // $qrcode_url = $Wechat->get_qrcode($qrcode);
+        // $data = array('qrcode'=>$qrcode_url, 'res'=>1);
+        $this->ajaxReturn($data);
+    }
+    
+        
+}

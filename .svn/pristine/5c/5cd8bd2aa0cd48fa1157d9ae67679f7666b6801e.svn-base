@@ -1,0 +1,77 @@
+<!Doctype html>
+<html>
+<head>
+  <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+  <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+  <title>团购-{$tpshop_config['shop_info_store_title']}</title>
+  <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/global.js"></script>
+  <script src="__PUBLIC__/js/pc_common.js"></script>
+  <script src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/layer/layer.js"></script>
+  <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+  </head>
+
+<body id="group_buying">
+<!--顶部nav 开始-->
+<include file="public/header"/>
+<!--头部结束-->
+<!--banner 开始-->
+<div id="banner">
+	<div class="inner_banner"></div>
+</div>
+<!--banner 结束-->
+<!--主要内容 开始-->
+<div class="group_top">
+	<div class="group_top_inner">
+    	<div class="group_top_banner">
+        	<div class="group_coupon">
+        	<volist name="coupon_list" id="vo"> 
+        	
+            	<div class="group_coupon_l">
+                	<div class="group_coupon_click"><h5><if condition="$vo[createnum] eq $vo[send_num]">已抢完<elseif condition="$vo[isget] eq 1" />已领取<else /><a href="{:U('Activity/get_coupon',array('coupon_id'=>$vo[id]))}">点击领取</a></if></h5></div>
+                    <div class="group_coupon_num"><h4>{$vo.money|intval}</h4><div class="group_coupon_nump"><p>￥</p></div></div>
+                    <div class="group_coupon_txt"><h3>优惠券</h3><h4>满{$vo.condition|intval}使用</h4><h5>.{$vo.use_start_time|date='m.d',###}~{$vo.use_end_time|date='m-d',###}</h5></div>
+                </div>
+            </volist>
+            </div>
+        </div>
+        <div class="group_top_img">
+        	<div class="group_img_left">
+        		<empty name="list">
+                    <p style="font-size: 16px;margin:50px 500px;text-align: center;">--暂无团购商品--</p>
+            	<else/>
+            	<volist name="list" id="v">
+            	<div class="group_left_one">
+                	<div class="group_left_pic"><img src="{$v.goods_id|goods_thum_images=262,262}"/></div>
+                    <h4>{$v[title]|getSubstr=0,30}</h4><h5>团购价：<span>￥{$v.price}</span></h5><h6><a href="{:U('Home/Activity/group',array('id'=>$v[goods_id]))}">购买 > ></a></h6>
+                </div>
+                </volist>
+                </empty>
+                
+            </div>
+            <div class="group_img_right"></div>
+        </div>
+        <div class="group_bot_inner">
+        	<div class="group_bot_banner"></div>
+            <div class="group_bot_pic">
+            <volist name="hot_list" id="vol">
+            	<div class="group_bot_left">
+                	<div align="center" class="group_bot_img"><img src="{$vol.goods_id|goods_thum_images=262,262}"/></div>
+                    <h5>{$vol.goods_name}</h5>
+                    <h6>{$vol.goods_remark}</h6>
+                    <p>活动价:<span>￥{$vol.shop_price}</span></p>
+                    <div  class="group_bot_pos"><h4><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vol['goods_id']))}">立即抢购</a></h4></div>
+                </div>
+            </volist>
+        	</div>
+        </div>
+    </div>
+</div>
+<!--主要内容 结束-->
+</body>
+</html>

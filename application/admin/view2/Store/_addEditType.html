@@ -1,0 +1,62 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>工厂店类型管理 - 编辑工厂店类型</h3>
+                <h5>工厂店类型管理</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="storetype" method="post">
+        <input type="hidden" name="act" value="{$act}">
+        <input type="hidden" name="id" value="{$info.id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label for="type_name"><em>*</em>分类名称</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="type_name" value="{$info.type_name}" id="type_name" class="input-txt">
+                    <span class="err" id="err_type_name"></span>
+                    <p class="notic">设置工厂店类型名称</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="count_value"><em>*</em>总价值 (￥)</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="count_value" value="{$info.count_value}" id="count_value" class="input-txt">
+                    <span class="err" id="err_count_value"></span>
+                    <p class="notic">设置工厂店价值</p>
+                </dd>
+            </dl>
+        <div class="bot"><a href="JavaScript:void(0);" onclick="verifyForm()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function verifyForm(){
+        var type_name = $.trim($('input[name="type_name"]').val());
+        var count_value = $.trim($('input[name="count_value"]').val());
+        var error ='';
+        if(type_name == ''){
+            error += "工厂店名称不能为空\n";
+        }
+        if(count_value == ''){
+            error += "工厂店总价值不能为空\n";
+        }
+        if(error){
+            layer.alert(error, {icon: 2});  //alert(error);
+            return false;
+        }
+        $('#storetype').submit();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>新闻列表-{$tpshop_config['shop_info_store_title']}</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}"/>
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}"/>
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen"/>
+</head>
+<body>
+<!--header-s-->
+<include file="public/header"/>
+<!--header-e-->
+
+<div class="container">
+	<div class="row">
+		<adv  pid="406" limit="1" item="v">
+			<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+		</adv>
+	</div>
+</div>
+
+<div id="news">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-9 news_left">
+				<div class="news_left_tital" id="cats">
+					<ul>
+						<li data-c="0"><a href="javascript:;">全部</a></li>
+						<foreach name="news_cat" item="cat">
+							<li data-c="{$cat.cat_id}"><a href="javascript:;">{$cat.cat_name}</a></li>
+						</foreach>
+					</ul>
+				</div>
+				<div id="ajax_content"></div>
+			</div>
+			<div class="col-sm-3 news_right">
+				<p class="news_right_top">最新活动 <a href="#">更多 ></a></p>
+				<ul>
+					<foreach name="activity" item="vo" key="k">
+						<if condition="$k eq 0">
+							<li class="news_right_one">
+								<div style="overflow: hidden">
+									<span class="pull-left num">{$k+1}</span>
+									<div class="pull-left news_right_pic">
+										<a href=""> <img src="{$vo.prom_img}" width="240"/> </a>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+								<div class="news_right_txt">
+									<h4><a href="">{$vo.name}</a></h4>
+									<p>{$vo.description|htmlspecialchars_decode|getSubstr=0,30}<a href="">【详情】</a></p>
+								</div>
+							</li>
+						<else />
+							<li>
+								<div style="overflow: hidden">
+									<span class="pull-left num">{$k+1}</span>
+									<div class="pull-left">
+										<a href="" class="prom_name"> {$vo.name} </a>
+									</div>
+								</div>
+							</li>
+						</if>
+					</foreach>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer"/>
+<!--footer-e-->
+</body>
+</html>
+<script type="text/javascript">
+	$(function() {
+		$('#cats ul li:first').click();
+	});
+
+	// 新闻分类 切换
+	$('#cats ul li').click(function(){
+		$(this).addClass('news_tital_home').siblings().removeClass('news_tital_home');
+		cat_id = $(this).data('c');
+		ajax_news_list(cat_id, 1);
+	});
+
+	function ajax_news_list(cat_id, page) {
+		$.ajax({
+			type: "POST",
+			url: "/index.php?m=Home&c=Article&a=ajax_news_list&p="+page,//+tab,
+			data: {id: cat_id},
+			success: function (data) {
+				if (data) {
+					$('#ajax_content').html(data);
+				}
+			}
+		});
+	}
+</script>

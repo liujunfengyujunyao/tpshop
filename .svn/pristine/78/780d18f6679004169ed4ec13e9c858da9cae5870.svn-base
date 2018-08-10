@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的推广-{$tpshop_config['shop_info_store_title']}</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 member_main">
+                <div class="member_title"><h4>工厂店列表</h4></div>
+                    <div class="member_con">
+                        <div class="member_o_t">
+                            <table>
+                                <tr class="member_o_tatil">
+                                    <td>工厂店名称</td>
+                                    <td>负责人</td>
+                                    <td>联系方式</td>
+                                    <td>类型</td>
+                                    <td>添加时间</td>
+                                    <td>操作</td>
+                                </tr>
+                                <empty name="list">
+                                    <tr class="member_o_con">
+                                        <td style="color:#ff0000">暂无下线工厂店</td>
+                                    </tr>
+                                <else/>
+                                <volist name="list" id="vo">
+                                    <tr class="member_o_con">
+                                        <td>{$vo.store_name}</td>
+                                        <td>{$vo.nickname}</td>
+                                        <td>{$vo.phone}</td>
+                                        <td>{$vo.type_name}</td>
+                                        <td>{$vo.addtime}</td>
+                                        <td><a href="{:U('Partner/store_stock_list', array('id'=>$vo.store_id))}">查看库存</a></td>
+                                    </tr>
+                                </volist>
+                                </empty>
+                            </table>
+                        </div>
+                        <div class="eva_page">
+                            {$page}
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

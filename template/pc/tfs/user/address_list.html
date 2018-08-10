@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>地址管理-{$tpshop_config['shop_info_store_title']}</title>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+	<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<script src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<div id="address">
+	<div class="container">
+		<adv  pid="407" limit="1" item="v">
+			<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+		</adv>
+	</div>
+
+	<div class="container mine">
+		<div class="row my_mall">
+			<include file="user/menu" />
+			<div class="col-md-10 col-sm-9 col-lg-10">
+				<div>
+					<ol class="breadcrumb">
+						<li><i class="glyphicon glyphicon-home"></i></li>
+						<li><a href="{:U('Home/User/index')}">用户中心</a></li>
+						<li class="active">地址管理</li>
+					</ol>
+				</div>
+				<div class="my_right">
+					<div class="col-sm-12">
+						<div class="row addtop">
+							<div class="col-sm-2 col-md-2 col-lg-2">收货人</div>
+							<div class="col-sm-4 col-md-4 col-lg-4">收货地址</div>
+							<div class="col-sm-2 col-md-2 col-lg-2">联系电话</div>
+							<div class="col-sm-2 col-md-2 col-lg-2">操作</div>
+							<div class="col-sm-2 col-md-2 col-lg-2"></div>
+						</div>
+						<if condition="$lists">
+							<volist name="lists" id="list">
+								<div class="row addone">
+									<div class="col-sm-2 col-md-2 col-lg-2">{$list.consignee}</div>
+									<div class="col-sm-4 col-md-4 col-lg-4">{$region_list[$list['province']]}{$region_list[$list['city']]}{$region_list[$list['district']]}{$region_list[$list['twon']]}{$list.address}</div>
+									<div class="col-sm-2 col-md-2 col-lg-2">{$list.mobile}</div>
+									<div class="col-sm-2 col-md-2 col-lg-2 modi"><a href="javascript:address_edit({$list['address_id']})">修改</a>/<a href="{:U('Home/User/del_address',array('id'=>$list['address_id']))}">删除</a></div>
+									<div class="col-sm-2 col-md-2 col-lg-2 amo">
+										<if condition="$list['is_default'] neq 1">
+											<a href="{:U('Home/User/set_default',array('id'=>$list['address_id']))}">设为默认</a>
+										<else/>
+											<span>默认地址</span>
+										</if>
+									</div>
+								</div>
+							</volist>
+						<else />
+							<h5 class="text-center style-red" style="padding: 10px 0;">暂无收货地址</h5>
+						</if>
+						<div class="address-edit text-right">
+							<a href="javascript:void(0)" class="btn btn-danger" onclick="address_edit()">新增收货地址</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>
+<script type="text/javascript">
+	$(function(){
+		$('.choice_hobby').click(function(){
+			$(this).toggleClass('red');
+		})
+	})
+
+	/**
+	 * 新增修改收货地址
+	 * id 为零 则为新增, 否则是修改
+	 *  使用 公共的 layer 弹窗插件  参考官方手册 http://layer.layui.com/
+	 */
+	function address_edit(id)
+	{
+		if(id > 0)
+			var url = "/index.php?m=Home&c=User&a=edit_address&scene=1&call_back=call_back_fun&id="+id; // 修改地址  '/index.php/Home/User/add_address/scene/1/call_back/call_back_fun/id/id' //iframe的url /index.php/Home/User/add_address
+		else
+			var url = "/index.php?m=Home&c=User&a=add_address&scene=1&call_back=call_back_fun";	// 新增地址
+		layer.open({
+			type: 2,
+			title: '添加收货地址',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['880px', '580px'],
+			content: url,
+		});
+	}
+	// 添加修改收货地址回调函数
+	function call_back_fun(v){
+		layer.closeAll(); // 关闭窗口
+		location.href = location.href;
+	}
+</script>

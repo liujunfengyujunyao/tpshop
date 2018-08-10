@@ -1,0 +1,360 @@
+<?php
+/**
+ * 后台合伙人模块
+ * Author: Dh
+ * Date: 2017-07-28
+ */
+
+namespace app\admin\model;
+
+use think\Model;
+use think\Db;
+use think\Page;
+use think\AjaxPage;
+
+class Partner extends Model {
+
+	/**
+	 * 合伙人列表（包含分页）
+	 * @param  array  $where    where条件
+	 * @param  int $pagesize 每页条数（默认为20）
+	 * @return array 合伙人列表
+	 */
+	public function partnerList($where, $pagesize=10) {
+		$where['p.status'] = 1;
+		$count = DB::name('partner')
+				->alias('p')
+				->join('__USERS__ u', 'u.user_id = p.user_id', 'LEFT')
+				->where($where)
+				->count();
+		$Page = new AjaxPage($count, $pagesize);
+		$show = $Page->show();
+
+		$partnerList = DB::name('partner')
+					->alias('p')
+					->field("p.partner_id, p.phone, r1.name as province_name, r2.name as city_name, r3.name as town_name, u.nickname, u.user_money as money, FROM_UNIXTIME(p.addtime, '%Y-%m-%d') as addtime, u.pay_points")
+					->join('__REGION__ r1', 'r1.id = p.province_id', 'LEFT')
+					->join('__REGION__ r2', 'r2.id = p.city_id', 'LEFT')
+					->join('__REGION__ r3', 'r3.id = p.town_id', 'LEFT')
+					->join('__USERS__ u', 'u.user_id = p.user_id', 'LEFT')
+					->where($where)
+					->order('p.partner_id')
+					->limit($Page->firstRow . ',' . $Page->listRows)
+					->select();
+
+		$content['page'] = $show;
+		$content['pager'] = $Page;
+		$content['list'] = $partnerList;
+		return $content;
+	}
+
+	/**
+	 * 获取合伙人下的工厂店列表（包含分页）
+	 * @param int $partner_id 合伙人ID
+	 * @param int $pagesize 每页条数（默认为10）
+	 * @return array 工厂店列表
+	 */
+	public function getPartnerStore($partner_id, $pagesize=10) {
+		$count = DB::name('store')->where(array('partner_id'=>$partner_id, 'status'=>1))->count();
+		$Page = new Page($count, $pagesize);
+		$show = $Page->show();
+
+		$storeList = DB::name('store')
+					->alias('s')
+					->field("s.store_id, s.store_name, s.phone, FROM_UNIXTIME(s.addtime, '%Y-%m-%d') as addtime, u.nickname, st.type_name")
+					->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+					->join('__STORE_TYPE__ st', 'st.id = s.type_id', 'LEFT')
+					->where(array('s.partner_id'=>$partner_id, 's.status'=>1))
+					->order('s.store_id')
+					->limit($Page->firstRow . ',' . $Page->listRows)
+					->select();
+		$content['page'] = $show;
+		$content['pager'] = $Page;
+		$content['list'] = $storeList;
+		return $content;
+	}
+
+	/**
+	 * 获取合伙人库存列表
+	 * @param int $partner_id 合伙人ID
+	 * @param object $page 分页对象
+	 * @return array 库存列表
+	 */
+	public function getPartnerStock($partner_id, $Page) {
+		$count = DB::name('partner_stock')->where(array('partner_id'=>$partner_id))->count();
+		if ($count == 0) {
+			$data = DB::name('partner_stock_config')->field('goods_id, stock as stock_num')->select();
+			foreach ($data as $key => &$value) {
+				$value['goods_num'] = 0;
+				$value['partner_id'] = $partner_id;
+			}
+			DB::name('partner_stock')->insertAll($data);
+		}
+		$partner = DB::name('partner_stock')->alias('ps')
+				->field("ps.goods_id, ps.partner_id, ps.goods_num, FROM_UNIXTIME(ps.edittime, '%Y-%m-%d %H:%i:%s') as edittime, ps.stock_num, g.goods_name ,g.goods_sn")
+				->join('goods g', 'g.goods_id = ps.goods_id', 'LEFT')
+				->where("ps.partner_id=$partner_id")
+				->order('ps.edittime desc, ps.goods_id')
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->select();
+
+		$store = DB::name('store_stock')->alias('ss')
+				->join('store s', 's.store_id = ss.store_id', 'LEFT')
+				->join('goods g', 'g.goods_id = ss.goods_id', 'LEFT')
+				->where("s.partner_id=$partner_id")
+				->group('ss.goods_id')
+				->getField("ss.goods_id, sum(ss.stock_num) as stock_num, g.goods_name");
+		foreach ($partner as $key => &$value) {
+			$isset = $store[$value['goods_id']];
+			if ($isset) {
+				$value['stock_num'] += $store[$value['goods_id']]['stock_num'];
+				unset($store[$value['goods_id']]);
+			}
+		}
+		$list = array_merge($partner, $store);
+		return $list;
+	}
+
+	/**
+	 * 获取合伙人库存日志
+	 * @param  array $where where条件
+	 * @param  int $pagesize 每页条数（默认为20）
+	 * @return array 库存日志列表
+	 */
+	public function getStockLog($where, $pagesize=10) {
+		$count = DB::name('partner_stock_log')
+				->alias('l')
+				->join('__USERS__ u', 'u.user_id = l.partner_id', 'LEFT')
+				->where($where)
+				->count();
+		$Page = new Page($count, $pagesize);
+		$show = $Page->show();
+
+		$list = DB::name('partner_stock_log')
+				->alias('l')
+				->field('l.*, g.goods_name, g.goods_sn, u.nickname, u.mobile')
+				->join('__USERS__ u', 'u.user_id = l.partner_id', 'LEFT')
+				->join('__GOODS__ g', 'g.goods_id = l.goods_id', 'LEFT')
+				->where($where)
+				->order('l.ctime desc')
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->select();
+
+		$content['page'] = $show;
+		$content['pager'] = $Page;
+		$content['list'] = $list;
+		return $content;
+	}
+
+	/**
+	 * 计算合伙人下工厂店的商品最大库存量
+	 * @param  int $partner_id 合伙人ID
+	 * @param  int $goods_id   商品ID
+	 * @return int 商品最大库存
+	 */
+	public function max_stock($partner_id, $goods_id) {
+		$config = Db::name('partner_stock_config')->where(array('goods_id'=>$goods_id))->getField('stock');
+		$ids = DB::name('store')->where(array('partner_id'=>$partner_id))->getField('store_id', true);
+		$max = 0;
+		foreach ($ids as $key => $value) {
+			$num = Db::name('store_stock')->where(array('store_id'=>$value, 'goods_id'=>$goods_id))->getField('stock_num');
+			if (empty($num)) {
+				$num = Db::name('store_type_conf')
+						->alias('c')
+						->join('__STORE__ s', 's.type_id = c.type_id', 'LEFT')
+						->where(array('c.goods_id'=>$goods_id, 's.store_id'=>$value))
+						->getField('goods_num');
+			}
+			$max += $num;
+		}
+		$max += $config;
+		return $max;
+	}
+	
+	/**
+	 * 工厂店库存列表
+	 * @param  int $store_id 工厂店ID
+	 * @param  int $pagesize 每页条数（默认为20）
+	 * @return array 库存列表
+	 */
+	public function store_stock_list($store_id, $pagesize=10) {
+		$count = DB::name('store_stock')->where(array('store_id'=>$store_id))->count();
+		$Page = new Page($count, $pagesize);
+		$show = $Page->show();
+
+		$list = DB::name('store_stock')
+				->alias('s')
+				->field('s.goods_num, s.edittime, s.stock_num, g.goods_name, s.goods_id ,g.goods_sn')
+				->join('__GOODS__ g', 'g.goods_id = s.goods_id', 'LEFT')
+				->where(array('s.store_id'=>$store_id))
+				->order('s.edittime desc, s.goods_id desc')
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->select();
+
+		$content['page'] = $show;
+		$content['pager'] = $Page;
+		$content['list'] = $list;
+		return $content;
+	}
+
+	/**
+	 * 配货单列表（合伙人配货给工厂店）
+	 * @param  array $where where条件
+	 * @param  int $pagesize 每页条数（默认为20）
+	 * @return array 配货单列表
+	 */
+	public function delivery($where, $pagesize=20) {
+		$where['d.delivery_type'] = 3; //发货单类型
+
+		$count = DB::name('delivery')
+				->alias('d')
+				->join('__USERS__ u', 'u.user_id = d.edituser', 'LEFT')
+				->where($where)
+				->count();
+		$Page = new Page($count, $pagesize);
+		$show = $Page->show();
+
+		$list = DB::name('delivery')
+				->alias('d')
+				->field("d.id, s.store_name, d.name, d.phone, r1.name as province_name, r2.name as city_name, r3.name as town_name, d.addtime, u.nickname")
+				->join('__STORE__ s', 's.user_id = d.user_id', 'LEFT')
+				->join('__REGION__ r1', 'r1.id = d.province_id', 'LEFT')
+				->join('__REGION__ r2', 'r2.id = d.city_id', 'LEFT')
+				->join('__REGION__ r3', 'r3.id = d.town_id', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = d.edituser', 'LEFT')
+				->order('d.addtime desc')
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->where($where)
+				->select();
+
+		$content['page'] = $show;
+		$content['pager'] = $Page;
+		$content['list'] = $list;
+		return $content;
+	}
+
+	/**
+	 * 配货单详情（合伙人配货给工厂店）
+	 * @param  int $id 配货单ID
+	 * @return array 详情
+	 */
+	public function delivery_info($id) {
+		$info = DB::name('delivery')
+				->alias('d')
+				->field("s.store_name, d.name, d.phone, r1.name as province_name, r2.name as city_name, r3.name as town_name, d.express_name, d.express_code, d.addtime, FROM_UNIXTIME(d.confirm_time, '%Y-%m-%d %H:%i:%s') as confirm_time, u.nickname")
+				->join('__STORE__ s', 's.user_id = d.user_id', 'LEFT')
+				->join('__REGION__ r1', 'r1.id = d.province_id', 'LEFT')
+				->join('__REGION__ r2', 'r2.id = d.city_id', 'LEFT')
+				->join('__REGION__ r3', 'r3.id = d.town_id', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = d.edituser', 'LEFT')
+				->where(array('d.id'=>$id))
+				->find();
+
+		$goods = DB::name('delivery_goods')
+				->alias('dg')
+				->field('g.goods_id, g.goods_name, dg.goods_num')
+				->join('__GOODS__ g', 'dg.goods_id = g.goods_id', 'LEFT')
+				->where(array('dg.delivery_id'=>$id))
+				->select();
+
+		$content['info'] = $info;
+		$content['goods'] = $goods;
+		return $content;
+	}
+
+	/**
+	 * 合伙人补货申请记录
+	 * @param  array  $where where条件
+	 * @param  int $pagesize 每页条数（默认为20）
+	 * @return array 补货申请列表
+	 */
+	public function apply($where, $pagesize=10) {
+		$count = DB::name('goods_apply')
+				->alias('ga')
+				->join('__USERS__ u', 'u.user_id = ga.user_id', 'LEFT')
+				->where($where)
+				->count();
+		$Page = new Page($count, $pagesize);
+		$show = $Page->show();
+
+		$list = DB::name('goods_apply')
+				->alias('ga')
+				->field('ga.id, u.nickname, u.mobile, r1.name as province, r2.name as city, r3.name as district, ga.addtime, ga.status, ga.delivery_id, d.express_name, d.express_code')
+				->join('__USERS__ u', 'u.user_id = ga.user_id', 'LEFT')
+				->join('__REGION__ r1', 'r1.id = u.province', 'LEFT')
+				->join('__REGION__ r2', 'r2.id = u.city', 'LEFT')
+				->join('__REGION__ r3', 'r3.id = u.district', 'LEFT')
+				->join('__DELIVERY__ d', 'd.id = ga.delivery_id', 'LEFT')
+				->where($where)
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->select();
+
+		$content['page'] = $show;
+		$content['pager'] = $Page;
+		$content['list'] = $list;
+		return $content;
+	}
+
+	/**
+	 * 合伙人补货申请明细
+	 * @param int $id 补货申请id
+	 */
+	public function apply_info($id) {
+		$info = DB::name('goods_apply')
+				->alias('ga')
+				->field("ga.id, u.nickname, u.mobile, r1.name as province, r2.name as city, r3.name as district, ga.addtime, ga.status, ga.remark, d.express_name, d.express_code, FROM_UNIXTIME(d.addtime, '%Y-%m-%d %H:%i:%s') as delivery_time, FROM_UNIXTIME(d.confirm_time, '%Y-%m-%d %H:%i:%s') as confirm_time, ga.delivery_id, a.user_name, ga.edittime")
+				->join('__DELIVERY__ d', 'd.id = ga.delivery_id', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = ga.user_id', 'LEFT')
+				->join('__REGION__ r1', 'r1.id = u.province', 'LEFT')
+				->join('__REGION__ r2', 'r2.id = u.city', 'LEFT')
+				->join('__REGION__ r3', 'r3.id = u.district', 'LEFT')
+				->join('__ADMIN__ a', 'a.admin_id = ga.edituser', 'LEFT')
+				->where("ga.id=$id")
+				->find();
+
+		$goods = Db::name('goods_apply_info')
+				 ->alias('i')
+				 ->field('g.goods_id, g.goods_name, g.goods_sn, i.goods_num')
+				 ->join('__GOODS__ g', 'g.goods_id = i.goods_id', 'LEFT')
+				 ->where("i.apply_id=$id")
+				 ->select();
+
+		$content['info'] = $info;
+		$content['goods'] = $goods;
+		return $content;
+	}
+
+	/**
+	 * 合伙人出入库货物统计
+	 * @param  array   $where   where条件
+	 * @param  integer $pagesize 每页条数（默认为20）
+	 * @return array 出入库货物统计列表
+	 */
+	public function goodsReport($where, $pagesize=10) {
+		$count = Db::name('delivery')
+				->alias('d')
+				->join('__DELIVERY_GOODS__ dg', 'd.id = dg.delivery_id', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = d.user_id', 'LEFT')
+				->where($where)
+				->group('d.user_id, dg.goods_id')
+				->count();
+		$Page = new Page($count, $pagesize);
+		$show = $Page->show();
+
+		$list = Db::name('delivery')
+				->alias('d')
+				->field('u.nickname, g.goods_name, g.goods_sn, sum(dg.goods_num) as stock, u.mobile, d.edituser')
+				->join('__DELIVERY_GOODS__ dg', 'd.id = dg.delivery_id', 'LEFT')
+				->join('__GOODS__ g', 'g.goods_id = dg.goods_id', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = d.user_id', 'LEFT')
+				->where($where)
+				->group('d.user_id, dg.goods_id')
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->cache(true, 3600)
+				->select();
+		$content['page'] = $show;
+		$content['pager'] = $Page;
+		$content['list'] = $list;
+		return $content;
+	}
+}

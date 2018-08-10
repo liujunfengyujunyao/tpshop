@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的推广-{$tpshop_config['shop_info_store_title']}</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 member_main">
+                <div class="member_title"><h4>店会员列表</h4></div>
+                    <div class="member_con">
+                        <div class="member_o_t">
+                            <table>
+                                <tr class="member_o_tatil">
+                                    <td>序号</td>
+                                    <td>手机</td>
+                                    <td>昵称</td>
+                                    <td>加入时间</td>
+                                    <td>最后登录</td>
+                                </tr>
+                                <empty name="member">
+                                    <tr class="member_o_con">
+                                        <td style="color:#ff0000">暂无下线会员</td>
+                                    </tr>
+                                <else/>
+                                <volist name="member" id="vo">
+                                    <tr class="member_o_con">
+                                        <td>{$vo.user_id}</td>
+                                        <td>{$vo.mobile|default='--'}</td>
+                                        <td>{$vo.nickname|default='--'}</td>
+                                        <td>{$vo.reg_time|date='Y-m-d H:s',###}</td>
+                                        <td>{$vo.last_login|date='Y-m-d H:s',###}</td>
+                                    </tr>
+                                </volist>
+                                </empty>
+                            </table>
+                        </div>
+                        <div class="eva_page">
+                            {$page}
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

@@ -1,0 +1,85 @@
+<div class="footer p">
+    <div class="w1224">
+        <div class="footer-ewmcode">
+		    <div class="foot-list-fl">
+		    	<if condition="$link">
+	                <ul>
+	                    <li class="foot-th">友情链接</li>
+	                    <volist name='link' id='item' length='6'>
+	                    <li>
+	                        <a href="{$item.link_url}" <if condition="$item.target eq 1">target="_blank"</if>>{$item.link_name}</a>
+	                    </li>
+	                    </volist>
+	                </ul>
+	                <if condition="count($link) gt 6">
+	                <ul>
+	                    <li class="foot-th">&nbsp;</li>
+	                    <volist name='link' id='item' offset='6' length='6'>
+	                    <li>
+	                        <a href="{$item.link_url}" <if condition="$item.target eq 1">target="_blank"</if>>{$item.link_name}</a>
+	                    </li>
+	                    </volist>
+	                </ul>
+	                </if>
+                </if>
+		        <tpshop sql="select * from `__PREFIX__article_cat` where parent_id = 2" key="k" item='v'>
+		            <ul>
+		            	<if condition="$v.show_in_nav eq 1">
+		                <li class="foot-th">
+		                    {$v[cat_name]}
+		                </li>
+		                </if>
+		                <tpshop sql="select * from `__PREFIX__article` where cat_id = $v[cat_id]  and is_open=1" key="k2" item='v2'>
+		                    <li>
+		                    	<if condition="$v2['link']">
+		                    		<a href="{$v2['link']}">{$v2[title]}</a>
+		                    	<else />
+		                    		<a href="{:U('Home/Article/detail',array('article_id'=>$v2[article_id]))}">{$v2[title]}</a>
+		                    	</if>
+		                    </li>
+		                </tpshop>
+		            </ul>
+		        </tpshop>
+		        <ul class="foot-con continue">
+                    <li class="foot-th">联系我们</dt>
+                    <li>
+                        <span class="cellphone_con">{$tpshop_config['shop_info_phone']}</span>
+                        <span class="time_con">周一至周日8:00-18:00</span>
+                        <span class="cost_con">（仅收市话费）</span>
+                        <a class="software_con" href="tencent://message/?uin={$tpshop_config['shop_info_qq2']}&amp;Site={$tpshop_config['shop_info_store_name']}&amp;Menu=yes" target="_blank">
+                            <img src="__STATIC__/images/continue.png"/>
+                        </a>
+                    </li>
+                </ul>
+		    </div>
+		</div>
+		<div class="mod_copyright p">
+		    <div class="grid-top">
+		        <tpshop sql="select * from `__PREFIX__article` where cat_id = 5 and is_open=1" key="k" item='v'>
+		            <a href="{:U('Home/Article/detail',array('article_id'=>$v[article_id]))}">{$v[title]}</a>
+		            <span>|</span>
+		        </tpshop>
+		        <!-- <a href="javascript:void (0);">客服热线:{$tpshop_config['shop_info_phone']}</a> -->
+		    </div>
+		    <p>Copyright © 2016-2025 {$tpshop_config['shop_info_store_name']|default='肽风尚商城'} 版权所有 保留一切权利 备案号:{$tpshop_config['shop_info_record_no']}</p>
+		
+		    <p class="mod_copyright_auth">
+		        <a class="mod_copyright_auth_ico mod_copyright_auth_ico_1" href="javascript:void(0)">经营性网站备案中心</a>
+		        <!-- <a class="mod_copyright_auth_ico mod_copyright_auth_ico_2" href="" target="_blank">可信网站信用评估</a>
+		        <a class="mod_copyright_auth_ico mod_copyright_auth_ico_3" href="" target="_blank">网络警察提醒你</a>
+		        <a class="mod_copyright_auth_ico mod_copyright_auth_ico_4" href="" target="_blank">诚信网站</a>
+		        <a class="mod_copyright_auth_ico mod_copyright_auth_ico_5" href="" target="_blank">中国互联网举报中心</a>
+		        <a class="mod_copyright_auth_ico mod_copyright_auth_ico_6" href="" target="_blank">网络举报APP下载</a> -->
+		    </p>
+		</div>
+    </div>
+</div>
+<script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?6ab0b9cb68d35fe3b6c45d2930dcc8f2";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

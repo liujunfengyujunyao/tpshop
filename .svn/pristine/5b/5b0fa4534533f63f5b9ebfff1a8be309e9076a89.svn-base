@@ -1,0 +1,137 @@
+<!Doctype html>
+<html>
+<head>
+  <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+  <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+  <title>秒杀-{$tpshop_config['shop_info_store_title']}</title>
+  <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/global.js"></script>
+  <script src="__PUBLIC__/js/pc_common.js"></script>
+  <script src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/layer/layer.js"></script>
+  <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+  </head>
+
+<body id="seckill_body">
+<!--顶部nav 开始-->
+<include file="public/header"/>
+<!--头部结束-->
+<!--banner 开始-->
+ <div id="banner">
+	<div class="inner_banner"></div>
+</div>
+<!--banner 结束-->
+<!--促销内容 开始-->
+<div class="seckill">
+	<div class="seckill_inner">
+		<div class="seckill_top">
+    	<div class="seckill_nav">
+        	<ul class="seckill_list">
+        		<volist name="time_space" id="vo">
+            	<li onclick="reload_flash_sale_list(this);" <if condition="(time() egt $vo['start_time']) AND (time() lt $vo['end_time'])">class="seckill_nav_home"</if> start-data="{$vo['start_time']|date="Y/m/d H:i:s",###}" end-data="{$vo['end_time']|date="Y/m/d H:i:s",###}" data-start-time="{$vo['start_time']}" data-end-time="{$vo['end_time']}">
+            		<a href="javascript:void(0)">
+            			<h2>{$vo['font']}</h2>
+            			<h6>
+            				<if condition="time() lt $vo['start_time']">即将开场
+                            <elseif condition="(time() egt $vo['start_time']) AND (time() lt $vo['end_time'])"/>秒杀中
+                            <else />已经结束</if>
+                        </h6>
+            			<div class="pos_home">
+                        	<p class="time_work"><if condition="(time() egt $vo['start_time']) AND (time() lt $vo['end_time'])"><span id="J-endDef"></span><span id="flash_sale_time"></span></if></p>
+                       	</div>
+					      </a>
+				      </li>
+            </volist>
+          </ul>
+      </div>
+      <div class="seckill_img" id="flash_sale_list">
+    	</div>
+    </div>
+    <div class="seckill_bot">
+    	<div class="seckill_bot_banner"><p>爆 款 返 场</p></div>
+        <volist name="hot_list" id="vol">
+        	<div class="seckill_bot_left">
+            	<div align="center" class="seckill_bot_img"><img  src="{$vol.goods_id|goods_thum_images=262,262}"/></div>
+                <h5>{$vol.goods_name}</h5>
+                <h6>{$vol.goods_remark}</h6>
+                <p>活动价:<span>￥{$vol.shop_price}</span></p>
+                <div class="seckill_bot_pos"><h4><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vol['goods_id']))}">立即抢购</a></h4></div>
+            </div>
+        </volist>
+    	</div>
+	</div>
+</div>
+
+<!--促销内容 结束-->
+</body>
+<script type="text/javascript">
+
+	$(function () {
+		getFlashSaleList();
+		GetRTime2();
+	});
+	var page = 1;//页数
+	var start_time = $('.seckill_list').find('.seckill_nav_home').attr('data-start-time');
+	var end_time = $('.seckill_list').find('.seckill_nav_home').attr('data-end-time');
+	function reload_flash_sale_list(obj)
+	{
+		page = 1;
+		$(obj).parent().children().removeClass('seckill_nav_home');
+		$(obj).addClass('seckill_nav_home');
+		start_time = $(obj).attr('data-start-time');
+		end_time = $(obj).attr('data-end-time');
+		$('.time_work').empty();
+       	$(obj).find('a').find('.pos_home').find('.time_work').append('<span id="J-endDef"></span><span id="flash_sale_time"></span>');
+		GetRTime2();
+		$("#flash_sale_list").empty();
+		getFlashSaleList();
+	}
+	/**
+	 * 加载店铺
+	 */
+	function getFlashSaleList() {
+		$('.get_more').show();
+		$.ajax({
+			type: "get",
+			url: "/index.php?m=Home&c=Activity&a=ajax_flash_sale&p=" + page + "&start_time=" + start_time + "&end_time=" + end_time,
+			success: function (data) {
+				if (data) {
+					$("#flash_sale_list").append(data);
+					page++;
+				}
+			}
+		});
+	}
+    var now = "{$now}";
+    function GetRTime2(){
+        var start_time_judge = $('.seckill_list').find('.seckill_nav_home').attr('data-start-time');
+        if(start_time_judge > now){
+            $('#J-endDef').text('距开始');
+            var start_time = GetRTimeFlash($('.seckill_list').find('.seckill_nav_home').attr('start-data'));
+            $('#flash_sale_time').html(start_time);
+        }else{
+            $('#J-endDef').text('距结束');
+            var end_time = GetRTimeFlash($('.seckill_list').find('.seckill_nav_home').attr('end-data'));
+            $('#flash_sale_time').html(end_time);
+        }
+    }
+    setInterval(GetRTime2,1000);
+
+    function GetRTimeFlash(end_time){
+        var EndTime= new Date(end_time);
+        var NowTime = new Date();
+        var t =EndTime.getTime() - NowTime.getTime();
+        var d=Math.floor(t/1000/60/60/24);
+        var h=Math.floor(t/1000/60/60%24);
+        var m=Math.floor(t/1000/60%60);
+        var s=Math.floor(t/1000%60);
+        if(s >= 0)
+            return h+":"+m+":"+s;
+    }
+	
+</script>
+</html>

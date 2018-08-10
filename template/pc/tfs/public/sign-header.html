@@ -1,0 +1,115 @@
+<div class="container jf-header">
+	<div class="row">
+		<div class="col-md-6 jf-top">
+			<ul>
+				<div class="islogin">
+					<li class="user"><a class="red userinfo" href="{:U('Home/user/index')}"></a></li>
+					<li><a href="{:U('Home/User/message_notice')}">消息</a></li>
+					<li><a href="{:U('Home/user/logout')}">退出</a></li>
+				</div>
+				<div class="nologin">
+					<li><a href="{:U('Home/user/login')}">请登录</a></li>
+					<li><a href="{:U('Home/user/reg')}">免费注册</a></li>
+				</div>
+				<li>|</li>
+				<li>
+					<if condition="strtolower(ACTION_NAME) neq 'goodsinfo' ">
+						<link rel="stylesheet" href="__STATIC__/css/location.css" type="text/css"><!-- 收货地址，物流运费 -->
+						<div class="sendaddress pr fl">
+							<span style="float: left;">配 送：</span>
+							<span class="list1">
+								<div class="store-selector" style="margin-top: 2px;">
+									<div class="text">
+										<div></div>
+										<b></b>
+									</div>
+									<div onclick="$(this).parent().removeClass('hover')" class="close"></div>
+								</div>
+							</span>
+						</div>
+						<script src="__STATIC__/js/location.js"></script>
+					</if>
+				</li>
+			</ul>
+			<script>
+				$(function () {
+					var uname = getCookie('uname');
+					if (uname == '') {
+						$('.islogin').remove();
+						$('.nologin').show();
+					} else {
+						$('.nologin').remove();
+						$('.islogin').show();
+						$('.userinfo').html(decodeURIComponent(uname));
+					}
+				})
+			</script>
+		</div>
+		<div class="col-md-6 w shortcut">
+			<ul class="fr">
+				<li><a href="{:U('Home/Order/order_list')}">我的订单</a></li>
+				<li class="spacer"></li>
+				<li><a href="{:U('Home/User/visit_log')}">我的浏览</a></li>
+				<li class="spacer"></li>
+				<li><a href="{:U('Home/User/coupon')}">我的优惠券</a></li>
+				<li class="spacer"></li>
+				<li><a href="{:U('Home/User/goods_collect')}">我的收藏</a></li>
+				<li class="spacer"></li>
+				<li><a href="tencent://message/?uin={$tpshop_config['shop_info_qq2']}&amp;Site={$tpshop_config['shop_info_store_name']}&amp;Menu=yes">在线客服</a></li>
+				<li class="spacer"></li>
+				<li class="dorpdown" id="ttbar-navs">
+					<div class="dt cw-icon">网站导航<i class="iconfont">&#xe605;</i></div>
+					<div class="dd dorpdown-layer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/Activity/group_list')}">团购</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/Activity/flash_sale_list')}">抢购</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/Article/detail')}">帮助中心</a></div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div id="my">
+	<div class="container mymall">
+		<div class="row">
+			<div class="col-md-3">
+				<dl>
+					<dt><a href="{:U('Home/Index/index')}"><img src="__STATIC__/images/mall.png" /></a></dt>
+					<dd class="one">我的商城</dd>
+					<dd><a href="{:U('Home/Index/index')}" class="return">返回商城首页</a></dd>
+				</dl>
+			</div>
+			<div class="col-md-3 account">
+				<span class="u-dl">
+					<span class="u-dt text-center">
+						<a href="#">账户设置 <i class="glyphicon glyphicon-chevron-down"></i></a>
+					</span>
+					<span class="u-dd">
+						<a href="{:U('Home/User/info')}">个人信息</a>
+						<a href="{:U('Home/User/address_list')}">收货地址</a>
+					</span>
+				</span>
+				<a href="{:U('Home/User/message_notice')}" style="margin-left: 10%">消息</a>
+				<a href="{:U('Home/Goods/integralMall')}" style="margin-left: 10%">积分商城</a>
+			</div>
+			<div class="col-md-3">
+				<div class="search">
+					<div class="search-m">
+						<div class="form">
+							<form id="sourch_form" id="sourch_form" method="post" action="{:U('Home/Goods/search')}">
+								<input type="text" id="q" name="q" class="text" value="{$Request.param.q}" />
+								<button onclick="if($.trim($('#q').val()) != '') $('#sourch_form').submit();" class="button"><i class="iconfont"><img src="__STATIC__/images/search.png" /></i></button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="settleup">
+					<div class="cw-icon">
+						<i class="iconfont"><img src="__STATIC__/images/che.png" /></i>
+						<a href="{:U('Home/Cart/cart')}">我的购物车<b>&nbsp;&nbsp;<span>(<em class="sc_z" id="cart_quantity"></em>)</span></b></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--mymall end-->
+</div>
+<!--my end-->

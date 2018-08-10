@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>订单支付-{$tpshop_config['shop_info_store_title']}</title>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+	<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<link rel="stylesheet" href="__STATIC__/css/pay.min.css">
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<script src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+<body>
+<!-- 头部顶栏 start -->
+<include file="public/sign-header" />
+<!-- 头部顶栏 end -->
+
+<div id="pay">
+	<div class="container carta">
+		<div class="row mycar">
+			<div class="col-md-5 car"></div>
+			<div class="col-md-6 cara"><img src="__STATIC__/images/step3.png" /></div>
+		</div>
+	</div>
+	<div class="container par">
+		<div class="row pay_top">
+			<h1></h1>
+
+			<div class="think">
+				<if condition="$master_order_sn neq ''">
+					<img src="__STATIC__/images/succesful.png" />&nbsp;&nbsp;感谢您在本店购物，您的订单
+					<a href="{:U('Home/Order/order_list')}" title="点击查看订单详情"><span>{$master_order_sn}</span></a> 提交成功，请尽快付款！</br>
+				<else />
+					<img src="__STATIC__/images/succesful.png" />&nbsp;&nbsp;感谢您在本店购物，您的订单
+					<a href="{:U('Home/Order/order_detail',array('id'=>$order['order_id']))}" title="点击查看订单详情"><span>{$order['order_sn']}</span></a> 提交成功，请尽快付款！</br>
+				</if>
+				<p class="plase">请在<span>{$pay_date}</span>之前完成支付，否则订单将自动取消。</p>
+			</div>
+		</div>
+		<form action="{:U('Home/Payment/getCode')}" method="post" name="cart4_form" id="cart4_form">
+			<div class="row payment">
+				<div class="pay_you">
+					<span><b>支付方式</b></span>
+				</div>
+				<div class="zhi">
+					<ul class="list-inline">
+						<foreach name="paymentList" item="v" key="k">
+							<li>
+								<!--<input type="radio" value="pay_code={$v['code']}" class="vam" name="pay_radio">-->
+								<a href="javascript:void(0)" onClick="change_pay(this);" code="{$v['code']}">
+									<img src="/plugins/{$v['type']}/{$v['code']}/{$v['icon']}" width="120" height="40"/>
+								</a>
+							</li>
+						</foreach>
+					</ul>
+					<input type="hidden" name="pay_radio" />
+				</div>
+			</div>
+			<!--第三方网银支付 start-->
+			<if condition="$bankCodeList">
+				<div class="row payment">
+					<foreach name="bankCodeList" item="v" key="k">
+						<div class="bank {$k}">
+							<if condition="$v">
+								<div class="pay_you">
+									<span>
+										<b>{$paymentList[$k]['name']}</b>
+										<em>/网银支付</em>
+									</span>
+								</div>
+								<div class="zhi">
+									<ul class="list-inline">
+										<foreach name="v" item="v2" key="k2">
+											<li>
+												<a href="javascript:void(0)" onclick="changeBank(this)">
+													<input type="radio" name="pay_radio" class="hidden" value="pay_code={$k}&bank_code={$v2}" >
+													<img src="__STATIC__/images/images-out/{$bank_img[$k2]}" width="120" />
+												</a>
+											</li>
+										</foreach>
+									</ul>
+								</div>
+							</if>
+						</div>
+					</foreach>
+				</div>
+			</if>
+			<!--第三方网银支付 end -->
+			<div class="yes">
+				<a href="javascript:void(0);" onClick="$('#cart4_form').submit();" class="btn btn-danger">确认支付</a>
+			</div>
+			<input type="hidden" name="master_order_sn" value="{$master_order_sn}" />
+			<input type="hidden" name="order_id" value="{$order['order_id']}" />
+		</form>
+	</div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+<script>
+	$(document).ready(function () {
+		$(".bank").hide();
+		$("#pay .payment .zhi li:first a").click();
+		$("." + code).show();
+	});
+	// 切换支付方式
+	function change_pay(obj) {
+		$(obj).parent('li').addClass('active').siblings('li').removeClass('active');
+		var code = $(obj).attr('code');
+		$(".bank").hide();
+		$("." + code).show();
+		var val = "pay_code=" + code;
+		$("input[name='pay_radio']").val(val);
+	}
+
+//	function changeBank(obj) {
+//		$(obj).parent().siblings('input[name="pay_radio"]').trigger('click');
+//		$(obj).parent('li').addClass('active').siblings('li').removeClass('active');
+//	}
+</script>
+</body>
+</html>

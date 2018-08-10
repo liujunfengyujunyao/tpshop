@@ -1,0 +1,34 @@
+<!-- 工厂店 -->
+<div class="row name">
+    <if condition="empty($store_list)">
+        <span style="color: #f00">暂无相关数据，请选择合作快递</span>
+    <else />
+        <volist name="store_list" id="sl" key="k">
+            <div class="order-address-list">
+                <label>
+                    <div class="col-sm-3">
+                        <input onclick="swidth_address(this)" type="radio" name="store_id" value="{$sl['store_id']}" />
+                        &nbsp;&nbsp;{$sl.store_name}
+                    </div>
+                    <div class="col-sm-6">
+                        地址：{$sl['province_name']}{$sl['district_name']}{$sl['address']}
+                        <if condition="$sl['store_id'] eq $store_default">
+                            <label style="margin-left: 10px; padding:5px 10px; border: 1px solid red;font-size: 14px; color: red;">推荐店</label>
+                        </if>
+                    </div>
+                    <div class="col-sm-3 mi">
+                        <img src="__STATIC__/images/weizhi.png" /> {$sl['distance']}
+                        <if condition=" $k eq 1">
+                            <span>（距离最近）</span>
+                        </if>
+                    </div>
+                </label>
+            </div>
+        </volist>
+    </if>
+</div>
+<if condition="$Request.param.show eq 1">
+<script>
+    $("#ajax_pickup").find("td input[type=radio]:first-child").trigger('click');
+</script>
+</if>

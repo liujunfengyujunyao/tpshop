@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>退换货详情</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+		<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/return.add.css" />
+	</head>
+	<body class="bg-f5">
+		<include file="user/header"/>
+		<div class="home-index-middle">
+			<div class="w1224">
+				<div class="g-crumbs">
+			       	<a href="{:U('Home/User/index')}">我的商城</a>
+			       	<i class="litt-xyb"></i>
+			       	<span>退换货详情</span>
+			    </div>
+			    <div class="home-main">
+				<include file="user/menu"/>
+			    	<div class="ri-menu fr">
+			    		<div class="menumain p">
+				    		<div class="menu-ri-t progse p">
+				    			<div class="goodpiece p">
+									<h1>退换货详情</h1>
+								</div>
+								<form class="form-horizontal" method="post" id="return_form" name="return_form">
+								<div class="sheet ma-to-20">
+		    						<table border="1" width="100%" cellspacing="" cellpadding="">
+		    							<tr>
+		    								<td><span>订单编号</span></td>
+		    								<td class="lastd"><span><a href="{:U('Home/Store/order_detail',array('id'=>$return_goods['order_id']))}">{$return_goods.order_sn}</a></span></td>
+		    							</tr>
+		    							<tr>
+		    								<td><span>用户</span></td>
+		    								<td class="lastd"><span>{$return_goods['mobile']}</span></td>
+		    							</tr>
+		    							<tr>
+		    								<td><span>商品信息</span></td>
+		    								<td class="lastd"><span><a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name}</a></span></td>
+		    							</tr>
+		    							<tr>
+		    								<td><span>申请时间</span></td>
+		    								<td class="lastd"><span>{$return_goods.addtime|date="Y-m-d H:i",###}</span></td>
+		    							</tr>
+		    							<tr>
+		    								<td><span>服务类型</span></td>
+		    								<td class="lastd"><span><if condition="$return_goods['type'] eq 0"> 仅退款</if>
+                    						<if condition="$return_goods['type'] eq 1"> 退货退款</if>
+                    						<if condition="$return_goods['type'] eq 2"> 换货</if></span></td>
+		    							</tr>
+		    							<if condition="$return_goods['type'] lt 2">
+		    							<tr>
+	                                        <td><span>退款方式</span></td>
+	                                        <td class="lastd"><span><if condition="$return_goods['refund_money'] gt 0"> <label>需退还金额 ：{$return_goods['refund_money']}</label></if>
+                    						<if condition="$return_goods['refund_deposit'] gt 1"> <label>需退还余额 ：{$return_goods['refund_deposit']}</label></if>
+                    						<if condition="$return_goods['refund_integral'] gt 2"> <label>需退还积分：<input type="text" name="refund_integral" value="{$return_goods['refund_integral']}"></label></if></span></td>
+	                                    </tr>
+	                                    </if>
+	                                    <tr>
+		    								<td><span>退货原因</span></td>
+		    								<td class="lastd"><span>{$return_goods['reason']}</span></td>
+		    							</tr>
+		    							<tr>
+		    								<td><span>退货描述</span></td>
+		    								<td class="lastd"><span>{$return_goods['describe']}</span></td>
+		    							</tr>
+		    							<if condition="$return_goods[imgs]">
+		    								<tr>
+		    									<td><span>图片信息</span></td>
+		    									<td class="lastd">
+		    										<foreach name="return_goods[imgs]" item="v">
+														<a href="{$v}" target="_blank"><img src="{$v}" width="100" height="100"/></a>
+													</foreach>
+												</td>
+		    								</tr>
+										</if>
+		    						</table>
+		    					</div>
+		    					</form>
+				    		</div>
+			    		</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+		<!--footer-s-->
+        <div class="footer p">
+            <include file="public/footer_index" />
+        </div>
+		<!--footer-e-->
+	</body>
+</html>

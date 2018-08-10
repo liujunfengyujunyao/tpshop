@@ -1,0 +1,80 @@
+<?php
+/**
+ * 后台工厂店模块
+ * Author: ShenCheng
+ * Date: 2017/09/09
+ */
+
+namespace app\admin\model;
+
+use think\Model;
+use think\Db;
+use think\Page;
+use think\AjaxPage;
+
+class Store extends Model {
+    /**
+     * 获取工厂店出入库记录
+     * @param  array $where where条件
+     * @param  int $pagesize 每页条数（默认为20）
+     * @return array 库存日志列表
+     */
+    public function getStockLog($where, $pagesize=20) {
+        $count = DB::name('Store_stock_log')
+                ->alias('l')
+                ->join('__STORE__ s', 's.store_id = l.store_id', 'LEFT')
+                ->where($where)
+                ->count();
+        $Page = new Page($count, $pagesize);
+        $show = $Page->show();
+
+        $list = DB::name('Store_stock_log')
+                ->alias('l')
+                ->field('l.*, g.goods_name, l.store_id,s.store_name,s.phone')
+                ->join('__STORE__ s', 's.store_id = l.store_id', 'LEFT')
+                ->join('__GOODS__ g', 'g.goods_id = l.goods_id', 'LEFT')
+                ->where($where)
+                ->order('l.ctime')
+                ->limit($Page->firstRow . ',' . $Page->listRows)
+                ->select();
+
+        $content['page'] = $show;
+        $content['pager'] = $Page;
+        $content['list'] = $list;
+        return $content;
+    }
+
+    /**
+     * 工厂店入库货物统计
+     * @param  array   $where   where条件
+     * @param  integer $pagesize 每页条数（默认为20）
+     * @return array 出入库货物统计列表
+     */
+    public function goodsReport($where, $pagesize=20) {
+        $count = Db::name('delivery')
+                ->alias('d')
+                ->join('__DELIVERY_GOODS__ dg', 'd.id = dg.delivery_id', 'LEFT')
+                ->join('__STORE__ s', 's.user_id = d.user_id', 'LEFT')
+                ->where($where)
+                ->group('d.user_id, dg.goods_id')
+                ->count();
+        $Page = new Page($count, $pagesize);
+        $show = $Page->show();
+
+        $list = Db::name('delivery')
+                ->alias('d')
+                ->field('s.store_name, g.goods_name, g.goods_sn, sum(dg.goods_num) as stock, s.phone, d.edituser')
+                ->join('__DELIVERY_GOODS__ dg', 'd.id = dg.delivery_id', 'LEFT')
+                ->join('__GOODS__ g', 'g.goods_id = dg.goods_id', 'LEFT')
+                ->join('__STORE__ s', 's.user_id = d.user_id', 'LEFT')
+                ->where($where)
+                ->group('d.user_id, dg.goods_id')
+                ->limit($Page->firstRow . ',' . $Page->listRows)
+                ->cache(true, 3600)
+                ->select();
+        $content['page'] = $show;
+        $content['pager'] = $Page;
+        $content['list'] = $list;
+        return $content;
+    }
+}

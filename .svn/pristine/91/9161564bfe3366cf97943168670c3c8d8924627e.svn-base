@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+  <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+  <title>我的评价-{$tpshop_config['shop_info_store_title']}</title>
+  <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/global.js"></script>
+  <script src="__PUBLIC__/js/pc_common.js"></script>
+  <script src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/layer/layer.js"></script>
+  <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+  </head>
+  <body>
+    <!--evaluation start-->
+    <div id="evaluation">
+    <include file="user/header"/>
+      <!--my end-->
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <img src="__STATIC__/images/top.jpg" />
+          </div>
+        </div>
+      </div>
+      <div class="container mine">
+        <div class="row my_mall">
+          <include file="user/menu"/>
+          <div class="col-md-10 my_right">
+            <div class="row">
+              <div class="col-xs-12 set">
+                <ul>
+                  <li><a href="{:U('/Home/User/comment')}" class="<if condition="$Request.param.status neq '0' AND $Request.param.status neq '1'">current</if>">全部</a></li>
+                  <li><a href="{:U('/Home/User/comment',array('status'=>0))}" class="<if condition="$Request.param.status eq '0'">current</if>">待评论订单</a></li>
+                  <li><a href="{:U('/Home/User/comment',array('status'=>1))}" class="<if condition="$Request.param.status eq '1'">current</if>">已评论</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="row mation">
+              <div class="col-xs-4">
+                宝贝信息
+              </div>
+              <div class="col-xs-4">
+                我的评价
+              </div>
+              <div class="col-xs-4">
+                状态
+              </div>
+            </div>
+            <if condition="!empty($comment_list)">
+            <volist name="comment_list" id="list">
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="{$list.goods_id|goods_thum_images=120,120}" /></dt>
+                  <dd><a href="{:U('Home/Goods/goodsInfo',array('id'=>$list['goods_id']))}">{$list.goods_name}</a></dd>
+                  <dd class="se">{$list.spec_key_name}</dd>
+                </dl>
+              </div>
+              <if condition="$list['is_comment'] eq 1">
+              <div class="col-md-4 shou">{$list.content} </br>     <span>{$list.add_time|date='Y-m-d H:i:s',###}</span></div>
+              <else/>
+              <div class="col-md-4 shou">您还没有对此商品进行评价哦~</br>     <span></span></div>
+              </if>
+              <div class="col-md-4 already">
+              <if condition="$list['is_comment'] eq 1">已评价<else/>未评价</if>
+              <span>
+                <if condition="$list['is_comment'] eq 1"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$list['goods_id']))}">查看</a>
+                <else/><a href="{:U('Home/User/comment_list',array('order_id'=>$list['order_id'],'goods_id'=>$list['goods_id']))}">评价</a>
+                </if>
+              </span>
+              </div>
+            
+            </div>
+            </volist>
+          <else/>
+            <div class="row list">
+              <if condition="$Request.param.status eq '0'">您还没有待评价订单，<a href="/">快去逛逛吧~</a>
+              <elseif condition="$Request.param.status eq '1'">您还没有已评价订单，<a href="{:U('/Home/Order/comment',array('status'=>0))}">快去评价吧~</a>
+              <else/>
+              您还没有订单，<a href="/">快去逛逛吧~</a>
+              </if>
+            </div>
+          </if>
+            <!--分页 start-->
+            <div class="operating fixed" id="bottom">
+              <div class="fn_page clearfix">
+                {$page}
+              </div>
+            </div>
+            <!--分页 end-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--evaluation end-->
+    <!--foot start-->
+      <include file="public/footer"/>
+    <!--foot end-->
+  </body>
+</html>

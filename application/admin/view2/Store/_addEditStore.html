@@ -1,0 +1,156 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>工厂店管理 - 编辑工厂店</h3>
+                <h5>工厂店管理</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="store" method="post">
+        <input type="hidden" name="act" value="{$act}">
+        <input type="hidden" name="store_id" value="{$info.store_id}">
+        <input type="hidden" name="user_id" value="{$info.user_id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label for="store_name"><em>*</em>工厂店名称</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="store_name" value="{$info.store_name}" id="store_name" class="input-txt">
+                    <span class="err" id="err_store_name"></span>
+                    <p class="notic">设置工厂店名称</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="type_id">工厂店类型</label>
+                </dt>
+                <dd class="opt">
+                    <select name="type_id" id="type_id"  class="class-select valid">
+                    <foreach name="type_arr" item="vo" key="k">
+                        <option value="{$k}" <if condition="$k eq $info['type_id']">selected</if>>{$vo}</option>
+                    </foreach>
+                   </select>
+                    <span class="err" id="err_type"></span>
+                    <p class="notic">设置工厂店分类所对应的类型</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>地址</label>
+                </dt>
+                <dd class="opt">
+                    <select name="province" id="province" onChange="get_city(this)">
+                        <option value="">请选择</option>
+                        <volist name="province" id="p">
+                            <option <if condition="$info['province'] eq $p['id']">selected</if>  value="{$p.id}">{$p.name}</option>
+                        </volist>
+                    </select>
+                    <select name="city" id="city" onChange="get_area(this)">
+                        <option value="">请选择</option>
+                        <volist name="city" id="p">
+                            <option <if condition="$info['city'] eq $p['id']">selected</if>  value="{$p.id}">{$p.name}</option>
+                        </volist>
+                    </select>
+                    <select name="district" id="district">
+                        <option value="">请选择</option>
+                        <volist name="district" id="p">
+                            <option <if condition="$info['district'] eq $p['id']">selected</if>  value="{$p.id}">{$p.name}</option>
+                        </volist>
+                    </select>
+                    <span class="err" id="err_district"></span>
+                    <p class="notic">地址</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="nickname"><em>*</em>负责人</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$info.nickname}" name="nickname" id="nickname" class="input-txt">
+                    <span class="err"></span>
+                    <p class="notic"></p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="password"><em>*</em>登录密码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="password" name="password" id="password" class="input-txt">
+                    <span class="err"></span>
+                    <p class="notic">6-16位字母数字符号组合</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="mobile"><em>*</em>手机号码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$info.phone}" name="mobile" id="mobile" class="input-txt">
+                    <span class="err"></span>
+                    <p class="notic">请填写未在本平台使用过的手机号码</p>
+                </dd>
+            </dl>
+            <!-- <dl class="row">
+                <dt class="tit">
+                    <label for="email"><em></em>邮件地址</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="email" id="email" class="input-txt">
+                    <span class="err"></span>
+                    <p class="notic">请填写未在本平台使用过的邮件地址</p>
+                </dd>
+            </dl> -->
+            <dl class="row">
+                <dt class="tit">
+                    <label for="partner_id">合伙人</label>
+                </dt>
+                <dd class="opt">
+                    <select name="partner_id" id="partner_id"  class="class-select valid">
+                    <foreach name="partner_arr" item="vo">
+                        <option value="{$vo.partner_id}" <if condition="$vo['partner_id'] eq $info['partner_id']">selected</if>>{$vo.nickname}</option>
+                    </foreach>
+                   </select>
+                    <span class="err" id="err_type"></span>
+                    <p class="notic">设置工厂店所对应的合伙人</p>
+                </dd>
+            </dl>
+            <div class="bot"><a href="JavaScript:void(0);" onclick="verifyForm()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function verifyForm(){
+        var type_name = $.trim($('input[name="store_name"]').val());
+        var nickname = $.trim($('input[name="nickname"]').val());
+        var mobile = $('input[name="mobile"]').val();
+        //var password = $('input[name="password"]').val();
+        var error ='';
+        if(type_name == ''){
+            error += "工厂店名称不能为空\n";
+        }
+        // if(password == ''){
+        //     error += "密码不能为空\n";
+        // }
+        // if(password.length<6 || password.length>16){
+        //     error += "密码长度不正确\n";
+        // }
+        if(!checkMobile(mobile) && mobile != ''){
+            error += "手机号码填写有误\n";
+        }
+        if(error){
+            layer.alert(error, {icon: 2});  //alert(error);
+            return false;
+        }
+        $('#store').submit();
+    }
+</script>
+</body>
+</html>

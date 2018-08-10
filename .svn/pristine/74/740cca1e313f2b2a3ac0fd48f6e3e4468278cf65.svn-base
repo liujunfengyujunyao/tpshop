@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>积分商城-{$tpshop_config['shop_info_store_title']}</title>
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/layer/layer-min.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<script src="__STATIC__/js/common.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+<body>
+<!-- 头部顶栏 start -->
+<include file="public/header" />
+<!-- 头部顶栏 end -->
+
+<div id="jf-page">
+	<div class="container">
+		<div class="row">
+			<adv  pid="406" limit="1" item="v">
+				<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+			</adv>
+		</div>
+	</div>
+	<!--gift start-->
+	<div id="gift">
+		<div class="container biggift">
+			<if condition="$recommend">
+				<div class="row headings">
+					<div class="col-xs-12">
+						<p><span class="deliver">积分送大礼</span> &nbsp;&nbsp;&nbsp;<span class="English">INTEGRAL GIFT PACK</span> <!--<img src="img/lihe.png" />--></p>
+					</div>
+				</div>
+				<div class="row sell">
+					<div class="col-md-5 sella">
+						<img src="{$recommend['goods_id']|goods_thum_images=240,450}" />
+					</div>
+					<div class="col-md-7 sellb">
+						<p class="tai">{$recommend.goods_name}</p>
+						<p class="rang"><i class="glyphicon glyphicon-stop"></i> &nbsp;让小积分实现大作用 冰爽夏日不是梦</p>
+						<p class="huan"><span>{$recommend.exchange_integral}</span> 积分</p>
+						<p class="li"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$recommend['goods_id']))}">立即兑换</a></p>
+						<p class="xian"></p>
+						<!--向上滚动特效start-->
+						<ul class="gun">
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜王**以218 积分成功兑换饱润肽雪肌精华乳</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜张**以98 积分成功兑换饱润肽夏日冰爽喷雾</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜刘**以168 积分成功兑换饱润肽水漾修护面膜</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜李**以98 积分成功兑换饱润肽夏日冰爽喷雾</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜曹**以168 积分成功兑换饱润肽雪肌焕彩素颜霜</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜何**以218 积分成功兑换饱润肽雪肌精华乳</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜王**以218 积分成功兑换饱润肽雪肌精华乳</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜张**以98 积分成功兑换饱润肽夏日冰爽喷雾</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜吴**以168 积分成功兑换饱润肽水漾修护面膜</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜李**以98 积分成功兑换饱润肽夏日冰爽喷雾</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜沈**以168 积分成功兑换饱润肽雪肌焕彩素颜霜</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜范**以218 积分成功兑换饱润肽雪肌精华乳</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜王**以218 积分成功兑换饱润肽雪肌精华乳</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜左**以98 积分成功兑换饱润肽夏日冰爽喷雾</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜刘**以168 积分成功兑换饱润肽水漾修护面膜</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜李**以98 积分成功兑换饱润肽夏日冰爽喷雾</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜霍**以168 积分成功兑换饱润肽雪肌焕彩素颜霜</li>
+							<li><i class="glyphicon glyphicon-volume-up"></i>&nbsp;恭喜朱**以218 积分成功兑换饱润肽雪肌精华乳</li>
+						</ul>
+						<script type="text/javascript">
+							setInterval(function () {
+								var newList = $('.gun :first').clone(true);
+								$('.gun').append(newList);
+								$('.gun :first').remove();
+							}, 1000);
+						</script>
+						<!--向上滚动特效end-->
+					</div>
+				</div>
+			</if>
+
+		</div>
+	</div>
+	<!--gift end-->
+	<!--exchange start-->
+	<div id="exchange">
+		<div class="container">
+			<div class="row headings">
+				<div class="col-xs-12">
+					<p><span class="deliver">兑换专区</span> &nbsp;&nbsp;&nbsp;<span class="English">EXCHANGE ZONE</span></p>
+				</div>
+			</div>
+			<div class="row news">
+				<p><span class="xin">【新品专区】</span></br><span class="the">THE NEWS ZONE</span>
+				</p>
+			</div>
+			<div class="row products">
+				<div>
+					<foreach name="new" item="v">
+						<div class="col-md-4">
+							<dl>
+								<dt class="text-center"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v['goods_id']))}"><img src="{$v['goods_id']|goods_thum_images=300,200}" width="300" height="200"/></a></dt>
+								<dd class="tai">{$v.goods_name}</dd>
+								<dd class="now">
+									<p class="one">积分 <span>{$v.exchange_integral}</span></p>
+									<p class="two"><br><span>原价：￥{$v.shop_price}元</span></p>
+									<p class="three"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v['goods_id']))}">立即兑换</a></p>
+								</dd>
+							</dl>
+						</div>
+					</foreach>
+				</div>
+
+				<div class="clear"></div>
+
+				<div class="row news">
+					<p><span class="xin">【护养专区】</span></br><span class="the">THE NEWS ZONE</span>
+					</p>
+				</div>
+				<div>
+					<foreach name="category" item="v">
+						<div class="col-md-4">
+							<dl>
+								<dt class="text-center"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v['goods_id']))}"><img src="{$v['goods_id']|goods_thum_images=300,200}" width="300" height="200"/></a></dt>
+								<dd class="tai">{$v.goods_name}</dd>
+								<dd class="now">
+									<p class="one">积分 <span>{$v.exchange_integral}</span></p>
+									<p class="two"><br><span>原价：￥{$v.shop_price}元</span></p>
+									<p class="three"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v['goods_id']))}">立即兑换</a></p>
+								</dd>
+							</dl>
+						</div>
+					</foreach>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--exchange end-->
+	<!--cash start-->
+	<div id="cash">
+		<div class="container flow">
+			<div class="row headings">
+				<div class="col-xs-12">
+					<p><span class="deliver">兑换流程</span> &nbsp;&nbsp;&nbsp;<span class="English">CASH FLOW</span> <!--<img src="img/lihe.png" />--></p>
+				</div>
+			</div>
+			<div class="row cas">
+				<img src="__STATIC__/images/dui.png" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+
+<script src="__STATIC__/js/lazyload.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/js/headerfooter.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.f-sort ul li').click(function(){
+            $(this).find('i').addClass('jta-w').parents('li').siblings().find('i').removeClass('jta-w');
+        })
+    })
+</script>
+</body>
+</html>

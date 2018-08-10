@@ -1,0 +1,65 @@
+<div id="sidebar">
+	<div class="sidebar-bg"></div>
+	<div class="sidertabs tab-lis-1">
+		<div class="sider-top-stra sider-midd-1">
+			<div class="icon-tabe-chan icon-tabe-user">
+				<a href="{:U('Home/User/index')}">
+					<i class="share-side share-side1"></i>
+					<span class="tab-tip">会员中心</span>
+				</a>
+			</div>
+			<div class="icon-tabe-chan shop-car">
+				<a href="javascript:void(0);" onclick="ajax_side_cart_list()">
+					<div class="tab-cart-tip-warp-box">
+						<div class="tab-cart-tip-warp">
+							<i class="share-side share-side1"></i>
+							<span class="tab-cart-tip">购物车</span>
+							<span class="tab-cart-num J_cart_total_num" id="tab_cart_num">0</span>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="icon-tabe-chan massage">
+				<a href="{:U('Home/User/message_notice')}" target="_blank">
+					<i class="share-side share-side1"></i>
+					<span class="tab-tip">消息</span>
+				</a>
+			</div>
+		</div>
+		<div class="sider-top-stra sider-midd-2">
+			<div class="icon-tabe-chan collect">
+				<a href="{:U('Home/User/goods_collect')}" target="_blank">
+					<i class="share-side share-side1"></i>
+					<span class="tab-tip">收藏</span>
+				</a>
+			</div>
+			<div class="icon-tabe-chan hostry">
+				<a href="{:U('Home/User/visit_log')}" target="_blank">
+					<i class="share-side share-side1"></i>
+					<span class="tab-tip">足迹</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sidertabs tab-lis-2">
+		<div class="icon-tabe-chan advice">
+			<a title="点击这里给我发消息" href="tencent://message/?uin={$tpshop_config['shop_info_qq2']}&amp;Site=肽风尚商城&amp;Menu=yes" target="_blank">
+				<i class="share-side share-side1"></i>
+				<span class="tab-tip">在线咨询</span>
+			</a>
+		</div>
+		<div class="icon-tabe-chan qrcode">
+				<i class="share-side share-side1"></i>
+                <span class="tab-tip qrewm">
+                    <img src="__STATIC__/images/qrcode.jpg" width="100" height="100"/>关注公众号
+                </span>
+		</div>
+		<div class="icon-tabe-chan comebacktop">
+			<a href="">
+				<i class="share-side share-side1"></i>
+				<span class="tab-tip">返回顶部</span>
+			</a>
+		</div>
+	</div>
+	<div class="shop-car-sider"></div>
+</div>

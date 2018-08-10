@@ -1,0 +1,44 @@
+<include file="public/header" title="工厂店库存记录表" body="g4"/>
+<include file="public/header_nav" title="工厂店库存记录表" href="javascript:history.back(-1)"/>
+<style>
+    .my {margin-bottom: 0}
+    #store_stock .ask {
+        background: #e23435;
+        color: #fff;
+        display: inline;
+        padding: 5px 10px;
+    }
+</style>
+<div class="quedbox bg_white" id="stock-list">
+    <if condition="empty($list)">
+        <div class="nonenothing">
+            <img src="__STATIC__/images/none.png"/>
+            <p>没找到相关记录</p>
+        </div>
+        <else/>
+        <div class="fukcuid mae">
+            <div class="maleri30">
+                <div class="allpion">
+                    <div class="fll_acc fll_acc-h">
+                        <ul><li class="time-h">商品信息</li><li class="time-h">库存</li><li class="time-h">变动时间</li></ul>
+                    </div>
+                    <foreach name="list" item="vo">
+                        <div class="fll_acc">
+                            <ul>
+                                <li><br/>订单：{$vo.order_sn}</li>
+                            </ul>
+                        </div>
+                        <div class="fll_acc">
+                            <ul>
+                                <li class="time-h"><a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}"><p><img src="{$vo['goods_id']|goods_thum_images=80,80}" width="80" height="80"></p><p>{$vo.goods_name}</p></a></li>
+                                <li class="time-h">{$vo.stock}</li>
+                                <li class="time-h"><if condition="$vo.ctime eq null">无<else />{$vo.ctime|date="Y-m-d H:i:s",###}</if>
+                                </li>
+                            </ul>
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+        </div>
+    </if>
+</div>

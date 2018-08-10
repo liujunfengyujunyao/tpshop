@@ -1,0 +1,595 @@
+<?php
+/**
+ * 用户中心 - 合伙人模块
+ * @author Dh
+ * @date 2017-8-26
+ */
+namespace app\home\controller; 
+use app\common\logic\MessageLogic;
+use app\common\logic\UsersLogic;
+use think\Page;
+use think\Db;
+use app\admin\model;
+
+class Partner extends Base{
+
+	public $user_id = 0;
+	public $user = array();
+	public $partner_id = 0; //合伙人ID by Dh 2017-8-18
+	public $order_status;
+	public $pay_status;
+	public $shipping_status;
+	
+	public function _initialize() {      
+		parent::_initialize();
+		if(session('?user'))
+		{
+			$user = session('user');
+			$this->user = $user;
+			$this->user_id = $user['user_id'];
+			$this->assign('user',$user); //存储用户信息
+			$this->assign('user_id',$this->user_id);
+			//获取用户信息的数量
+			$messageLogic = new MessageLogic();
+			$user_message_count = $messageLogic->getUserMessageCount();
+			$this->assign('user_message_count', $user_message_count);
+
+			//获取合伙人ID by Dh 2017-8-18
+			$partner_id = DB::name('partner')->where(array('user_id'=>$this->user_id))->getField('partner_id');
+			$this->partner_id = $partner_id ? $partner_id : 0;
+
+			$this->order_status = C('ORDER_STATUS');
+			$this->pay_status = C('PAY_STATUS');
+			$this->shipping_status = C('SHIPPING_STATUS');
+
+			//订单 支付 发货状态
+			$this->assign('order_status', $this->order_status);
+			$this->assign('pay_status', $this->pay_status);
+			$this->assign('shipping_status', $this->shipping_status);
+		}else{
+			$this->redirect('Home/User/login');
+			exit;
+		}
+		//用户中心面包屑导航
+		$navigate_user = navigate_user();
+		$this->assign('navigate_user',$navigate_user);        
+	}
+
+	public function index() {
+		$this->redirect('/Home/User');
+	}
+
+	/**
+	 * 合伙人下的工厂店列表
+	 * @author Dh
+	 * @date 2017-8-17
+	 */
+	public function storeList() {
+		$partner = D('Partner');
+		$content = $partner->getPartnerStore($this->partner_id);
+		$this->assign('page', $content['page']);
+		$this->assign('pager', $content['pager']);
+		$this->assign('list', $content['list']);
+		return $this->fetch('store_list');
+	}
+
+	/**
+	 * 合伙人库存列表
+	 * @author Dh
+	 * @date 2017-8-18
+	 */
+	public function stockList() {
+		$count = DB::name('partner_stock')->where(array('partner_id'=>$this->partner_id))->count();
+		$Page = new Page($count, 10);
+		$show = $Page->show();
+
+		$partner = D('Partner');
+		$content = $partner->getPartnerStock($this->partner_id, $Page);
+		$this->assign('page', $show);
+		$this->assign('pager', $Page);
+		$this->assign('list', $content);
+		$this->assign('storeage', tpCache('basic.partner_storeage')); //合伙人库存预警比例配置
+		return $this->fetch('stock_list');
+	}
+
+	/**
+	 * 合伙人库存日志
+	 * @author Dh
+	 * @date 2017-8-18
+	 */
+	public function stockLog() {
+		$where = array();
+		$where['l.partner_id'] = $this->user_id;
+		$partner = D('Partner');
+		$content = $partner->getStockLog($where);
+
+		$this->assign('page', $content['page']);
+		$this->assign('pager', $content['pager']);
+		$this->assign('list', $content['list']);
+		return $this->fetch('stock_log');
+	}
+
+	/**
+	 * 工厂店库存列表
+	 * @author Dh
+	 * @date 2017-8-20
+	 */
+	public function store_stock_list() {
+		$id = I('get.id/d');
+		$partner = D('Partner');
+		$content = $partner->store_stock_list($id);
+
+		$this->assign('page', $content['page']);
+		$this->assign('pager', $content['pager']);
+		$this->assign('list', $content['list']);
+		$this->assign('storeage', tpCache('basic.store_storeage')); //工厂店库存预警比例配置
+		return $this->fetch();
+	}
+
+	/**
+	 * 发货单列表（公司配货给合伙人）
+	 * @author Dh
+	 * @date 2017-8-20
+	 */
+	public function invoiceList() {
+		$where = array();
+		$where['d.delivery_type'] = 2; //发货单类型
+		$where['u.user_id'] = $this->user_id;
+
+		$count = DB::name('delivery')
+				->alias('d')
+				->join('__USERS__ u', 'u.user_id = d.user_id', 'LEFT')
+				->where($where)
+				->count();
+		$Page = new Page($count, 10);
+		$show = $Page->show();
+		
+		$list = DB::name('delivery')
+				->alias('d')
+				->field("d.id, d.addtime, d.confirm_time, d.express_name, d.express_code, a.user_name")
+				->join('__REGION__ r1', 'r1.id = d.province_id', 'LEFT')
+				->join('__REGION__ r2', 'r2.id = d.city_id', 'LEFT')
+				->join('__REGION__ r3', 'r3.id = d.town_id', 'LEFT')
+				->join('__ADMIN__ a', 'a.admin_id = d.edituser', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = d.user_id', 'LEFT')
+				->order('d.addtime desc')
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->where($where)
+				->select();
+
+		$this->assign('page', $show);
+		$this->assign('list', $list);
+		return $this->fetch('invoice_list');
+	}
+
+	/**
+	 * 发货单详情（公司配货给合伙人）
+	 * @author Dh
+	 * @date 2017-8-21
+	 */
+	public function invoiceInfo() {
+		$id = I('get.id/d');
+		$where['d.delivery_id'] = $id;
+
+		$info = DB::name('delivery')
+				->alias('d')
+				->field("d.express_name, d.express_code, d.addtime, FROM_UNIXTIME(d.confirm_time, '%Y-%m-%d %H:%i:%s') as confirm_time, a.user_name")
+				->join('__ADMIN__ a', 'a.admin_id = d.edituser', 'LEFT')
+				->where(array('d.id'=>$id))
+				->find();
+		if (!$info) {
+			$this->error('没有获取到发货单信息');
+			exit;
+		}
+
+		$goods = DB::name('delivery_goods')
+				->alias('dg')
+				->field('g.goods_id, g.goods_name, dg.goods_num')
+				->join('__GOODS__ g', 'dg.goods_id = g.goods_id', 'LEFT')
+				->where(array('dg.delivery_id'=>$id))
+				->select();
+
+		$this->assign('info', $info);
+		$this->assign('orderGoods', $goods);
+		return $this->fetch('invoice_info');
+	}
+
+	/**
+	 * 发货单确认收货（公司配货给合伙人）
+	 */
+	public function invoice_confirm() {
+		$id = I('get.id/d');
+		$partner = D('Partner');
+		
+		$goods = Db::name('delivery_goods')->where(array('delivery_id'=>$id))->field('goods_id, goods_num')->select();
+		$data['partner_id'] = $this->partner_id;
+		$log['delivery_id'] = $id;
+		$log['partner_id'] = $this->user_id;
+
+		foreach ($goods as $key => $value) {
+			$isset = Db::name('partner_stock')->where(array('partner_id'=>$this->partner_id, 'goods_id'=>$value['goods_id']))->find();
+			$log['goods_id'] = $data['goods_id'] = $value['goods_id'];
+			$log['stock'] = $data['goods_num'] = $value['goods_num'];
+			$log['ctime'] = $data['edittime'] = time();
+			if ($isset) { //更新库存
+				$result = Db::name('partner_stock')->where(array('partner_id'=>$this->partner_id, 'goods_id'=>$value['goods_id']))->inc('goods_num', $value['goods_num'])->data('edittime', time())->update();
+			}else { //新增
+				$data['stock_num'] = $partner->max_stock($this->partner_id, $value['goods_id']);
+				$result = Db::name('partner_stock')->add($data);
+			}
+
+			//插入合伙人库存日志表
+			if ($result) {
+				Db::name('partner_stock_log')->add($log);
+			}else {
+				break;
+			}
+		}
+
+		$res = Db::name('delivery')->where(array('id'=>$id))->setField('confirm_time', time());
+
+		if ($res) {
+			$this->ajaxReturn(['status'=>1, 'msg'=> '操作成功！']);
+		}else {
+			$this->ajaxReturn(['status'=>0, 'msg'=> '操作失败！']);
+		}
+	}
+
+	/**
+	 * 合伙人下工厂店的订单列表
+	 */
+	public function orderList() {
+		$count = DB::name('relation')
+				->alias('r')
+				->join('__ORDER__ o', 'r.order_sn = o.order_sn', 'LEFT')
+				->join('__REBATE_LOG__ rl', 'rl.order_sn = r.order_sn', 'LEFT')
+				->where(array('r.partner_id'=>$this->partner_id, 'rl.user_id'=>$this->user_id, 'o.order_status'=>2))
+				->count();
+		$Page = new Page($count, 10);
+		$show = $Page->show();
+
+		$order = DB::name('relation')
+				->alias('r')
+				->field('o.order_id, s.store_name, r.order_sn, o.total_amount, o.add_time, rl.money')
+				->join('__ORDER__ o', 'r.order_sn = o.order_sn', 'LEFT')
+				->join('__STORE__ s', 's.store_id = o.store_id', 'LEFT')
+				->join('__REBATE_LOG__ rl', 'rl.order_sn = r.order_sn', 'LEFT')
+				->where(array('r.partner_id'=>$this->partner_id, 'rl.user_id'=>$this->user_id, 'o.order_status'=>2))
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->select();
+
+		$income = DB::name('relation')->alias('r')->join('__REBATE_LOG__ rl', 'rl.order_sn = r.order_sn', 'LEFT')->where(array('r.partner_id'=>$this->partner_id, 'rl.user_id'=>$this->user_id))->sum('rl.money'); //收益总金额
+
+		$this->assign('page', $show);
+		$this->assign('pager', $Page);
+		$this->assign('orderList', $order);
+		$this->assign('income', $income);
+		return $this->fetch('order_list');
+	}
+
+	/**
+	 * 订单详情
+	 */
+	public function orderInfo() {
+		$order_id = I('get.id');
+		$usersLogic = new UsersLogic();
+
+		$order_info = DB::name('order')
+					  ->alias('o')
+					  ->field('o.*, r1.name as province, r2.name as city, r3.name as district, s.store_name')
+					  ->join('__REGION__ r1', 'r1.id = o.province', 'LEFT')
+					  ->join('__REGION__ r2', 'r2.id = o.city', 'LEFT')
+					  ->join('__REGION__ r3', 'r3.id = o.district', 'LEFT')
+					  ->join('__STORE__ s', 's.store_id = o.store_id', 'LEFT')
+					  ->where("o.order_id=$order_id")
+					  ->find();
+
+		if(!$order_info){
+			$this->error('没有获取到订单信息');
+			exit;
+		}
+
+		$data = $usersLogic->get_order_goods($order_id);
+		$goods = $data['result'];
+
+		$this->assign('order_info', $order_info);
+		$this->assign('orderGoods', $goods);
+		return $this->fetch('order_info');
+	}
+
+	/**
+	 * 申请补货
+	 */
+	public function act_apply() {
+		if (IS_POST) {
+			$data = I('post.');
+			$info['user_id'] = $this->user_id;
+			$info['addtime'] = time();
+			$info['status'] = 0;
+			$id = DB::name('goods_apply')->add($info); //插入补货申请表
+			if ($id) {
+				foreach ($data['goods'] as $key => $value) {
+					$goods['goods_id'] = $value['goods_id'];
+					$goods['goods_num'] = $value['number'];
+					$goods['apply_id'] = $id;
+					Db::name('goods_apply_info')->add($goods); //插入补货申请详细表
+				}
+				$this->ajaxReturn(array('status'=>1, 'msg'=>'操作成功！'));
+			}else {
+				$this->ajaxReturn(array('status'=>0, 'msg'=>'操作失败！'));
+			}
+
+		}
+		$list = Db::name('partner_stock')
+				->alias('ps')
+				->field('ps.goods_id, g.goods_name, ps.goods_num, ps.stock_num')
+				->join('__GOODS__ g', 'g.goods_id = ps.goods_id', 'LEFT')
+				->where(array('ps.partner_id'=>$this->partner_id))
+				->select();
+		$store = DB::name('store_stock')->alias('ss')
+				->join('store s', 's.store_id = ss.store_id', 'LEFT')
+				->where("s.partner_id=$this->partner_id")
+				->group('ss.goods_id')
+				->getField("ss.goods_id, sum(ss.stock_num) as stock_num");
+
+		foreach ($list as $key => &$value) {
+			$isset = $store[$value['goods_id']];
+			if ($isset) {
+				$value['stock_num'] += $store[$value['goods_id']];
+			}
+			//$value['max_num'] = $value['stock_num'] - $value['goods_num'];
+		}
+
+		$this->assign('list', $list);
+		return $this->fetch();
+	}
+
+	/**
+	 * 合伙人补货申请记录
+	 */
+	public function apply() {
+		$where = array();
+		$where['ga.user_id'] = $this->user_id;
+		$partner = D('Partner');
+ 		$content = $partner->apply($where);
+
+		$this->assign('page', $content['page']);
+		$this->assign('pager', $content['pager']);
+		$this->assign('list', $content['list']);
+		return $this->fetch();
+	}
+
+	/**
+	 * 合伙人补货申请记录明细
+	 */
+	public function apply_info() {
+		$id = I('get.id/d');
+		$partner = D('Partner');
+		$content = $partner->apply_info($id);
+
+		$this->assign('info', $content['info']);
+		$this->assign('goods', $content['goods']);
+		return $this->fetch();
+	}
+
+	/**
+	 * 配货单列表（合伙人配货给工厂店）
+	 */
+	public function delivery() {
+		$where = array();
+		$where['edituser'] = $this->user_id;
+
+		$partner = D('Partner');
+		$content = $partner->delivery($where);
+
+		$this->assign('page', $content['page']);
+		$this->assign('pager', $content['pager']);
+		$this->assign('list', $content['list']);
+		return $this->fetch('delivery_list');
+	}
+
+	/**
+	 * 配货单列表（合伙人配货给工厂店）
+	 */
+	public function delivery_info() {
+		$id = I('get.id/d');
+		$partner = D('Partner');
+		$content = $partner->delivery_info($id);
+
+		$this->assign('info', $content['info']);
+		$this->assign('goods', $content['goods']);
+		return $this->fetch();
+	}
+
+	/**
+	 * 工厂店补货申请记录
+	 */
+	public function store_apply() {
+		$where = array();
+		$where['s.partner_id'] = $this->partner_id;
+
+		$count = Db::name('goods_apply')
+				->alias('ga')
+				->join('__STORE__ s', 's.user_id = ga.user_id', 'LEFT')
+				->where($where)
+				->count();
+		$Page = new Page($count, 20);
+		$show = $Page->show();
+
+		$list = Db::name('goods_apply')
+				->alias('ga')
+				->field('ga.id, ga.addtime, ga.status, ga.delivery_id, s.store_name, u.nickname, u.mobile')
+				->join('__STORE__ s', 's.user_id = ga.user_id', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+				->where($where)
+				->limit($Page->firstRow . ',' . $Page->listRows)
+				->select();
+
+		$this->assign('list', $list);
+		$this->assign('page', $show);
+		$this->assign('pager', $Page);
+		return $this->fetch();
+	}
+
+	/**
+	 * 工厂店补货申请明细
+	 */
+	public function store_apply_info() {
+		$id = I('get.id/d');	//补货申请ID
+		$info = DB::name('goods_apply')
+				->alias('ga')
+				->field("s.store_name, s.user_id, u.nickname, u.mobile, u.province, u.city, u.district, r1.name as province_name, r2.name as city_name, r3.name as district_name, ga.addtime, ga.remark, d.express_name, d.express_code, FROM_UNIXTIME(d.addtime, '%Y-%m-%d %H:%i:%s') as delivery_time, FROM_UNIXTIME(d.confirm_time, '%Y-%m-%d %H:%i:%s') as confirm_time, ga.edittime, ga.delivery_id, ga.status")
+				->join('__STORE__ s', 's.user_id = ga.user_id', 'LEFT')
+				->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+				->join('__REGION__ r1', 'r1.id = u.province', 'LEFT')
+				->join('__REGION__ r2', 'r2.id = u.city', 'LEFT')
+				->join('__REGION__ r3', 'r3.id = u.district', 'LEFT')
+				->join('__DELIVERY__ d', 'd.id = ga.delivery_id', 'LEFT')
+				->where("ga.id=$id")
+				->find();
+
+		$goods = Db::name('goods_apply_info')
+				 ->alias('i')
+				 ->field('g.goods_id, g.goods_name, g.goods_sn, i.goods_num')
+				 ->join('__GOODS__ g', 'g.goods_id = i.goods_id', 'LEFT')
+				 ->where("i.apply_id=$id")
+				 ->select();
+
+		if (IS_POST) { //处理工厂店补货申请
+			$data = I('post.');
+			if ($data['act'] == 'cancel') { //拒绝申请
+				$data['status'] = 2;
+				$data['edituser'] = $this->user_id;
+				$data['edittime'] = time();
+				$result = DB::name('goods_apply')->where("id=$id")->update($data);
+			} else if ($data['act'] == 'delivery') {
+				$delivery = DB::name('delivery')->field('id, status')->where(array('express_code'=>$data['express_code']))->find();
+				$delivery_id = empty($delivery) ? '' : $delivery['id'];
+				if (!empty($delivery) && ($delivery['status'] == 1)) {
+					$this->ajaxReturn(array('status'=>0, 'msg'=>'无效的物流单号，请重新填写！'));
+				} else if (empty($delivery)) {
+					foreach ($goods as $key => $value) {
+						$num = M('partner_stock')->where(array('partner_id' => $this->partner_id, 'goods_id' => $value['goods_id']))->getField('goods_num');
+						if ($num - $value['goods_num'] < 0) {
+							$this->ajaxReturn(array('status' => 2, 'msg' => '商品库存不足，请及时补货！'));
+						}
+					}
+					$res['user_id'] = $info['user_id'];
+					$res['name'] = $info['nickname'];
+					$res['phone'] = $info['mobile'];
+					$res['province_id'] = $info['province'];
+					$res['city_id'] = $info['city'];
+					$res['town_id'] = $info['district'];
+					$res['addtime'] = time();
+					$res['express_name'] = $data['express_name'];
+					$res['express_code'] = $data['express_code'];
+					$res['delivery_type'] = 3; //合伙人发给工厂店
+					$res['edituser'] = $this->user_id;
+					$delivery_id = DB::name('delivery')->add($res); //插入发货单表
+
+					foreach ($goods as $key => $value) {
+						$g['goods_id'] = $value['goods_id'];
+						$g['goods_num'] = $value['goods_num'];
+						$g['delivery_id'] = $delivery_id;
+						DB::name('delivery_goods')->add($g); //插入发货单详细商品表
+						DB::name('partner_stock')->where(array('partner_id' => $this->partner_id, 'goods_id' => $value['goods_id']))->dec('goods_num', $value['goods_num'])->data('edittime', time())->update(); //直接扣除合伙人商品库存数量
+						$log = array(
+								'partner_id' => $this->user_id,
+								'goods_id' => $value['goods_id'],
+								'delivery_id' => $delivery_id,
+								'stock' => '-' . $value['goods_num'],
+								'ctime' => time()
+						);
+						DB::name('partner_stock_log')->add($log);
+					}
+				}
+				$apply['delivery_id'] = $delivery_id;
+				$apply['status'] = 1;
+				$apply['edituser'] = $this->user_id;
+				$apply['edittime'] = time();
+				$apply['remark'] = $data['remark'];
+
+				$result = DB::name('goods_apply')->where(array('id' => $data['id']))->update($apply);
+
+				if ($result) {
+					DB::name('delivery')->where('id', $delivery_id)->setField('status', 1);
+					$this->ajaxReturn(array('status' => 1, 'msg' => '操作成功！'));
+				} else {
+					$this->ajaxReturn(array('status' => 0, 'msg' => '操作失败！'));
+				}
+			}
+		}
+
+		$this->assign('info', $info);
+		$this->assign('goods', $goods);
+		return $this->fetch();
+	}
+
+	/**
+	 * 工厂店配货
+	 */
+	public function act_store_apply() {
+		$id = I('get.id/d');
+
+		if (IS_POST) {
+			$data = I('post.');
+			$store = DB::name('store')
+					 ->alias('s')
+					 ->field('s.user_id, u.province as province_id, u.city as city_id, u.district as town_id, u.mobile as phone, u.nickname as name')
+					 ->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+					 ->where(array('s.store_id'=>$id))
+					 ->find();
+			$store['addtime'] = time();
+			$store['express_name'] = $data['express_name'];
+			$store['express_code'] = $data['express_code'];
+			$store['delivery_type'] = 3; //合伙人发给工厂店
+			$store['edituser'] = $this->user_id;
+			$delivery_id = DB::name('delivery')->add($store); //插入发货单表
+
+			if ($delivery_id) {
+				foreach ($data['goods'] as $key => $value) {
+					$goods['goods_id'] = $value['goods_id'];
+					$goods['goods_num'] = $value['number'];
+					$goods['delivery_id'] = $delivery_id;
+					DB::name('delivery_goods')->add($goods); //插入发货单详细商品表
+					DB::name('partner_stock')->where(array('partner_id'=>$this->partner_id, 'goods_id'=>$value['goods_id']))->dec('goods_num', $value['number'])->data('edittime', time())->update(); //直接扣除合伙人商品库存数量
+					$log = array(
+						'partner_id' => $this->user_id,
+						'goods_id' => $value['goods_id'],
+						'delivery_id' => $delivery_id,
+						'stock' => '-'.$value['number'],
+						'ctime' => time()
+					);
+					DB::name('partner_stock_log')->add($log);
+				}
+				$this->ajaxReturn(array('status'=>1, 'msg'=>'操作成功！'));
+			}else {
+				$this->ajaxReturn(array('status'=>0, 'msg'=>'操作失败！'));
+			}
+		}else {
+			$partner = D('Partner');
+			$content = $partner->store_stock_list($id);
+			$isset = $content['list'];
+
+			if (empty($isset)) {
+				$list = DB::name('store_type_conf')
+						->alias('c')
+						->field('c.goods_id, g.goods_name, c.goods_num as max_num')
+						->join('__STORE__ s', 's.type_id = c.type_id', 'LEFT')
+						->join('__GOODS__ g', 'g.goods_id = c.goods_id', 'LEFT')
+						->where("s.store_id=$id")
+						->select();
+			}else {
+				$list = DB::name('partner_stock')
+						->alias('ps')
+						->field('ps.goods_id, g.goods_name, ps.goods_num as max_num')
+						->join('__GOODS__ g', 'g.goods_id = ps.goods_id', 'LEFT')
+						->where(array('ps.partner_id'=>$this->partner_id))
+						->select();
+			}
+
+			$this->assign('list', $list);
+			return $this->fetch();
+		}
+	}
+}

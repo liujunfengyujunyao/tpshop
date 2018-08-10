@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>个人信息-修改成功</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <!--<script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>-->
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="change_phone_main">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 add_g_main">
+                <div class="change_phone_title"><h4><h4><a href="{:U('Home/User/safety_settings')}">安全设置</a> / 修改成功</h4></div>
+                    
+                    <div class="change_phone_con">
+                        <div class="change_pho_cue">
+                            <div class="change_pho_one">
+                                <div class="change_pho_line1"></div>
+                                <div class="change_pho_num1">1</div>
+                                <div class="change_pho_wor1">验证身份</div>
+                            </div>
+                            <div class="change_pho_two">
+                                <div class="change_pho_line1"></div>
+                                <div class="change_pho_num1">2</div>
+                                <div class="change_pho_wor1">设置手机号码</div>
+                            </div>
+                            <div class="change_pho_thr">
+                                <div class="change_pho_line1"></div>
+                                <div class="change_pho_num1">3</div>
+                                <div class="change_pho_wor1">已完成</div>
+                            </div>
+                        </div>
+                        <div class="change_phone_ok">
+                            <span>恭喜您，修改成功！<div class="change_ok_piont"><p>></p></div></span>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

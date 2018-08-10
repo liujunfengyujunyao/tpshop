@@ -1,0 +1,79 @@
+<include file="public/header" title="合伙人库存列表" body="g4"/>
+<include file="public/header_nav" title="合伙人库存列表" href="javascript:history.back(-1)"/>
+<style>
+    .my {margin-bottom: 0}
+    #store_stock .ask {
+        background: #e23435;
+        color: #fff;
+        display: inline;
+        padding: 5px 10px;
+    }
+</style>
+<div class="quedbox bg_white" id="stock-list">
+    <if condition="empty($list)">
+        <div class="nonenothing">
+            <img src="__STATIC__/images/none.png"/>
+            <p>没找到相关记录</p>
+        </div>
+        <else/>
+        <div class="fukcuid mae">
+            <div class="maleri30">
+                <div class="head_acc ma-to-20">
+                    <ul>
+                        <a href="{:U('Mobile/Partner/stockList')}">
+                            <li <if condition="$type eq 'list'">class="red"</if>>库存列表</li>
+                        </a>
+                        <a href="{:U('Mobile/Partner/stockLog')}">
+                            <li <if condition="$type eq 'log'">class="red"</if>>库存日志</li>
+                        </a>
+                        <!--<a <if condition="$type eq 'list'">class="red"</if>>-->
+                            <!--<li href="{:U('Mobile/Partner/stockList')}" data-list="1">库存列表</li>-->
+                        <!--</a>-->
+                        <!--<a <if condition="$type eq 'log'">class="red"</if>>-->
+                            <!--<li href="{:U('Mobile/Partner/stockLog')}" data-list="2">库存日志</li>-->
+                        <!--</a>-->
+                    </ul>
+                </div>
+                <if condition="$type eq 'list'">
+                    <div class="allpion">
+                        <div class="fll_acc fll_acc-h">
+                            <ul><li class="time-h">商品信息</li><li class="time-h">当前库存/最大库存量</li><li class="time-h">更新时间</li></ul>
+                        </div>
+                        <foreach name="list" item="vo">
+                            <div class="fll_acc">
+                                <ul>
+                                    <li class="time-h"><a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}"><p><img src="{$vo['goods_id']|goods_thum_images=80,80}" width="80" height="80"></p><p>{$vo.goods_name|getSubstr=0,7}</p></a></li>
+                                    <li class="time-h <if condition='$vo.goods_num elt ($storeage/100)*($vo.stock_num)'>red</if>">{$vo.goods_num|default="0"}/{$vo.stock_num}</li>
+                                    <li class="time-h"><if condition="$vo.edittime eq null">无<else /><p>{$vo.edittime|date="Y-m-d",###}</p><p>{$vo.edittime|date="H:i:s",###}</p></if></li>
+                                </ul>
+                            </div>
+                        </foreach>
+                    </div>
+                    <div class="head_acc ma-to-20">
+                        <ul>
+                            <li class="red" style="float: right">
+                                <a href="{:U('Mobile/Partner/act_apply')}">申请补货</a>
+                            </li>
+                        </ul>
+                    </div>
+                </if>
+                <if condition="$type eq 'log'">
+                    <div class="allpion">
+                        <div class="fll_acc fll_acc-h">
+                            <ul><li class="time-h">商品信息</li><li class="time-h">库存</li><li class="time-h">变动时间</li></ul>
+                        </div>
+                        <foreach name="list" item="vo">
+                            <div class="fll_acc">
+                                <ul>
+                                    <li class="time-h"><a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}"><p><img src="{$vo['goods_id']|goods_thum_images=80,80}" width="80" height="80"></p><p>{$vo.goods_name|getSubstr=0,7}</p></a></li>
+                                    <li class="time-h">{$vo.stock}</li>
+                                    <li class="time-h"><if condition="$vo.ctime eq null">无<else />{$vo.ctime|date="Y-m-d",###}</if></li>
+                                </ul>
+                            </div>
+                        </foreach>
+                    </div>
+                </if>
+            </div>
+        </div>
+    </if>
+</div>

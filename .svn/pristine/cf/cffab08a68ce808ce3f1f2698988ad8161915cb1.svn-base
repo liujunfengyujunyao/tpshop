@@ -1,0 +1,51 @@
+<div id="foot">
+    <div class="gray">
+        <div class="Promise">
+            <dl>
+                <dt><img src="__STATIC__/images/xing.png" /></dt>
+                <dd class="pin">品质保障</dd>
+                <dd>Quality assurance</dd>
+            </dl>
+            <dl>
+                <dt><img src="__STATIC__/images/hua.png" /></dt>
+                <dd class="pin">联系客服</dd>
+                <dd>Contact Customer Service</dd>
+            </dl>
+            <dl class="shou">
+                <dt><img src="__STATIC__/images/you.png" /></dt>
+                <dd class="pin">售后无忧</dd>
+                <dd>Worry free after sale</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="footend">
+        <div class="endone">
+            <tpshop sql="select * from `__PREFIX__article_cat` where parent_id = 2" key="k" item='v'>
+                <ul>
+                    <if condition="$v.show_in_nav eq 1">
+                        <li class="Shopping">{$v[cat_name]}</li>
+                        <tpshop sql="select * from `__PREFIX__article` where cat_id = $v[cat_id]  and is_open=1" key="k2" item='v2'>
+                            <li>
+                                <if condition="$v2['link']">
+                                    <a href="{$v2['link']}">{$v2[title]}</a>
+                                <else />
+                                    <a href="{:U('Home/Article/detail',array('article_id'=>$v2[article_id]))}">{$v2[title]}</a>
+                                </if>
+                            </li>
+                        </tpshop>
+                    </if>
+                </ul>
+            </tpshop>
+
+            <p class="code"><img src="__STATIC__/images/qrcode.jpg" width="50%"/></br>手机扫码注册</p>
+            <div class="clear"></div>
+        </div>
+        <p class="write"></p>
+        <p class="bjtfs">
+            <!--联系电话：{$tpshop_config['shop_info_phone']}<br/>地址：{$shop_info_address}<br/>-->
+            Copyright &copy; {$tpshop_config['shop_info_store_name']|default='肽风尚商城'} 版权所有，保留一切权利。备案号：<a
+                href="http://www.miibeian.gov.cn" target="_blank">{$tpshop_config['shop_info_record_no']}</a>
+        </p>
+    </div>
+</div>

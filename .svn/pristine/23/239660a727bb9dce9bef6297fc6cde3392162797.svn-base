@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="content-language" content="zh-cn"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="Cache-control" content="public" max-age="no-cache"/>
+    <title>帮助中心-{$tpshop_config['shop_info_store_title']}</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}"/>
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}"/>
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen"/>
+</head>
+<body>
+<!--header-s-->
+<include file="public/header"/>
+<!--header-e-->
+
+<div id="help">
+    <div class="container">
+        <div class="process_main">
+	        <div class="col-sm-2 text-center process_left">
+		        <dl>
+			        <tpshop sql="select * from `__PREFIX__article_cat` where parent_id = 2" key="k" item='v'>
+				        <if condition="$v.show_in_nav eq 1">
+					        <dt>{$v[cat_name]}</dt>
+					        <tpshop sql="select * from `__PREFIX__article` where cat_id = $v[cat_id]" key="k2" item='v2'>
+						        <dd>
+							        <a href="{:U('Home/Article/detail',array('article_id'=>$v2[article_id]))}" <if condition="$v2['article_id'] eq $article['article_id']">class="selected"</if>>{$v2[title]}</a>
+						        </dd>
+					        </tpshop>
+				        </if>
+			        </tpshop>
+		        </dl>
+	        </div>
+	        <div class="col-sm-10 process_right">
+		        <h5 class="process_right_title"><span>{$cat_name} / </span>{$article.title}</h5>
+		        <div class="process_right_content">
+			        {$article.content|htmlspecialchars_decode}
+		        </div>
+	        </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer"/>
+<!--footer-e-->
+</body>
+</html>

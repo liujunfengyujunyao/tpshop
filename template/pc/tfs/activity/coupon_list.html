@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>领券中心</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 get_coupons_r">
+                <div class="get_coupons_title"><h4>领券中心</h4></div>
+                <div class="get_coupons_con">
+                    <ul class="get_cou_t">
+                        <li><a href="{:U('Activity/coupon_list')}"><span>全部优惠券</span></a></li>
+                        <li><a href="{:U('Activity/coupon_list',array('atype'=>'4'))}">未开始</a></li>
+                        <li><a href="{:U('Activity/coupon_list',array('atype'=>'5'))}">可领取</a></li>
+                        <li><a href="{:U('Activity/coupon_list',array('atype'=>'6'))}">已过期</a></li>
+                    </ul>
+                    <div class="coupons_l_m">
+                        <ul class="coupons_list_t">
+                            <li>优惠券</li>
+                            <li>金额</li>
+                            <li>使用规则</li>
+                            <li>截止领取时间</li>
+                            <li>领取</li>
+                        </ul>
+                        <empty name="coupon_list">
+                            <ul class="coupons_l_em"><p>没有优惠券可以领取~</p></ul>
+                        </empty>
+                        <foreach name="coupon_list" item="vo">
+                        <ul class="coupons_l_goods1">
+                            <li class="coupon_goods_img"><div class="coupons_img_p"><div class="coupons_img_b"><div class="coupons_bor_l"><h5>{$vo.money|getInt}</h5></div><div class="coupons_bor_r"><h5>优惠券</h5><h6>满{$vo.condition|getInt}使用</h6></div><div class="coupons_b_post"><p>￥</p></div></div></div></li>
+                            <li>{$vo.money}</li>
+                            <li>满{$vo.condition}元可用</li>
+                            <li><span>{$vo.send_end_time|date='Y-m-d H:i',###}</span></li>
+                            <if condition="(time() gt $vo['send_start_time']) AND (time() lt $vo['send_end_time'])">
+                                <li class="get_c_i"><a href="{:U('Activity/get_coupon',array('coupon_id'=>$vo[id]))}">领  取</a></li>
+                            <elseif condition="time() gt $vo['send_end_time']">
+                                <li class="noget_c_i"><a href="javascript:void">已过期</a></li>
+                            <elseif condition="time() lt $vo['send_start_time']">
+                                <li class="noget_c_i"><a href="javascript:void">未开始</a></li>
+                            </if>
+                        </ul>
+                        </foreach>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

@@ -1,0 +1,162 @@
+<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+    <table style="background-color:#FFF" cellspacing="0" cellpadding="0" width="100%">
+        <if condition="empty($list) eq true">
+        <tbody>
+            <tr data-id="0">
+                <td class="no-data" align="center" axis="col0" colspan="50">
+                    <i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+                </td>
+             </tr>
+        </tbody>
+        <else/>
+        <thead>
+            <tr style="background-color:#F2EFEF">
+                <th class="sign" axis="col0">
+                    <div style="width: 24px;"><i class="ico-check"></i></div>
+                </th>
+                <th align="left" abbr="order_sn" axis="col3" class="">
+                    <div style="text-align: left; width: 140px;" class="">订单编号</div>
+                </th>
+                <th align="left" abbr="consignee" axis="col4" class="">
+                    <div style="text-align: left; width: 120px;" class="">收货人</div>
+                </th>
+                <th align="center" abbr="article_time" axis="col6" class="">
+                    <div style="text-align: center; width: 80px;" class="">应付金额</div>
+                </th>
+                <th align="center" abbr="article_time" axis="col6" class="">
+                    <div style="text-align: center; width: 60px;" class="">支付方式</div>
+                </th>
+                <th align="center" abbr="article_time" axis="col6" class="">
+                    <div style="text-align: center; width: 120px;" class="">下单时间</div>
+                </th>
+                <th align="center" abbr="store_name" axis="col6" class="">
+                    <div style="text-align: center; width:120px;" class="">工厂店名字</div>
+                </th>
+                <th align="center" abbr="safecode" axis="col6" class="">
+                    <div style="text-align: center; width:60px;" class="">核销编码</div>
+                </th>
+                <th align="left" axis="col1" class="">
+                    <div style="text-align: left; width: 90px;">操作</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="list" id="list">
+            <tr data-order-id="{$list.order_id}">
+                <td class="sign" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="width:24px; padding:8px;"><i class="ico-check"></i></div>
+                </td>
+                <td align="left" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: left; width: 140px; padding:8px;" class="">{$list.order_sn}</div>
+                </td>
+                <td align="left" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: left; width: 120px; padding:8px;" class="">{$list.consignee}:{$list.mobile}</div>
+                </td>
+                <td align="center" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: center; width: 80px; padding:8px;" class="">{$list.order_amount}</div>
+                </td>
+                <td align="center" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: center; width: 60px; padding:8px;" class="">{$list.pay_name|default='其他方式'}</div> 
+                </td>
+                <td align="center" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: center; width: 120px; padding:8px;" class="">{$list.add_time|date='Y-m-d H:i',###}</div>
+                </td>
+                <td align="center" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: center; width:120px; padding:8px;"class="">{$list.store_name|default='未分配'}</div>
+                </td>
+                <td align="center" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: center; width:60px; padding:8px;" calss="">{$list.safecode|default='无'}</div>
+                </td>
+                <td align="left" class="" style="border-left:1px solid #F2EFEF; border-bottom:1px solid #F2EFEF;">
+                    <div style="text-align: left; width: 90px; padding:8px;">
+                        <a class="btn green" href="{:U('Admin/order/detail',array('order_id'=>$list['order_id']))}"><i class="fa fa-list-alt"></i>查看</a>
+                        <if condition="($list['order_status'] eq 3  and $list['pay_status'] eq 0) or ($list['order_status'] eq 5)">
+                            <a class="btn red" href="javascript:void(0);" data-href="{:U('Admin/order/delete_order',array('order_id'=>$list['order_id']))}" onclick="del(this)"><i class="fa fa-trash-o"></i>删除</a>
+                        </if>
+                        <if condition="($list['order_status'] eq 3  and $list['pay_status'] eq 1)">
+                            <a class="btn green" href="{:U('Admin/order/detail',array('order_id'=>$list['order_id']))}"><i class="fa fa-list-alt"></i>查看</a>
+                        </if>
+                    </div>
+                </td>
+            </tr>
+            </volist>
+        </tbody>
+        </if>
+    </table>
+</div>
+<if condition="$is_page eq true">
+    <div class="row">
+        <div class="col-sm-6 text-left"></div>
+        <div class="col-sm-6 text-right">{$page}</div>
+    </div>
+</if>
+<script>
+$(document).ready(function(){
+    $('#flexigrid>table>tbody>tr').click(function(){
+        $(this).toggleClass('trSelected');
+    });
+});
+
+$(".pagination a").click(function(){
+    var page = $(this).data('p');
+    ajaxOrderList(cur_id, page);
+});
+</script>
+<!-- <div class="hDiv">
+    <div class="hDivBox">
+      <table cellspacing="0" cellpadding="0">
+        <thead>
+        <tr>
+          <th class="sign" axis="col0">
+            <div style="width: 24px;"><i class="ico-check"></i></div>
+          </th>
+          <th align="center" abbr="article_title" axis="col3" class="">
+            <div style="text-align: center; width: 50px;" class="">ID</div>
+          </th>
+          <th align="center" abbr="article_time" axis="col6" class="">
+            <div style="text-align: center; width: 400px;" class="">商品名称</div>
+          </th>
+          <th align="center" abbr="article_time" axis="col6" class="">
+            <div style="text-align: center; width: 200px;" class="">当前库存 / 最大库存量</div>
+          </th>
+          <th align="center" abbr="article_time" axis="col6" class="">
+            <div style="text-align: center; width: 150px;" class="">修改时间</div>
+          </th>
+          <th style="width:100%" axis="col7">
+            <div></div>
+          </th>
+        </tr>
+        </thead>
+      </table>
+    </div>
+</div>
+<div class="bDiv" style="height: auto;" id="ajax_return">
+    <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+      <table>
+        <tbody>
+        <volist name="$val.goods" id="v">
+          <tr>
+            <td class="sign">
+              <div style="width: 24px;"><i class="ico-check"></i></div>
+            </td>
+            <td align="left" class="">
+              <div style="text-align: center; width: 50px;">{$key+1}</div>
+            </td>
+            <td align="left" class="">
+              <div style="text-align: center; width: 400px;">{$v.goods_name}</div>
+            </td>
+            <td align="left" class="">
+              <div style="text-align: center; width: 200px; <if condition="$v.goods_num elt ($storeage/100)*($v.stock_num)">color:#D91222;font-weight:bold</if>">{$v.goods_num} / {$v.stock_num}</div>
+            </td>
+            <td align="left" class="">
+              <div style="text-align: center; width: 150px;">{$v.edittime|date="Y-m-d H:i:s",###}</div>
+            </td>
+            <td align="" class="" style="width: 100%;">
+              <div>&nbsp;</div>
+            </td>
+          </tr>
+        </volist>
+        </tbody>
+      </table>
+    </div>
+</div> -->

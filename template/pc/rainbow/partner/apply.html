@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>补货申请记录-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<style>
+#apply .accbala {margin: 20px 0;}
+#apply .accbala thead td {text-align: center; height: 40px; background: #f5f5f5;}
+#apply .accbala tbody td {text-align: center; vertical-align: middle; background: #fff; border-bottom: 1px solid #dadada; padding: 10px 0;}
+#apply .accbala td p {padding: 4px 0;}
+#apply .accbala tbody td.empty {padding: 20px 0; font-size: 16px; font-weight: bold;}
+</style>
+</head>
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+	<div class="w1224">
+		<div class="g-crumbs">
+			<volist name='navigate_user' id='vo'>
+				<a href="{$vo}">{$key}</a><if condition="$i neq count($navigate_user)"><i class="litt-xyb"></i></if>
+			</volist>
+		</div>
+		<div class="home-main" id="apply">
+			<include file="user/menu"/>
+			<div class="ri-menu fr">
+				<div class="menumain p">
+					<div class="goodpiece">
+						<h1>补货申请记录</h1>
+					</div>
+					<div class="accbala">
+						<table width="100%">
+							<thead>
+								<tr>
+									<td width="20%">申请时间</td>
+									<td width="15%">状态</td>
+									<td width="15%">物流名称</td>
+									<td width="25%">物流单号</td>
+									<td width="20%">操作</td>
+								</tr>
+							</thead>
+							<tbody>
+								<if condition="$list">
+								<volist name="list" id="vo">
+								<tr>
+									<td width="20%">{$vo.addtime|date="Y-m-d H:i:s",###}</td>
+									<td width="15%">
+										<if condition="$vo[status] eq 0">处理中</if>
+										<if condition="$vo[status] eq 1">已处理</if>
+										<if condition="$vo[status] eq 2">申请失败</if>
+									</td>
+									<td width="15%">{$vo.express_name|default="无"}</td>
+									<td width="25%">{$vo.express_code|default="无"}</td>
+									<td width="20%">
+										<p><a href="{:U('Partner/apply_info', array('id'=>$vo['id']))}">查看详情</a></p>
+										<if condition="$vo.delivery_id">
+											<p><a href="{:U('Partner/invoiceInfo', array('id'=>$vo['delivery_id']))}">发货单</a></p>
+										</if>
+									</td>
+								</tr>
+								</volist>
+								<else />
+									<tr>
+										<td colspan="5" class="red empty">
+											<i class="fa fa-exclamation-circle"></i>暂无记录
+										</td>
+									</tr>
+								</if>
+							</tbody>
+						</table>
+					</div>
+					<if condition="$list">
+					<div class="operating fixed consume_log" id="bottom">
+						<div class="fn_page clearfix">{$page}</div>
+					</div>
+					</if>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+	<include file="public/footer_index" />
+</div>
+<!--footer-e-->
+</body>
+</html>

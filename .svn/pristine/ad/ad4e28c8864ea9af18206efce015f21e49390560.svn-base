@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+	<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<title>退换货记录-{$tpshop_config['shop_info_store_title']}</title>
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<script src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<div id="return_goods">
+	<div class="container">
+		<adv  pid="407" limit="1" item="v">
+			<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+		</adv>
+	</div>
+
+	<div class="container mine">
+		<div class="row my_mall">
+			<include file="user/menu" />
+			<div class="col-md-10 col-sm-9 col-lg-10">
+				<div>
+					<ol class="breadcrumb">
+						<li><i class="glyphicon glyphicon-home"></i></li>
+						<li><a href="{:U('Home/User/index')}">用户中心</a></li>
+						<li class="active">退换货记录</li>
+					</ol>
+				</div>
+
+				<div class="my_right">
+					<div class="per_main_r">
+						<form action="{:U('Home/Order/return_goods_list')}" method="post">
+							<ul class="good_back">
+								<li>
+									<label>退货状态:</label>
+									<select class="form-control" name="status">
+										<option value="0">全部状态</option>
+										<option value="1" <if condition="$Request.param.status eq 1">selected</if>>处理中</option>
+										<option value="2" <if condition="$Request.param.status eq 2">selected</if>>已完成</option>
+										<option value="3" <if condition="$Request.param.status eq 3">selected</if>>已取消</option>
+									</select>
+								</li>
+								<li>
+									<label>申请时间:</label>
+									<select class="form-control" name="time">
+										<option value="0">全部</option>
+										<option value="1" <if condition="$Request.param.time eq 1">selected</if>>近三个月</option>
+										<option value="2" <if condition="$Request.param.time eq 2">selected</if>>三个月以前</option>
+									</select>
+								</li>
+								<li><input type="submit" value="搜索" class="btn btn-danger" /></li>
+							</ul>
+						</form>
+
+						<div class="stock_list_main">
+							<ul class="stock_log_title">
+								<li>订单号</li>
+								<li>商品信息</li>
+								<li class="width-sx">申请时间</li>
+								<li class="width-sx">状态</li>
+								<li class="width-sx">操作</li>
+							</ul>
+							<if condition="!empty($list)">
+								<volist name="list" id="v">
+									<ul class="stock_log_goods">
+										<li>{$v.order_sn}</li>
+										<li class="sto_goods_img">
+											<div class="goods_img_pic"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}"><img src="{$v.goods_id|goods_thum_images=80,80}" width="80" height="80" /></a></div>
+											<div class="goods_img_title"><h6><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}">{$goodsList[$v[goods_id]]|getSubstr=0,25}</a></h6></div>
+										</li>
+										<li class="width-sx">{$v.addtime|date="Y-m-d",###}</li>
+										<li class="width-sx">{$state[$v[status]]}</li>
+										<li class="width-sx"><a href="{:U('Home/Order/return_goods_info',array('id'=>$v[id]))}" class="view">查看详情</a></li>
+									</ul>
+									<div class="clearfix"></div>
+								</volist>
+							<else />
+								<h4 class="text-center style-red" style="padding: 10px 0;">
+									暂无退换货订单
+								</h4>
+							</if>
+						</div>
+					</div>
+					<div class="eva_page">{$page}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

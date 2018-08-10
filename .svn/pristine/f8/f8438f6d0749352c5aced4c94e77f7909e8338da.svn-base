@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>补货申请详情</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<div>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="per_main">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 per_main_r">
+                <div class="or_right_title"><h4><a href="{:U('Home/Store/delivery')}">发货单记录</a> / <a href="javascript:();">发货单详情</a></h4>
+                </div>
+                <div class="per_con">
+                    <div class="order_survey"><h2>物流信息</h2>
+                        <div class="order_survey_main"> 
+                        <dl class="dl-horizontal">
+                            <dt>操作用户：</dt><dd>{$info.nickname}</dd>
+                            <dt>物流名称：</dt><dd>{$info.express_name}</dd>
+                            <dt>物流单号：</dt><dd>{$info.express_code}</dd>
+                            <dt>发货时间：</dt><dd>{$info.addtime|date="Y-m-d H:i:s",###}</dd>
+                            <if condition="!empty($info.confirm_time)">
+                            <dt>收货时间：</dt><dd>{$info.confirm_time|default='未确认收货'}</dd>
+                            </if>
+                        </dl>
+                        </div>
+                    </div>
+                    
+                <div class="order_bill"><h2>商品清单</h2>
+                    <table>
+                    <tr class="order_bill_grop_two">
+                        <th class="order_bill_one">商品</th>
+                        <th></th>
+                        <th>数量</th>
+                        <!-- <th>操作</th> -->
+                    </tr>
+                    <volist name="orderGoods" id="vo">
+                        <tr class="order_bill_goods">
+                            <td class="order_goods_img">
+                                <div class="order_detail">
+                                    <div class="order_detail_img"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}"><img src="{$vo.goods_id|goods_thum_images=80,80}" width="80" height="80"></a></div>
+                                    <div class="order_detail_txt"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">{$vo.goods_name|getSubstr=0,20}</a><span>商品货号：{$vo.goods_sn}</span></div>
+                                </div>
+                             </td>
+                             <td></td>
+                             <td>{$vo.goods_num}</td>
+                        </tr>
+                    </volist>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</div>
+</body>
+</html>

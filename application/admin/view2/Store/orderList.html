@@ -1,0 +1,152 @@
+<include file="public/layout" />
+<style>
+.flexigrid .bDiv {min-height: 10px}
+.ui-accordion .ui-accordion-header {height: 30px; line-height: 30px;}
+.ui-state-default {background: #f5f5f5; border: 1px solid #ddd;}
+.ui-state-default span {color: #222; font-weight: bold;}
+.ui-state-active a:link {color: #555;}
+.ui-state-default a {float: right; margin-right: 5em; background: #fff; border: 1px solid #f5f5f5; border-radius: 4px; padding: 0px 15px; font-size: 14px; }
+.ui-state-default a.red:hover {background-color: rgba(196, 24, 45, 0.8); border-color: rgba(196, 24, 45, 0.8); color: #fff;}
+</style>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+      <div class="subject">
+        <h3>工厂店订单管理</h3>
+        <h5>网站系统工厂店订单管理</h5>
+      </div>
+    </div>
+  </div>
+  <!-- 操作说明 -->
+  <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+    <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+    </div>
+    <ul>
+      <li>工厂店订单列表</li>
+    </ul>
+  </div>
+  <div class="flexigrid">
+    <div class="mDiv">
+      <div class="ftitle">
+        <h3>工厂店订单列表</h3>
+        <h5>(共{$pager->totalRows}条记录)</h5>
+      </div>
+      <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+      <form class="navbar-form form-inline" id="search-form" method="post" action="{:U('/Admin/Store/orderList')}">
+        <div class="sDiv">
+          <div class="sDiv2" style="margin-right: 10px;border: none;">
+            <select name="province_id" id="province_id" onChange="get_city(this)">
+              <option value="">所有省</option>
+              <foreach name="province" item="v" key="k" >
+                <option value="{$v['id']}"> {$v['name']}</option>
+              </foreach>
+            </select>
+          </div>
+          <div class="sDiv2" style="margin-right: 10px;border: none;">
+            <select name="city_id" id="city" onChange="get_area(this)">
+              <option value="">所有城市</option>
+              <if condition="$brandList">
+              <foreach name="brandList" item="v" key="k" >
+                <option value="{$v['id']}">{$v['name']}</option>
+              </foreach>
+              </if>
+            </select>
+          </div>
+          <div class="sDiv2" style="margin-right: 10px;border: none;">
+            <select name="district_id" id="district">
+              <option value="">所有区域</option>
+              <if condition="$brandList">
+              <foreach name="brandList" item="v" key="k" >
+                <option value="{$v['id']}">{$v['name']}</option>
+              </foreach>
+              </if>
+            </select>
+          </div>
+          <div class="sDiv2">
+            <input size="30" placeholder="工厂店姓名" value="{$Think.request.store_name}" name="store_name" class="qsbox" type="text">
+            <input class="btn" value="搜索" type="submit">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="accordion">
+      <volist name='list' id='val'>
+        <h3 onclick="ajaxOrder({$val.store_id}, 1)" value="0" id="h3-{$val.store_id}">
+          <span>{$val.store_name}</span>
+          <span style="display:block; float:right; margin-right:20px;">{$val.mobile}</span>
+          <span style="display:block; float:right; margin-right:500px;">{$val.address}</span>
+        </h3>
+        <div class="hDiv" style="background-color:#FFF">
+        <div id="ajax_return-{$val.store_id}" class="ajax_return hDiv">
+          
+        </div>
+        </div>
+      </volist>
+    </div>
+    
+  </div> 
+  <!--分页位置-->
+    {$page}
+</div>
+<script>
+$(document).ready(function(){
+    // 点击刷新数据
+    $('.fa-refresh').click(function(){
+        location.href = location.href;
+    });
+    $('#flexigrid >table>tbody>tr').click(function(){
+        $(this).toggleClass('trSelected');
+    });
+
+    $( "#accordion" ).accordion({
+        heightStyle: "content",
+        collapsible: true,
+        active: '',
+    });
+
+});
+
+function ajaxOrderList(id, page){
+    cur_page = page; //当前页面 保存为全局变量
+    cur_id = id;    //当前选中的工厂店id，保存为全局变量
+        $.ajax({
+            type: "POST",
+            url: "/index.php?m=Admin&c=Store&a=ajaxOrderList&id="+id+"&p="+page,
+            data: {id:id},
+            success: function(data){
+                $("#accordion div.ajax_return").html('');
+                $("#ajax_return-"+id).append(data);
+            }
+        });
+
+}
+
+function ajaxOrder(id, page){
+    cur_page = page; //当前页面 保存为全局变量
+    cur_id = id;    //当前选中的工厂店id，保存为全局变量
+    var status = $('#h3-'+id).attr('value');
+    if(status == 0){
+        $('#h3-'+id).attr('value','1');
+        $("h3").not('#h3-'+id).attr('value','0');
+        $.ajax({
+            type: "POST",
+            url: "/index.php?m=Admin&c=Store&a=ajaxOrderList&id="+id+"&p="+page,
+            data: {id:id},
+            success: function(data){
+                $("#accordion div.ajax_return").html('');
+                $("#ajax_return-"+id).append(data);
+            }
+        });
+    }else{
+        $('#h3-'+id).attr('value','0');
+    }
+}
+
+</script>
+</body>
+</html>

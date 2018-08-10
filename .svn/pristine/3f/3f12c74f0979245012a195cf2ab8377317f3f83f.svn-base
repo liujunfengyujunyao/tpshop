@@ -1,0 +1,191 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>订单详情</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="per_main">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 per_main_r">
+                <div class="or_right_title"><h4><a href="{:U('Home/Order/order_list')}">我的订单</a> / <a href="javascript:();">订单详情</a></h4>
+                </div>
+                <div class="per_con">
+                    <div class="order_survey"><h2>订单概况</h2>
+                        <div class="order_survey_main"> 
+                        <dl class="dl-horizontal">
+                            <dt>订单状态：</dt><dd><span>{$order_info.order_status_desc}</span></dd>
+                            <dt>订单金额：</dt><dd><span>￥{$order_info.order_amount}</span> (含运费￥{$order_info.shipping_price})</dd>
+                            <dt>订单编号：</dt><dd>{$order_info.order_sn}</dd>
+                            <dt>发货信息：</dt><dd>{$order_info.consignee}&nbsp;&nbsp;{$order_info.mobile}&nbsp;&nbsp;{$region_list[$order_info['province']]}{$region_list[$order_info['city']]}{$region_list[$order_info['district']]}{$order_info.address}</dd>
+                            <dt>支付方式：</dt><dd>{$order_info.pay_name|default='第三方代付'}</dd>
+                            <dt>付款时间：</dt><dd><if condition="$order_info[pay_status] eq 1 or $order_info[pay_status] eq 2">{$order_info.pay_time|date='Y-m-d H:i:s',###}<else/>未支付</if></dd>
+                            <dt>发票抬头：</dt><dd>{$order_info.invoice_title|default=''}</dd>
+                            <dt>配送方式：</dt><dd>{$order_info.shipping_name}</dd>
+                            <dt>买家留言：</dt><dd>{$order_info.user_note|default=''}</dd>
+                        </dl>
+                        </div>
+                    </div>
+
+                    <div class="order_tracer"><h2>订单跟踪</h2>
+                    <div class="order_tracer_top">
+                        <div class="order_stage_line"></div>
+                        <ul>
+                            <li><div class="order_stage_bg"><div class="order_stage_btn1"></div></div><p>提交订单</p></li>
+                            <li><div class="order_stage_bg"><div class="order_stage_btn1 <if condition="$order_info[pay_time] eq 0">order_stage_btn2</if>"></div></div><p>支付成功</p></li>
+                            <li><div class="order_stage_bg"><div class="order_stage_btn1 <if condition="$order_info[shipping_time] eq 0">order_stage_btn2</if>"></div></div><p>
+                            <if condition="($order_info[shop_way] eq 2) or ($order_info[shop_way] eq 3)">
+                                到达工厂店
+                            </if>
+                            <if condition="$order_info[shop_way] eq 1">
+                                卖家已发货
+                            </if>
+                            </p></li>
+                            <li><div class="order_stage_bg"><div class="order_stage_btn1 <if condition="$order_info[shipping_time] eq 0">order_stage_btn2</if>"></div></div><p>等待收货</p></li>
+                            <li><div class="order_stage_bg"><div class="order_stage_btn1 <if condition="$order_info[confirm_time] eq 0">order_stage_btn2</if>"></div></div><p>订单完成</p></li>
+                        </ul>
+                    </div>
+
+                    <div class="order_tracer_sec">
+                        <h3>订单跟踪详情</h3>
+                        <if condition="($order_info[shop_way] eq 1) and ($order_info[shipping_time] gt 0)">
+                            <ul id="express_info">
+                            </ul>
+
+                            <script>
+                                queryExpress();
+                                function queryExpress()
+                                {
+                                    var shipping_code = "{$order_info['shipping_code']}";
+                                    var invoice_no = "{$order_info['invoice_no']}";
+                                    $.ajax({
+                                        type : "GET",
+                                        dataType: "json",
+                                        url:"/index.php?m=Home&c=Api&a=queryExpress&shipping_code="+shipping_code+"&invoice_no="+invoice_no,//+tab,
+                                        success: function(data){
+                                            var html = '';
+                                            if(data.status == 200){
+                                                $.each(data.data, function(i,n){
+                                                    if(i == 0){
+                                                        html += "<li class='first'><i class='node-icon'></i><span class='time'>"+n.time+"</span><span class='txt'>"+n.context+"</span></li>";
+                                                    }else{
+                                                        html += "<li><i class='node-icon'></i><span class='time'>"+n.time+"</span><span class='txt'>"+n.context+"</span></li>";
+                                                    }
+                                                });
+                                            }else{
+                                                html += "<li class='first'><i class='node-icon'></i><span class='txt'>"+data.message+"</span></li>";
+                                            }
+                                            $("#express_info").html(html);
+                                        }
+                                    });
+                                }
+                            </script>
+                            
+                        <else />
+                            <ul>
+                            <if condition="$order_info[confirm_time] gt 0">
+                                <li><div class="order_dot_bg"><div class="order_dot"></div></div><span class="order_time">{$order_info.confirm_time|date='Y-m-d H:i:s',###}</span><span class="order_txt"> 您的订单已完成，欢迎下次购买</span></li>
+                            </if>
+                                
+                            <if condition="$order_info[shipping_time] gt 0">
+                                <li><div class="order_dot_bg"><div class="order_dot"></div></div><span class="order_time">{$order_info.shipping_time|date='Y-m-d H:i:s',###}</span><span class="order_txt">商品准备完成，等待收货</span></li>
+                            </if>
+                                
+                            <if condition="$order_info[shipping_time] gt 0">
+                                <li><div class="order_dot_bg"><div class="order_dot"></div></div><span class="order_time">{$order_info.shipping_time|date='Y-m-d H:i:s',###}</span><span class="order_txt"> 您的订单
+                                <if condition="($order_info[shop_way] eq 2) or ($order_info[shop_way] eq 3)">
+                                已到达工厂店，正在准备商品
+                                </if>
+                                <if condition="$order_info[shop_way] eq 1">
+                                卖家已发货
+                                </if>
+                                </span></li>
+                            </if>
+
+                            <if condition="$order_info[pay_time] gt 0">
+                                <li><div class="order_dot_bg"><div class="order_dot"></div></div><span class="order_time">{$order_info.pay_time|date='Y-m-d H:i:s',###}</span><span class="order_txt">您的订单已完成支付</span></li>    
+                            </if>
+                                <li><div class="order_dot_bg"><div class="order_dot"></div></div><span class="order_time">{$order_info.add_time|date='Y-m-d H:i:s',###}</span><span class="order_txt">您的订单已完成提交</span></li>
+                            </ul>
+                        </if>
+                    </div>
+                </div>
+
+                <div class="order_bill"><h2>商品清单</h2>
+                    <table>
+                    <tr class="order_bill_grop">
+                        <th class="order_bill_one">商品</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>操作</th>
+                    </tr>
+                    <volist name="order_info.goods_list" id="goods">
+                        <tr class="order_bill_goods">
+                            <td class="order_goods_img">
+                                <div class="order_detail">
+                                    <div class="order_detail_img"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}"><img src="{$goods.goods_id|goods_thum_images=80,80}" width="80" height="80"></a></div>
+                                    <div class="order_detail_txt"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name|getSubstr=0,10}</a><span>商品货号：{$goods.goods_sn}</span></div>
+                                </div>
+                             </td>
+                             <td>￥{$goods.member_goods_price}</td>
+                             <td>{$goods.goods_num}</td>
+                             <td>
+                                <a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">再次购买</a>
+                             </td>
+                        </tr>
+                    </volist>
+                    </table>
+                    <ul>
+                        <li>
+                            <span class="order_bill_lable">商品总额 :</span>
+                            <span class="order_bill_txt">¥{$order_info.goods_price}</span>
+                        </li>
+                        <li>
+                            <span class="order_bill_lable">运    费 :</span>
+                            <span class="order_bill_txt">¥{$order_info.shipping_price}</span>
+                        </li>
+                        <li class="order_bill_bot">
+                            <span class="order_bill_lable">订单总额 :</span>
+                            <span class="order_bill_txt">¥{$order_info.order_amount}</span>
+                        </li>
+                        <if condition="$order_info.pay_btn eq 1">
+                        <li class="order_bill_pay"><a href="{:U('Home/Cart/cart4',array('order_id'=>$order_info[order_id]))}">立即付款</a></li>
+                        </if>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>发货单-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<style>
+#invoiceList .accbala {margin: 20px 0;}
+#invoiceList .accbala thead td {text-align: center; height: 40px; background: #f5f5f5;}
+#invoiceList .accbala tbody td {text-align: center; vertical-align: middle; background: #fff; border-bottom: 1px solid #dadada; padding: 10px 0;}
+#invoiceList .accbala td p {padding: 4px 0;}
+#invoiceList .accbala td .confirm {background: #e23435; color: #fff; padding: 5px 10px}
+#invoiceList .accbala tbody td.empty {padding: 20px 0; font-size: 16px; font-weight: bold;}
+</style>
+</head>
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+	<div class="w1224">
+		<div class="g-crumbs">
+			<volist name='navigate_user' id='vo'>
+				<a href="{$vo}">{$key}</a><if condition="$i neq count($navigate_user)"><i class="litt-xyb"></i></if>
+			</volist>
+		</div>
+		<div class="home-main" id="invoiceList">
+			<include file="user/menu"/>
+			<div class="ri-menu fr">
+				<div class="menumain p">
+					<div class="goodpiece">
+						<h1>发货单</h1>
+						<span>（公司配货给合伙人的记录）</span>
+					</div>
+					<div class="accbala">
+						<table width="100%">
+							<thead>
+								<tr>
+									<td width="15%">物流名称</td>
+									<td width="25%">物流单号</td>
+									<td width="20%">发货时间</td>
+									<td width="15%">操作人员</td>
+									<td width="20%">操作</td>
+								</tr>
+							</thead>
+							<tbody>
+								<if condition="$list">
+								<volist name="list" id="vo">
+								<tr>
+									<td width="15%">{$vo.express_name}</td>
+									<td width="25%">{$vo.express_code}</td>
+									<td width="20%">{$vo.addtime|date="Y-m-d H:i:s",###}</td>
+									<td width="15%">{$vo.user_name}</td>
+									<td width="20%">
+										<p><a href="{:U('Partner/invoiceInfo', array('id'=>$vo['id']))}">查看详情</a></p>
+										<if condition="empty($vo.confirm_time)"><p><a href="javascript:void(0)" onclick="order_confirm({$vo.id})" class="confirm">确认收货</a></p></if>
+									</td>
+								</tr>
+								</volist>
+								<else />
+									<tr>
+										<td colspan="5" class="red empty">
+											<i class="fa fa-exclamation-circle"></i>暂无记录
+										</td>
+									</tr>
+								</if>
+							</tbody>
+						</table>
+					</div>
+					<if condition="$list">
+					<div class="operating fixed consume_log" id="bottom">
+						<div class="fn_page clearfix">{$page}</div>
+					</div>
+					</if>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+	<include file="public/footer_index" />
+</div>
+<!--footer-e-->
+</body>
+</html>
+<script>
+//确定收货
+function order_confirm(id){
+	layer.confirm("你确定收到货了吗?",{
+		btn:['确定','取消']
+	},function(){
+		$.ajax({
+			type : 'post',
+			url : '/index.php?m=Home&c=Partner&a=invoice_confirm&id='+id,
+			dataType : 'json',
+			success : function(data){
+				if(data.status == 1){
+					showErrorMsg(data.msg);
+					location.reload();
+					//window.location.href = data.url;
+				}else{
+					showErrorMsg(data.msg);
+				}
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				showErrorMsg('网络失败，请刷新页面后重试');
+			}
+		})
+	}, function(index){
+		layer.close(index);
+	});
+}
+</script>

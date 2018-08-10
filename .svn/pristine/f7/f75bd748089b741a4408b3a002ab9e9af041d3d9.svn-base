@@ -1,0 +1,140 @@
+<include file="public/header" title="工厂店管理中心" body="g4"/>
+<div class="myhearder">
+    <div class="person">
+        <div class="fl lors" style="margin:0rem; font-size:0.7rem;">
+            <span>{$store.store_name}/{$pick_up.pickup_name}</span>
+        </div>
+        <div style="font-size: 0.7rem;color:#fff;margin-top:1.5rem;">
+            <img src="__STATIC__/images/dw1.png"/>
+            <span>{$store_site}</span>
+        </div>
+    </div>
+    <div class="scgz">
+        <ul>
+            <li>
+                <a>
+                    <h2>{$store.phone}</h2>
+                    <p>合伙人：{$partner_name}</p>
+                </a>
+
+            </li>
+            <li>
+                <a href="{:U('Store/rebate_log')}">
+                    <h2>收益资金金额</h2>
+                    <p>￥{$moneys}</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="floor my p">
+    <div class="content">
+
+        <!-- 订单管理Start -->
+        <div class="floor myorder ma-to-20 p">
+            <div class="content30">
+                <div class="order">
+                    <div class="fl">
+                        <img src="__STATIC__/images/p5.png"/>
+                        <span>订单管理</span>
+                    </div>
+                    <div class="fr">
+                        <a href="{:U('Store/order_list')}">
+                            <span>全部订单</span>
+                            <i class="Mright"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="floor floor_order">
+            <ul>
+                <li>
+                    <a href="{:U('Store/order_list',array('type'=>'WAITSEND'))}">
+                        <span>{$waitsend}</span>
+                        <img  src="__STATIC__/images/q2.png"/>
+                        <p>待发货</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Store/order_list',array('type'=>'ZITI'))}">
+                        <span>{$ziti}</span>
+                        <img  src="__STATIC__/images/q1.png"/>
+                        <p>自提</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Store/order_list',array('type'=>'SHIPPING'))}">
+                        <span>{$shipping}</span>
+                        <img  src="__STATIC__/images/q2.png"/>
+                        <p>配送</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Mobile/Store/return_goods_list')}">
+                        <span>{$return_goods_count}</span>
+                        <img src="__STATIC__/images/q4.png"/>
+                        <p>退款/退货</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- 订单管理 End -->
+
+        <!-- 库存管理 Start-->
+        <div class="myorder p">
+            <div class="content30">
+                <div class="order">
+                    <div class="fl">
+                        <img src="__STATIC__/images/p1.png"/>
+                        <span>库存管理</span>
+                    </div>
+                    <div class="fr">
+                        <a href="{:U('Store/store_stock_list')}">
+                            <span>我的库存</span>
+                            <i class="Mright"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="floor floor_order">
+            <ul>
+                <li>
+                    <a href="{:U('Store/stock_log')}">
+                        <img  src="__STATIC__/images/p3.png"/>
+                        <p>库存日志</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Store/apply')}">
+                        <img  src="__STATIC__/images/p2.png"/>
+                        <p>补货申请</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Store/delivery')}">
+                        <img  src="__STATIC__/images/p6.png"/>
+                        <p>入库单</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Store/delivery_doc_list')}">
+                        <img  src="__STATIC__/images/p7.png"/>
+                        <p>出库单</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- 库存管理 End -->
+
+    </div>
+</div>
+
+<!-- 底部导航Start -->
+<include file="public/footer_nav"/>
+<!-- 底部导航End -->
+<script src="__STATIC__/js/style.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

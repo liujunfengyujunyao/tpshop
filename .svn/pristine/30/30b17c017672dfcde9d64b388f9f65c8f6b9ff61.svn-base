@@ -1,0 +1,91 @@
+<if condition="empty($cartList)">
+	<div class="container elect">
+		<div style="margin-top: 5%">
+			<p class="text-center"><a href="/"><img src="__STATIC__/images/null_cart.jpg"  /></a></p>
+		</div>
+	</div>
+<else />
+<div class="container elect">
+	<div class="row electtop">
+		<div class="col-md-2 col-xs-2">
+			<label>
+				<input type="checkbox" name="select_all" id="select_all" <if condition="$select_all eq 1" >checked="checked"</if> onchange="check_all();" value="1"/>&nbsp;&nbsp;全选
+			</label>
+		</div>
+		<div class="col-md-4 col-xs-4">商品</div>
+		<div class="col-md-2 col-xs-2 text-center">单价</div>
+		<div class="col-md-2 col-xs-2 text-center">数量</div>
+		<div class="col-md-2 col-xs-2 text-center">操作</div>
+	</div>
+	<foreach name="cartList" item="v" key="k">
+		<div class="row bb">
+			<div class="col-md-1 col-xs-1">
+				<ul class="list">
+					<li><label><input type="checkbox"  name="cart_select[{$v.id}]" <if condition="$v[selected] eq 1" >checked="checked"</if> value="1" onclick="ajax_cart_list();" /></label></li>
+				</ul>
+			</div>
+			<div class="col-md-5 col-xs-5">
+				<dl>
+					<dt>
+						<a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}">
+							<img class="wi63 hi63" src="{$v.goods_id|goods_thum_images=78,78}">
+						</a>
+					</dt>
+					<dd><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}">{$v.goods_name}</a></dd>
+					<dd>
+						<span>
+							<!--团购-->
+							<if condition="$v[activity_type] eq 2">
+								<img width="30" src="/public/images/groupby.jpg" style="vertical-align:middle">
+							</if>
+							<!--抢购-->
+							<if condition="$v[activity_type] eq 1">
+								<img width="30" src="/public/images/qianggou2.jpg" style="vertical-align:middle">
+							</if>
+						</span>
+					</dd>
+				</dl>
+			</div>
+			<div class="col-md-2 col-xs-2 text-center money">
+				<if condition="($user[discount] neq 1) and ($user[discount] neq null)">
+					￥{$v.member_goods_price}/<span style="text-decoration: line-through;color: #bbb;">￥{$v.market_price}</span>
+				<else />
+					￥{$v.goods_price}/<span style="text-decoration: line-through;color: #bbb;">￥{$v.market_price}</span>
+				</if>
+			</div>
+			<div class="col-md-2 col-xs-2">
+				<if condition='$v.store_count gt 0'>
+					<div class="gw_num">
+						<em class="jian" onClick="switch_num(-1,{$v.id},{$v.store_count});">-</em>
+						<input type="text" value="{$v.goods_num}" name="goods_num[{$v.id}]" class="num" />
+						<em class="add" onClick="switch_num(1,{$v.id},{$v.store_count});">+</em>
+					</div>
+				<else />
+					<div class="money">库存不足</div>
+					<input type="hidden" value="0" name="goods_num[{$v.id}]" id="goods_num[{$v.id}]" />
+				</if>
+			</div>
+			<div class="col-md-2 col-xs-2 text-center deleting">
+				<p><a href="javascript:void(0)" onclick="collect({$v.goods_id})"><img src="__STATIC__/images/fan.png" />移入收藏</a></br><a href="javascript:void(0);" onclick="ajax_del_cart({$v.id});"><img src="__STATIC__/images/shan.png" />删除商品</a></p>
+			</div>
+		</div>
+	</foreach>
+</div>
+
+<div class="container total">
+	<div class="row totalall">
+		<div class="totala">
+			<p><a href="javascript:void(0);" onclick="del_cart_more();">删除选中商品</a><a href="{:U('Home/Index/index')}" class="following">继续购物</a></p>
+		</div>
+		<div class="text-right totalb">
+			<p>总计金额：<span>¥{$total_price.total_fee}</span></p>
+			<p>共节省：<span>¥{$total_price.cut_fee}</span></p>
+			<p>合计（不含运费）：<span>¥{$total_price.total_fee}</span></p>
+		</div>
+		<div class="clear"></div>
+		<div class="clearing">
+			<a href="{:U('Home/Cart/cart2')}" class="btn btn-danger">去结算</a>
+		</div>
+	</div>
+</div>
+</if>

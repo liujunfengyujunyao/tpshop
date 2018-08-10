@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>订单详情-{$tpshop_config['shop_info_store_title']}</title>
+<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+<link rel="shortcut  icon" type="image/x-icon" href="__STATIC__/images/favicon.ico" media="screen"  />
+<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+<style>
+.order-alone-li th {background: #f9f9f9; height: 40px;}
+.order-alone-li tr {border-bottom: 1px solid #f5f5f5;}
+</style>
+</head>
+
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+	<div class="w1224">
+		<div class="g-crumbs">
+			<volist name='navigate_user' id='vo'>
+				<a href="{$vo}">{$key}</a><if condition="$i neq count($navigate_user)"><i class="litt-xyb"></i></if>
+			</volist>
+		</div>
+		<div class="home-main">
+			<include file="user/menu"/>
+			<div class="ri-menu fr">
+				<div class="menumain p">
+					<div class="rshrinfmas">
+						<div class="spff">
+							<h2>基本信息</h2>
+							<div class="psbaowq">
+								<p><span class="fircl">订单编号：</span><span class="lascl">{$order_info.order_sn}</span></p>
+								<p><span class="fircl">下单时间：</span><span class="lascl">{$order_info.add_time|date='Y-m-d H:i:s',###}</span></p>
+								<p><span class="fircl">付款方式：</span><span class="lascl">{$order_info.pay_name|default="其他方式"}</span></p>
+								<p><span class="fircl">付款时间：</span><span class="lascl"><if condition="$order_info[pay_status] eq 1 or $order_info[pay_status] eq 2">{$order_info.pay_time|date='Y-m-d H:i:s',###}<else/>待付款</if></span></p>
+								<p><span class="fircl">收货时间：</span><span class="lascl"><if condition="$order_info[confirm_time]">{$order_info.confirm_time|date='Y-m-d H:i:s',###}<else/>待收货</if></span></p>
+							</div>
+						</div>
+						<div class="spff">
+							<h2>收货人信息</h2>
+							<div class="psbaowq">
+								<p><span class="fircl">收货人：</span><span class="lascl">{$order_info.consignee}</span></p>
+								<p><span class="fircl">地址：</span>
+									<span class="lascl">{$order_info['province']} {$order_info['city']} {$order_info['district']} {$order_info.address}</span>
+								</p>
+								<p><span class="fircl">手机号码：</span><span class="lascl">{$order_info.mobile}</span></p>
+							</div>
+						</div>
+						<div class="spff">
+							<h2>配送信息</h2>
+							<div class="psbaowq">
+								<p><span class="fircl">工厂店名称：</span><span class="lascl">{$order_info.store_name}</span></p>
+								<p><span class="fircl">配送方式：</span>
+								<span class="lascl">
+								<if condition="$order_info.shop_way eq 2">工厂店配送
+								<elseif condition="$order_info.shop_way eq 3" />工厂店自提
+								<else />{$order_info.shipping_name}
+								</if>
+								</span></p>
+								<if condition="$order_info.invoice_no">
+								<p><span class="fircl">物流单号：</span><span>{$order_info.invoice_no}</span></p>
+								</if>
+								<p><span class="fircl">运费：</span><span class="lascl"><em>￥</em>{$order_info.shipping_price|default=0}</span></p>
+								<p><span class="fircl">买家留言：</span><span class="lascl">{$order_info.user_note|default='无'}</span></p>
+							</div>
+						</div>
+						<if condition="$order_info.invoice_title">
+						<div class="spff mar0">
+							<h2>发票信息</h2>
+							<div class="psbaowq">
+								<p><span class="fircl">发票类型：</span><span class="lascl">普通发票</span></p>
+								<p><span class="fircl">发票抬头：</span><span class="lascl">{$order_info.invoice_title}</span></p>
+							</div>
+						</div>
+						</if>
+					</div>
+				</div>
+				<div class="beenovercom">
+					<div class="shoptist">
+						<span>{$tpshop_config['shop_info_store_name']}<a href="tencent://message/?uin={$tpshop_config['shop_info_qq']}&Site={$tpshop_config['shop_info_store_name']}&Menu=yes" target="_blank"><i class="y-comp9"></i></a></span>
+					</div>
+					<div class="order-alone-li">
+						<table width="100%">
+							<thead>
+								<tr>
+									<th>商品名称</th>
+									<th>商品编号</th>
+									<th>单价</th>
+									<th>会员折扣价</th>
+									<th>数量</th>
+									<th>小计</th>
+								</tr>
+							</thead>
+							<tbody>
+								<volist name="orderGoods" id="vo">
+								<tr class="conten_or">
+									<td class="sx1">
+										<div class="shop-if-dif">
+											<div class="shop-difimg">
+												<a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}"><img src="{$vo.goods_id|goods_thum_images=78,78}"></a>
+											</div>
+											<div class="cebigeze">
+												<div class="shop_name"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">{$vo.goods_name}</a></div>
+												<p class="mayxl">{$vo.spec_key_name}</p>
+											</div>
+										</div>
+									</td>
+									<td class="sx2">{$vo.goods_sn}</td>
+									<td class="sx3"><span>￥</span><span>{$vo.goods_price}</span></td>
+									<td class="sx4">
+										<span><span>￥</span>{$vo.member_goods_price}</span>
+									</td>
+									<td class="sx5">
+										<span>{$vo.goods_num}</span>
+									</td>
+									<td class="sx6"><span>￥</span>{$vo.member_goods_price*$vo.goods_num}</td>
+								</tr>
+								</volist>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="numzjsehe">
+					<p><span class="sp_tutt">商品总额：</span><span class="smprice"><em>￥</em>{$order_info.goods_price}</span></p>
+					<p><span class="sp_tutt">运&nbsp;&nbsp;&nbsp;&nbsp;费：</span><span class="smprice"><em>￥</em>{$order_info.shipping_price}</span></p>
+					<p><span class="sp_tutt">优&nbsp;惠&nbsp;券：</span><span class="smprice">-<em>￥</em>{$order_info.coupon_price}</span></p>
+					<p><span class="sp_tutt">积分抵扣：</span><span class="smprice">-<em>￥</em>{$order_info.integral_money}</span></p>
+					<p><span class="sp_tutt">订单优惠：</span><span class="smprice">-<em>￥</em>{$order_info.order_prom_amount}</span></p>
+					<p><span class="sp_tutt">余额支付：</span><span class="smprice">-<em>￥</em>{$order_info.user_money}</span></p>
+					<p><span class="sp_tutt">应付总额：</span><span class="smprice red"><em>￥</em>{$order_info.order_amount}</span></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+	<include file="public/footer_index" />
+</div>
+<!--footer-e-->
+</body>
+</html>

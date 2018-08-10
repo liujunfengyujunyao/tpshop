@@ -1,0 +1,128 @@
+<include file="public/layout"/>
+<style>
+    table {
+        width: 80%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 70px;
+        border: 1px solid #f5f5f5;
+        text-align: center;
+    }
+    table th {
+        padding: 10px 0;
+        text-align: center;
+        background: #f5f5f5;
+    }
+    table td {
+        padding: 10px 0;
+        border: 1px solid #f5f5f5;
+    }
+    table td input[type='radio'] {
+        margin-left: 25px;
+    }
+    table td input[type='text'] {
+        width: 80%;
+    }
+    table td .disabled, table td .disabled:hover {
+        background: #ccc;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商城设置</h3>
+                <h5>网站全局内容基本选项设置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <foreach name="group_list" item="v" key="k">
+                    <li><a href="{:U('System/index',['inc_type'=> $k])}" <if condition="$k==$inc_type">class="current"</if>><span>{$v}</span></a></li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>
+        </ul>
+    </div>
+    <form method="post" enctype="multipart/form-data" name="form1" action="{:U('System/signHandle')}">
+        <input type="hidden" name="inc_type" value="{$inc_type}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label>签到送积分开关</label>
+                </dt>
+                <dd class="opt">
+                    <div class="onoff">
+                        <label for="switch1" class="cb-enable  <if condition="$config['signin'] eq 1">selected</if>">开启</label>
+                        <label for="switch0" class="cb-disable <if condition="$config['signin'] eq 0">selected</if>">关闭</label>
+                        <input type="radio" onclick="$('#switch_on_off').show();"  id="switch1"  name="signin" value="1" <if condition="$config['signin'] eq 1">checked="checked"</if> />
+                        <input type="radio" onclick="$('#switch_on_off').hide();" id="switch0" name="signin" value="0" <if condition="$config['signin'] eq 0">checked="checked"</if> />
+                    </div>
+                </dd>
+            </dl>
+
+            <div id="switch_on_off" <if condition="$config['signin'] eq 0">style="display: none;"</if>>
+                <table>
+                    <tr>
+                        <th width="15%">会员等级</th>
+                        <th width="40%">赠送积分方式</th>
+                        <th width="20%">
+                            <p>连续签到天数</p>
+                            <p class="notic">（连续签到多少天赠送积分）</p>
+                        </th>
+                        <th width="20%">赠送积分</th>
+                    </tr>
+                    <foreach name="level" id="vo">
+                        <tr>
+                            <td>{$vo.level_name}</td>
+                            <td>
+                                <input type="radio" name="param[{$vo.level_id}][sign_way]" value="0" onclick="disable(this)" <if condition="$vo[sign_way] eq 0">checked</if>/>每日签到送积分
+                                <input type="radio" name="param[{$vo.level_id}][sign_way]" value="1" onclick="disable(this)" <if condition="$vo[sign_way] eq 1">checked</if>/>连续签到送积分
+                            </td>
+                            <td>
+                                <input id="signcount" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" name="param[{$vo.level_id}][sign_count]" value="{$vo.sign_count|default=0}" type="text" <if condition="$vo[sign_way] eq 0">class="disabled" readonly</if>>
+                            </td>
+                            <td>
+                                <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" name="param[{$vo.level_id}][sign_integral]" value="{$vo.sign_integral|default=0}" type="text">
+                            </td>
+                        </tr>
+                    </foreach>
+                </table>
+            </div>
+
+            <div class="bot"><a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="document.form1.submit()">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function disable(obj) {
+        var val = $(obj).val();
+        if (val == 0) {
+            $(obj).parents('tr').find('#signcount').prop('readonly', true);
+            $(obj).parents('tr').find('#signcount').addClass('disabled');
+            $(obj).parents('tr').find('#signcount').val(0);
+        }else {
+            $(obj).parents('tr').find('#signcount').prop('readonly', false);
+            $(obj).parents('tr').find('#signcount').removeClass('disabled');
+        }
+    }
+</script>
+<div id="goTop">
+    <a href="JavaScript:void(0);" id="btntop">
+        <i class="fa fa-angle-up"></i>
+    </a>
+    <a href="JavaScript:void(0);" id="btnbottom">
+        <i class="fa fa-angle-down"></i>
+    </a>
+</div>
+</body>
+</html>

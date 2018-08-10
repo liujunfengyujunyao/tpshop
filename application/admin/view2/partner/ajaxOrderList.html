@@ -1,0 +1,56 @@
+<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+	<table>
+		<tbody>
+			<if condition="empty($orderList) eq true">
+			<tr data-id="0">
+				<td class="no-data" align="center" axis="col0" colspan="10">
+					<i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+				</td>
+			</tr>
+			<else/>
+			<volist name="$orderList" id="v">
+				<tr>
+					<td class="sign">
+						<div style="width: 24px;"><i class="ico-check"></i></div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 150px;">{$v.store_name}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 150px;">{$v.order_sn}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 150px;">{$v.consignee}:{$v.mobile}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 80px;" class="">{$v.total_amount}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 100px;" class="">{$order_status[$v['order_status']]}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 150px;">{$v.add_time|date="Y-m-d H:i:s",###}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 100px;" class=""><a class="btn green" href="{:U('Admin/Partner/order_info',array('order_id'=>$v['order_id']))}"><i class="fa fa-list-alt"></i>查看详情</a></div>
+					</td>
+				</tr>
+			</volist>
+			</if>
+		</tbody>
+	</table>
+</div>
+<!--分页位置-->
+{$page}
+<script>
+$(document).ready(function(){
+	$('#flexigrid>table>tbody>tr').click(function(){
+		$(this).toggleClass('trSelected');
+	});
+});
+
+$(".pagination a").click(function(){
+	var page = $(this).data('p');
+	ajax_get_list(cur_id, page);
+});
+</script>

@@ -1,0 +1,3 @@
+<?php
+//000000000000a:18:{s:16:"partner_storeage";s:2:"50";s:14:"store_storeage";s:2:"50";s:12:"reg_integral";s:3:"100";s:9:"file_size";s:1:"1";s:15:"default_storage";s:1:"1";s:15:"warning_storage";s:1:"1";s:3:"tax";s:1:"6";s:9:"is_remind";s:1:"0";s:17:"order_finish_time";s:0:"";s:17:"order_cancel_time";s:0:"";s:12:"hot_keywords";s:38:"霜|乳|面膜|原液|修护液|喷雾";s:8:"app_test";s:1:"0";s:4:"need";s:2:"10";s:3:"min";s:2:"10";s:20:"partner_max_storeage";s:3:"150";s:6:"invite";s:1:"0";s:15:"invite_integral";s:3:"100";s:7:"tuijian";s:1:"1";}
+?>

@@ -1,0 +1,102 @@
+<include file="public/layout" />
+<style>
+.ncap-order-style .ncap-order-details{
+	margin:20px auto;
+	border:1px solid #e6e6e6;
+
+}
+
+.ncap-order-details table thead th{
+	background-color:#FFFFFF
+}
+
+
+dd:before{
+	margin-left:3px;
+	content:' '
+}
+
+</style>
+<div class="page">
+  <div class="fixed-bar no-print">
+    <div class="item-title"><a class="back" href="javascript:history.back(-1)" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+      <div class="subject">
+        <h3>打印配货单</h3>
+        <h5>公司配货合伙人单据</h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="ncap-order-style">
+    <div class="titile">
+      <h3></h3>
+    </div>
+    <div class="ncap-order-details">
+      <div class="tabs-panels">
+        <div class="misc-info">
+          <h3>基本信息</h3>
+          <dl>
+            <dt>操作用户：</dt>
+            <dd>{$info.user_name}</dd>
+            <dt>配给合伙人：</dt>
+            <dd>{$info.name}</dd>
+          </dl>
+          <dl>
+            <dt>联系方式：</dt>
+            <dd><span class="text-red">{$info.phone}</span></dd>
+            <dt>收货地址：</dt>
+            <dd>{$info.province_name} {$info.city_name} {$info.town_name}</dd>
+          </dl>
+          <dl>
+            <dt>发货时间：</dt>
+            <dd>{$info.addtime|date='Y-m-d H:i:s',###}</dd>
+            <dt>收货时间：</dt>
+            <dd>{$info.confirm_time|default='未确认收货'}</dd>
+          </dl>
+          <dl>
+            <dt>物流名称：</dt>
+            <dd>{$info.express_name}</dd>
+            <dt>物流单号：</dt>
+            <dd><span class="text-red">{$info.express_code}</span></dd>
+          </dl>
+        </div>
+        <div class="goods-info">
+          <h4>商品信息</h4>
+          <table>
+            <thead>
+            <tr>
+              <th colspan="2">商品</th>
+              <th>发货数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="orderGoods" id="goods">
+              <tr>
+                <td colspan="2" style="text-align: center;"><a href="{:U('Goods/addEditGoods',array('id'=>$goods['goods_id']))}" target="_blank">{$goods.goods_name}</a><br/></td>
+                <td class="w240">{$goods.goods_num}</td>
+              </tr>
+            </volist>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div style="width:1000px" class="no-print">
+      <a href="javascript:printDiv();" style="float:center" class="ncap-btn-big ncap-btn-green" ><i class="fa fa-print"></i>打印订单</a>
+    </div>
+  </div>
+  </div>
+
+
+
+<script type="text/javascript">
+    function printDiv()
+    {
+        var oldStr = document.body.innerHTML;
+        $('.no-print').hide();
+        window.print();
+        document.body.innerHTML = oldStr;
+    }
+</script>
+</body>
+</html>

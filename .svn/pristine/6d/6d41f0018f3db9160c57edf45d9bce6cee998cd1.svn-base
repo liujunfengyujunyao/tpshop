@@ -1,0 +1,71 @@
+<include file="public/layout"/>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px; "></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <a class="back" href="javascript:history.back()" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>风尚美人柜管理 - 编辑美人柜</h3>
+                <h5>网站基础设施风尚美人柜管理</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="handleForm" method="post">
+        <input name="id" type="hidden" value="{$sark['id']}"/>
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>风尚美人柜识别码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="sark_code" value="{$sark.sark_code}" class="input-txt" readonly="readonly" />
+                    <p class="notic">风尚美人柜识别码</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>工厂店名字</label>
+                </dt>
+                <dd class="opt">
+                    <select name="store_id" id="store_id">
+                        <option value="0">暂无绑定工厂店</option>
+                        <volist name="stores" id="s">
+                            <option <if condition="$sark['store_id'] eq $s['store_id']">selected="selected"</if> value="{$s.store_id}">{$s.store_name}</option>
+                        </volist>
+                    </select>
+                    <p class="notic">工厂店名字(非特殊情况请勿轻易改动)</p>
+                </dd>
+            </dl>
+            <div class="bot"><a onclick="checkForm()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    /*function checkForm(){
+        $('#handleForm').submit();
+    }*/
+    function checkForm(){
+        $.ajax({
+            type: "POST",
+            url: "{:U('Admin/Sark/Sark_info')}",
+            data: $('#handleForm').serialize(),
+            dataType: "json",
+            error: function(){
+                layer.alert("服务器繁忙,请稍后重试!");
+            },
+            success: function(data){
+                if (data.status == 1){
+                    layer.msg(data.msg,{icon: 1});
+                    location.href = "{:U('Admin/Sark/index')}";
+                }else{
+                    layer.msg(data.msg,{icon: 2});
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

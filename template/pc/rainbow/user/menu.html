@@ -1,0 +1,69 @@
+<div class="le-menu fl">
+	<div class="menu-ul">
+		<if condition="$user.level eq 9">
+		<ul>
+			<li class="ma"><i class="account-acc6"></i>工厂店</li>
+			<li><a href="{:U('Home/Store/order_list')}">工厂店订单</a></li>
+			<li><a href="{:U('Home/Store/return_goods_list')}">退换货管理</a></li>
+			<li><a href="{:U('Home/Store/store_stock_list')}">工厂店库存</a></li>
+			<li><a href="{:U('Home/Store/stock_log')}">库存日志</a></li>
+			<li><a href="{:U('Home/Store/apply')}">补货申请记录</a></li>
+			<li><a href="{:U('Home/Store/delivery')}">发货单</a></li>
+		</ul>
+		<ul>
+			<li class="ma"><i class="account-acc6"></i>会员管理</li>
+			<li><a href="{:U('Home/Order/lower_list')}">店会员</a></li>
+			<!-- <li><a href="{:U('Home/Order/income')}">我的收益</a></li> -->
+		</ul>
+		</if>
+		<ul>
+			<li class="ma"><i class="account-acc1"></i>交易中心</li>
+			<li><a href="{:U('Home/Order/order_list')}">我的订单</a></li>
+			<!--<li><a href="">我的预售</a></li>-->
+			<li><a href="{:U('Home/Order/comment')}">我的评价</a></li>
+		</ul>
+		<ul>
+			<li class="ma"><i class="account-acc2"></i>资产中心</li>
+			<li><a href="{:U('Home/User/coupon')}">我的优惠券</a></li>
+			<!--<li><a href="">我的购物卡</a></li>-->
+			<li><a href="{:U('Home/User/recharge')}">账户余额</a></li>
+			<li><a href="{:U('Home/User/account')}">我的积分</a></li>
+			<!--<li><a href="">积分换券明细</a></li>-->
+		</ul>
+		<ul>
+			<li class="ma"><i class="account-acc3"></i>关注中心</li>
+			<li><a href="{:U('Home/User/goods_collect')}">我的收藏</a></li>
+			<!--<li><a href="">曾经购买</a></li>-->
+			<li><a href="{:U('Home/User/visit_log')}">我的足迹</a></li>
+		</ul>
+		<ul>
+			<li class="ma"><i class="account-acc4"></i>个人中心</li>
+			<li><a href="{:U('Home/User/info')}">个人信息</a></li>
+			<li><a href="{:U('Home/User/bind_auth')}">账号绑定</a></li>
+			<li><a href="{:U('Home/User/address_list')}">地址管理</a></li>
+			<li><a href="{:U('Home/User/safety_settings')}">安全设置</a></li>
+		</ul>
+		<ul>
+			<li class="ma"><i class="account-acc5"></i>服务中心</li>
+			<!--<li><a href="">我的发票</a></li>-->
+			<li><a href="{:U('Home/Order/return_goods_list')}">退货管理</a></li>
+		</ul>
+
+		<if condition="$user.level eq 8"> <!-- 用户等级为合伙人 -->
+		<ul>
+			<li class="ma"><i class="account-acc6"></i>工厂店管理</li>
+			<li><a href="{:U('Home/Partner/storeList')}">工厂店列表</a></li>
+			<li><a href="{:U('Home/Partner/orderList')}">工厂店订单</a></li>
+			<li><a href="{:U('Home/Partner/store_apply')}">工厂店补货申请</a></li>
+			<li><a href="{:U('Home/Partner/delivery')}">配货单</a></li>
+		</ul>
+		<ul>
+			<li class="ma"><i class="account-acc7"></i>库存管理</li>
+			<li><a href="{:U('Home/Partner/stockList')}">库存列表</a></li>
+			<li><a href="{:U('Home/Partner/stockLog')}">库存日志</a></li>
+			<li><a href="{:U('Home/Partner/apply')}">补货申请</a></li>
+			<li><a href="{:U('Home/Partner/invoiceList')}">发货单</a></li>
+		</ul>
+		</if>
+	</div>
+</div>

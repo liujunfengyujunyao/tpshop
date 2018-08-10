@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>搜索列表</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+	<script src="__STATIC__/js/lazyload.min.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen"/>
+</head>
+<body>
+<!--header-s-->
+<include file="public/header"/>
+<!--header-e-->
+<div id="tfs-hu">
+	<div class="container tfs-screen">
+		<div class="row screen">
+			<adv  pid="406" limit="1" item="v">
+				<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+			</adv>
+			<div class="seat">
+				<span class="float"> 搜索结果 > </span>
+				<a href="{:U('Home/Goods/search',array('q'=>$filter_param['q']))}" class="float">{$filter_param['q']}</a>
+				<if condition="$filter_menu neq null">
+					<span class="float"> > </span>
+					<foreach name="filter_menu" item="v" key="k">
+						<a title="{$v['text']}" href="{$v['href']}" class="u-av-label"><b>{$v['text']}</b><i></i></a>
+					</foreach>
+				</if>
+				<div class="clear"></div>
+			</div>
+			<!-- 品牌筛选 start -->
+			<if condition="$filter_brand neq null">
+				<p class="brand">品牌：
+					<foreach name="filter_brand" item="v" key="k">
+						<a href="{$v[href]}" data-href="{$v[href]}"  data-key='brand' data-val='{$v[id]}'>
+							<span>{$v[name]}</span>
+						</a>
+					</foreach>
+				</p>
+			</if>
+			<!-- 品牌筛选 end -->
+			<!-- 价格筛选 start -->
+			<if condition="$filter_price neq null">
+				<ul class="Price">
+					<li>价格 :</li>
+					<foreach name="filter_price" item="v" key="k">
+						<li><a href="{$v[href]}">{$v[value]}</a></li>
+					</foreach>
+				</ul>
+			</if>
+			<!-- 价格筛选 end -->
+			<div class="clear"></div>
+			<!-- 规格筛选 start -->
+			<foreach name="filter_spec" item="v" key="k">
+				<if condition="!empty($v['name'])">
+					<ul class="Price">
+						<li>{$v.name}</li>
+						<foreach name="v[item]" item="v2" key="k2">
+							<li><a href="{$v2[href]}" data-href="{$v2[href]}" data-key='{$v2[key]}' data-val='{$v2[val]}'>{$v2[item]}</a></li>
+						</foreach>
+					</ul>
+					<div class="clear"></div>
+				</if>
+			</foreach>
+			<!-- 规格筛选 end -->
+			<!-- 属性筛选 start -->
+			<foreach name="filter_attr" item="v" key="k">
+				<ul class="Price">
+					<li>{$v.attr_name}：</li>
+					<foreach name="v[attr_value]" item="v2" key="k2">
+						<li><a href="{$v2[href]}" data-href="{$v2[href]}" data-val='{$v2[val]}' data-key='{$v2[key]}'>{$v2[attr_value]}</a></li>
+					</foreach>
+				</ul>
+				<div class="clear"></div>
+			</foreach>
+			<!-- 属性筛选 end -->
+		</div>
+		<div class="clear"></div>
+		<div class="container">
+			<div class="row volume">
+				<div class="col-xs-10">
+					<ul>
+						<li>
+							<a href="<?php echo urldecode(U("/Home/Goods/goodsList",$filter_param,''));?>" <if condition="$Request.param.sort eq ''">class="current"</if>>综合</a>
+						</li>
+						<li>
+							<a href="<?php echo urldecode(U("/Home/Goods/goodsList",array_merge($filter_param,array('sort'=>'sales_sum')),''));?>" <if condition="$Request.param.sort eq 'sales_sum'">class="current"</if>>销量</a>
+						</li>
+						<if condition="$Request.param.sort_asc eq 'desc'">
+							<li>
+								<a href="<?php echo urldecode(U("/Home/Goods/goodsList",array_merge($filter_param,array('sort'=>'shop_price','sort_asc'=>'asc')),''));?>" <if condition="$Request.param.sort eq 'shop_price'">class="current"</if>>价格<i class="glyphicon glyphicon-chevron-up"></i></a>
+							</li>
+							<else />
+							<li>
+								<a href="<?php echo urldecode(U("/Home/Goods/goodsList",array_merge($filter_param,array('sort'=>'shop_price','sort_asc'=>'desc')),''));?>" <if condition="$Request.param.sort eq 'shop_price'">class="current"</if>">价格<i class="glyphicon glyphicon-chevron-down"></i></a>
+							</li>
+						</if>
+						<li>
+							<a href="<?php echo urldecode(U("/Home/Goods/goodsList",array_merge($filter_param,array('sort'=>'comment_count')),''));?>" <if condition="$Request.param.sort eq 'comment_count'">class="current"</if>>评论</a>
+						</li>
+						<li>
+							<a href="<?php echo urldecode(U("/Home/Goods/goodsList",array_merge($filter_param,array('sort'=>'is_new')),''));?>" <if condition="$Request.param.sort eq 'is_new'">class="current"</if>>新品</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-xs-2">
+					<php>$nowPage = $page->nowPage;$totalPages = $page->totalPages;</php>
+					<div class="commodity">共{$page->totalRows}件商品
+						&nbsp;&nbsp;&nbsp;{$nowPage}/{$totalPages}&nbsp;&nbsp;&nbsp;
+						<a <if condition="$nowPage gt 1">href="{:U('Home/Goods/goodsList',array_merge($filter_param,array('p'=>$nowPage-1)))}" </if>>&lt;</a>
+						<a <if condition="$nowPage lt $totalPages">href="{:U('Home/Goods/goodsList',array_merge($filter_param,array('p'=>$nowPage+1)))}" </if>>&gt;</a>
+					</div>
+				</div>
+			</div><!--volume-->
+			<div class="row general">
+				<if condition="$goods_list neq null">
+					<div class="tfsgeneral">
+						<volist name="goods_list" id="v" key="k" mod="5">
+							<dl <if condition="$k%5 eq 1">class='borderLeft'</if>>
+							<dt><a href="{:U('/Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}"><img src="{$v.goods_id|goods_thum_images=140,140}" width="140" height="140" /></a></dt>
+							<dd><a href="{:U('/Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}">{$v[goods_name]}</a></dd>
+							<dd class="money">￥{$v[shop_price]}</dd>
+							</dl>
+						</volist>
+					</div>
+					<else />
+					<div class="noGoods">
+						抱歉，没有找到您要搜索的商品！
+					</div>
+				</if>
+			</div><!--general-->
+			<div class="clear"></div>
+			<div class="container like">
+				<div class="row liketop">
+					<div class="col-xs-11 left">猜你喜欢</div>
+					<div class="col-xs-1 right">
+						<img src="__STATIC__/images/huan.png" /><a href="javascript:void(0)" onclick="favourite();">换一批</a>
+					</div>
+				</div>
+				<div class="row likedown">
+					<div class="tfsgeneral" id="favourite_goods"></div><!--tfsgeneral-->
+				</div>
+			</div>
+
+			<adv  pid="405" limit="1" item="v">
+				<div class="row purple">
+					<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+				</div>
+			</adv>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<include file="public/footer"/>
+<!--footer-e-->
+<script type="text/javascript">
+	$(function() {
+		favourite();
+	});
+	/****猜你喜欢****/
+	var favorite_page = 0;
+	function favourite()
+	{
+		favorite_page++;
+		$.ajax({
+			type: "GET",
+			url: "/index.php?m=Home&c=Index&a=ajax_favorite&i=5&p="+favorite_page,//+tab,
+			success: function (data) {
+				if(data == ''){
+					favorite_page = 0;
+					favourite();
+				}else{
+					$('#favourite_goods').html(data);
+					lazy_ajax();
+				}
+			}
+		});
+	}
+</script>
+</body>
+</html>

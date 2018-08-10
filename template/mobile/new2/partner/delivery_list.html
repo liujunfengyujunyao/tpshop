@@ -1,0 +1,81 @@
+<include file="public/header" title="收货单" body="g4"/>
+<include file="public/header_nav" title="收货单" href="javascript:history.back(-1)"/>
+<script src="__PUBLIC__/static/js/layer/layer.js" type="text/javascript"></script>
+
+<div class="allaccounted" id="apply">
+    <div class="maleri30">
+        <if condition="empty($list)">
+            <div class="ma-to-20">
+                <div class="nonenothing">
+                    <img src="__STATIC__/images/none.png"/>
+                    <p>暂无记录</p>
+                </div>
+            </div>
+        <else/>
+            <div class="allpion">
+                <div class="fll_acc fll_acc-h">
+                    <ul>
+                        <li class="orderid-h">发货时间</li>
+                        <li class="price-h">操作人员</li>
+                        <li class="time-h">操作</li>
+                    </ul>
+                </div>
+                <foreach name="list" item="vo">
+                    <div class="fll_acc">
+                        <div class="des-h">
+                            <span style="padding-left: 15px;">物流名称：{$vo.express_name}</span>
+                            <span style="float: right; padding-right:15px;">物流单号：{$vo.express_code}</span>
+                        </div>
+                        <ul>
+                            <li class="orderid-h">
+                                <if condition="$vo.addtime eq null">
+                                    无
+                                 <else/>
+                                    <p>{$vo.addtime|date="Y-m-d H:i:s",###}</p>
+                                </if>
+                            </li>
+                            <li class="price-h">{$vo.user_name}</li>
+                            <li class="time-h">
+                                <a href="{:U('Mobile/Partner/deliveryInfo', array('id'=>$vo['id']))}">查看详情</a>
+                                <if condition="empty($vo.confirm_time)">
+                                    <span>|</span>
+                                    <a href="javascript:void(0)" onclick="order_confirm({$vo.id})" class="red">确认收货</a>
+                                </if>
+                            </li>
+                        </ul>
+                    </div>
+                </foreach>
+            </div>
+
+        </if>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    //确定收货
+    function order_confirm(id){
+        layer.confirm("你确定收到货了吗?",{
+            btn:['确定','取消']
+        },function(){
+            $.ajax({
+                type : 'post',
+                url : '/index.php?m=Mobile&c=Partner&a=delivery_confirm&id='+id,
+                dataType : 'json',
+                success : function(data){
+                    if(data.status == 1){
+                        showErrorMsg(data.msg);
+                        location.reload();
+                    }else{
+                        showErrorMsg(data.msg);
+                    }
+                },
+                error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    showErrorMsg('网络失败，请刷新页面后重试');
+                }
+            })
+        }, function(index){
+            layer.close(index);
+        });
+    }
+</script>

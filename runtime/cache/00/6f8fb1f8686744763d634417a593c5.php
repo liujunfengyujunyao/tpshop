@@ -1,0 +1,3 @@
+<?php
+//000000000001a:4:{i:0;a:6:{s:2:"id";i:1;s:4:"name";s:15:"肽风尚●护";s:7:"is_show";i:1;s:6:"is_new";i:1;s:4:"sort";i:3;s:3:"url";s:36:"/index.php/Home/Goods/goodsList/id/1";}i:1;a:6:{s:2:"id";i:2;s:4:"name";s:15:"肽风尚●养";s:7:"is_show";i:1;s:6:"is_new";i:1;s:4:"sort";i:2;s:3:"url";s:36:"/index.php/Home/Goods/goodsList/id/2";}i:2;a:6:{s:2:"id";i:3;s:4:"name";s:15:"肽风尚●调";s:7:"is_show";i:1;s:6:"is_new";i:1;s:4:"sort";i:1;s:3:"url";s:36:"/index.php/Home/Goods/goodsList/id/3";}i:3;a:6:{s:2:"id";i:4;s:4:"name";s:9:"体验品";s:7:"is_show";i:1;s:6:"is_new";i:1;s:4:"sort";i:0;s:3:"url";s:36:"/index.php/Home/Goods/goodsList/id/7";}}
+?>

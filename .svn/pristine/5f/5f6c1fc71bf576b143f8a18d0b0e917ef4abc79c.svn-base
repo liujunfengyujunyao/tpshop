@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>预售列表-{$tpshop_config['shop_info_store_title']}</title><meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}"/>
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}"/>
+    <link rel="stylesheet" href="__STATIC__/css/promoteList.css" type="text/css">
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+</head>
+<body>
+<!--------头部开始-------------->
+<include file="public/header" />
+<!--------头部结束-------------->
+<div class="shop-sort">
+    <div class="J-brand-item-page">
+        <script>
+            // 倒计时
+            function GetRTime2(){
+                //var text = GetRTime('2016/02/27 17:34:00');
+            <foreach name="pre_sell_list" item="v" key="k" >
+                <if condition="$v['end_time'] lt time()">
+                    var text{$v[goods_id]} = "活动已结束";
+                    <elseif condition="($v['end_time'] gt time()) AND ($v['start_time'] lt time())">
+                    var text{$v[goods_id]} = "预售中 剩余" + GetRTime('{$v.end_time|date="Y/m/d H:i:s",###}');
+                    <else />
+                    var text{$v[goods_id]} = "预热中 剩余" + GetRTime('{$v.end_time|date="Y/m/d H:i:s",###}');
+                </if>
+                $("#surplus_text{$v[goods_id]}").text(text{$v[goods_id]});
+            </foreach>
+            }
+            setInterval(GetRTime2,1000);
+        </script>
+        <volist name="pre_sell_list" id="vo">
+        <div class="brand-item">
+            <a href="{:U('Home/Activity/pre_sell',array('id'=>$vo['act_id']))}" target="_blank" class="brand-item-hover">
+                <img src="{$vo.goods_id|goods_thum_images=621,279}" class="brand-img" alt="{$vo.goods_name}" style="display: inline;">
+                <div class="pms-info  J-info-pms" title="{$vo.goods_name}">{$vo.goods_name}</div>
+                <div class="brand-info"><span class="brand-discount">
+                    <span class="salebg2">￥{$vo.price}</span></span><span class="brand-name" title="{$vo.act_name}">{$vo.act_name}</span>
+                    <p class="brand-time">
+                        <i class="time-icon"></i>
+                        <span class="J_time_icon J_wrap_pro_1479866340" id="surplus_text{$vo[goods_id]}"></span>
+                    </p>
+                </div>
+            </a>
+            <!--<span class="ui-btn-fav">-->
+                <!--<span class="ui-btn-fav-like" role="button">-->
+                    <!--<i class="vipFont"></i>-->
+                    <!--<span class="fav-hidden">查看详情</span>-->
+                <!--</span>-->
+            <!--</span>-->
+        </div>
+        </volist>
+    </div>
+</div>
+
+<!--------footer-开始-------------->
+<include file="public/footer" />
+<!--------footer-结束-------------->
+<script>
+    $(function(){
+        $('.ui-btn-fav').click(function() {
+            $(this).toggleClass('fav-click');
+        });
+    })
+</script>
+</body>
+</html>

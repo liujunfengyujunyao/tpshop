@@ -1,0 +1,7 @@
+<volist name="favourite_goods" id="v" key="k">
+    <dl <if condition="$k%5 eq 1">class='borderLeft'</if>>
+        <dt><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}"><img src="{$v.goods_id|goods_thum_images=140,140}" width="140" height="140"/></a></dt>
+        <dd><a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}">{$v.goods_name}</a></dd>
+        <dd class="money">￥{$v.shop_price}</dd>
+    </dl>
+</volist>

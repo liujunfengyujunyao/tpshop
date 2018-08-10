@@ -1,0 +1,166 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title">
+			<div class="subject">
+				<h3>合伙人概况 - 返利统计</h3>
+				<h5>网站系统合伙人返利统计</h5>
+			</div>
+			<ul class="tab-base nc-row">
+				<foreach name="group_list" item="v" key="k">
+					<li><a href="{:U('Report/partner_info',['inc_type'=> $k])}" <if condition="$k==$inc_type">class="current"</if>><span>{$v}</span></a></li>
+				</foreach>
+			</ul>
+		</div>
+	</div>
+	<!-- 操作说明 -->
+	<div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
+		</div>
+		<ul>
+			<li>合伙人返利统计</li>
+			<li>可根据时间查询某个时间段的合伙人返利统计</li>
+		</ul>
+	</div>
+	<div class="flexigrid">
+		<div class="mDiv">
+			<div class="ftitle">
+				<h3>明细列表</h3>
+				<h5>(共{$pager->totalRows}条记录)</h5>
+			</div>
+			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+			<form class="navbar-form form-inline" id="search-form" method="post" onSubmit="return check_form();">
+				<div class="sDiv">
+					<div class="sDiv2" style="margin-right: 10px;">
+						<input type="text" size="30" name="start_time" id="start_time" value="{$start_time}" placeholder="起始时间" class="qsbox">
+						<input type="button" class="btn" value="起始时间">
+					</div>
+					<div class="sDiv2" style="margin-right: 10px;">
+						<input type="text" size="30" name="end_time" id="end_time" value="{$end_time}" placeholder="截止时间" class="qsbox">
+						<input type="button" class="btn" value="截止时间">
+					</div>
+					<div class="sDiv2">
+						<input size="30" placeholder="合伙人手机号" value="{$Think.request.mobile}" name="mobile" class="qsbox" type="text">
+					</div>
+					<div class="sDiv2">
+						<input class="btn" value="搜索" type="submit">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<thead>
+					<tr>
+						<th class="sign" axis="col0">
+							<div style="width: 24px;"><i class="ico-check"></i></div>
+						</th>
+						<th align="center" abbr="article_title" axis="col3" class="">
+							<div style="text-align: center; width: 50px;" class="">ID</div>
+						</th>
+						<th align="center" abbr="article_title" axis="col3" class="">
+							<div style="text-align: center; width: 150px;" class="">合伙人姓名</div>
+						</th>
+						<th align="center" abbr="article_title" axis="col3" class="">
+							<div style="text-align: center; width: 150px;" class="">手机号</div>
+						</th>
+						<th align="center" abbr="article_title" axis="col3" class="">
+							<div style="text-align: center; width: 150px;" class="">总收益（订单数）</div>
+						</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+					<if condition="empty($list) eq true">
+						<tr data-id="0">
+							<td class="no-data" align="center" axis="col0" colspan="50">
+								<i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+							</td>
+						</tr>
+					<else/>
+					<foreach name="list" item="vo" key="k" >
+						<tr>
+							<td class="sign">
+								<div style="width: 24px;"><i class="ico-check"></i></div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 50px;">{$k+1}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 150px;">{$vo.nickname}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 150px;">{$vo.mobile}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 150px;">{$vo.money}（共{$vo.count}笔订单）</div>
+							</td>
+						</tr>
+					</foreach>
+					</if>
+					</tbody>
+				</table>
+			</div>
+			<div class="iDiv" style="display: none;"></div>
+		</div>
+		<!--分页位置-->
+		{$page} </div>
+</div>
+<script>
+$(document).ready(function(){
+	// 表格行点击选中切换
+	$('#flexigrid > table>tbody >tr').click(function(){
+		$(this).toggleClass('trSelected');
+	});
+
+	// 点击刷新数据
+	$('.fa-refresh').click(function(){
+		location.href = location.href;
+	});
+	// 起始位置日历控件
+	laydate.skin('molv');//选择肤色
+	var start = {
+		elem: '#start_time',
+		format: 'YYYY-MM-DD', //日期格式
+		istime: false, //是否开启时间选择
+		choose: function(datas){
+			end.min = datas; //开始日选好后，重置结束日的最小日期
+			end.start = datas //将结束日的初始值设定为开始日
+		}
+	};
+	var end = {
+		elem: '#end_time',
+		format: 'YYYY-MM-DD', //日期格式
+		istime: false, //是否开启时间选择
+		choose: function(datas){
+			start.max = datas; //结束日选好后，重置开始日的最大日期
+		}
+	};
+	laydate(start);
+	laydate(end);
+});
+
+function check_form(){
+	var start_time = $.trim($('#start_time').val());
+	var end_time =  $.trim($('#end_time').val());
+	if(start_time == '' ^ end_time == ''){
+		layer.alert('请选择完整的时间间隔', {icon: 2});
+		return false;
+	}
+	return true;
+}
+</script>
+</body>
+</html>

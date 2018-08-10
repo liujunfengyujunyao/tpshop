@@ -1,0 +1,166 @@
+<include file="public/layout" />
+<style>
+	body {overflow-x: hidden;}
+	.express {padding: 0 0 10px 10px}
+	.bot {text-align: center;}
+	.sign {cursor: pointer;}
+	input[type='number'] {-moz-appearance:textfield;}
+</style>
+<form class="form-horizontal" id="handleForm" method="post">
+	<div class="flexigrid">
+		<div class="express">
+			物流名称：<input type="text" name="express_name" placeholder="请填写物流名称" /> 物流单号：<input type="text" name="express_code" placeholder="请填写物流单号" />
+		</div>
+		
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<th axis="col0">
+								<div style="width: 50px;"></div>
+							</th>
+							<th align="center" axis="col4" class="">
+								<div style="text-align: center; width: 620px;" class="">商品名称</div>
+							</th>
+							<th align="center" axis="col5" class="">
+								<div style="text-align: center; width: 155px;" class="">补货数量</div>
+							</th>
+							<th style="width:100%" axis="col7">
+								<div></div>
+							</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+						<tr>
+							<td class="f-sign" axis="col0">
+								<div style="text-align: center; width: 50px;">
+									<a title="添加行" onclick="addLine()" class="plus"><span class="fa fa-plus"></span></a>
+									<a title="删除行" onclick="delLine(this)" class="minus"><span class="fa fa-minus"></span></a>
+								</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 620px;">
+									<select onchange="getId(this)">
+										<option value="">请选择</option>
+										<volist name='list' id='v'>
+										<option value="{$v.goods_id}" max="{$v.max_num}">{$v.goods_name}</option>
+										</volist>
+									</select>
+								</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 155px;">
+									<input type="text" class="number" value="1" onkeyup='this.value=this.value.replace(/\D/gi,"")'/>
+								</div>
+							</td>
+							<td align="" class="" style="width: 100%;">
+								<div>&nbsp;</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="bot">
+			<a onclick="checkForm();" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认补货</a>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+function addLine(){
+	var content = $("#flexigrid table tr:first").html();
+	content = "<tr>" + content + "</tr>";
+	$("#flexigrid table tr:last").after(content);
+	$("#flexigrid table tr:last").find(".number").css('border', '1px solid #dfdfdf');
+}
+function delLine(obj){
+	var length = $("#flexigrid tr").length;
+	if (length == 1) {
+		layer.alert('请至少保留一项！');
+	}else {
+		$(obj).parents('tr').remove();
+	}
+}
+function getId(opt) {
+	var id = $(opt).val();
+	var name1 = "goods['" + id + "'][goods_id]";
+	var name2 = "goods['" + id + "'][number]";
+	$(opt).attr('name', name1);
+	$(opt).parents('tr').find('.number').attr('name', name2);
+}
+function checkForm(){
+	if ($("input[name='express_name']").val() == false) {
+		layer.alert('请填写物流名称！');
+		return false;
+	}
+	if ($("input[name='express_code']").val() == false) {
+		layer.alert('请填写物流单号！');
+		return false;
+	}
+
+	var arr = [];
+	var res = 0;
+	//var storeage = "{$storeage}";
+	$("#flexigrid tr").each(function(index, el) {
+		var goods = $(el).find('select').val();
+		var max = $(el).find("option:selected").attr("max");
+		//max = (max != false )? max : storeage;
+		var val = $(el).find(".number").val();
+		$(el).find('.number').css("border", '1px solid #dfdfdf');
+
+		if ($.inArray(goods, arr) == -1) {
+			if (goods != false) {
+				arr.push(goods);
+			}
+		}else {
+			res = 1;	//重复选择商品
+			return false;
+		}
+
+		if (parseInt(max) < parseInt(val)) {
+			res = 2;	//当前商品补货数量超过最大库存
+			$(el).find('.number').css("border", '1px solid #f00');
+			return false;
+		}
+	});
+
+	if (arr.length == 0) {
+		layer.alert('请至少选择一项商品！');
+	}else if (res == 1) {
+		layer.alert('请勿重复添加商品！');
+	}else if (res == 2) {
+		layer.alert('补货数量超过最大库存量！');
+	}else {
+		var id = "{$id}";
+		$.ajax({
+			type: "POST",
+			url: "/index.php?m=Admin&c=Partner&a=delivery&id="+id,
+			data: $('#handleForm').serialize(),
+			dataType: "json",
+			error: function () {
+				layer.alert("服务器繁忙, 请联系管理员!");
+			},
+			success: function (data) {
+				if (data.status == 1) {
+					layer.msg(data.msg, {icon: 1, time: 2000}, function() {
+						//关闭iframe页面
+						var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+						parent.layer.close(index);
+						parent.location.href = "{:U('Admin/Order/delivery_list', array('inc_type'=>'partner_order_list'))}";
+					});
+				} else {
+					layer.msg(data.msg, {icon: 2});
+				}
+			}
+		});
+	}
+}
+</script>

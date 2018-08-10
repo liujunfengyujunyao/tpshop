@@ -1,0 +1,32 @@
+<include file="public/header" title="工厂店列表" body="g4"/>
+<include file="public/header_nav" title="工厂店列表" href="javascript:history.back(-1)"/>
+<div class="quedbox bg_white">
+    <if condition="empty($list)">
+        <div class="nonenothing">
+            <img src="__STATIC__/images/none.png"/>
+            <p>暂无下属工厂店</p>
+        </div>
+    <else/>
+        <div class="floor list7 ma-to-20">
+            <foreach name="list" item="vo">
+                <div class="myorder p">
+                    <div class="content30">
+                        <a href="{:U('Mobile/Partner/storeInfo', array('store_id'=>$vo['store_id']))}">
+                            <div class="order">
+                                <div class="fl">
+                                    <span>{$vo.store_name}</span>
+                                </div>
+                                <div class="fr">
+                                    <if condition="$vo.status eq 1">
+                                        <span style="color: #f02b2b">需补货</span>
+                                    </if>
+                                    <i class="Mright"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </foreach>
+        </div>
+    </if>
+</div>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>补货申请详情-{$tpshop_config['shop_info_store_title']}</title>
+<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+<link rel="shortcut  icon" type="image/x-icon" href="__STATIC__/images/favicon.ico" media="screen"  />
+<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+<style>
+.liuchaar {margin-top: 40px;}
+.order-alone-li th {background: #f9f9f9; height: 40px;}
+.order-alone-li tr {border-bottom: 1px solid #f5f5f5;}
+</style>
+</head>
+
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+	<div class="w1224">
+		<div class="g-crumbs">
+		<a href="{:U('Home/User/index')}">我的商城</a>
+            <i class="litt-xyb"></i>
+            <span>补货申请记录详情</span>
+			<!-- <volist name='navigate_user' id='vo'>
+				<a href="{$vo}">{$key}</a><if condition="$i neq count($navigate_user)"><i class="litt-xyb"></i></if>
+			</volist> -->
+		</div>
+		<div class="home-main">
+			<div class="com-topyue">
+				<div class="wacheng fl">
+					<if condition="$info.status eq 0">
+						<h3 style="font: 700 20px/34px 'Microsoft YaHei';color: #e4393c; padding-top:65px;">等待管理员审核</h3>
+					</if>
+					<if condition="($info.status eq 1) AND (empty($info.confirm_time))">
+						<p class="ddn1"><span>物流名称：</span><span>{$info.express_name}</span></p>
+						<p class="ddn1"><span>物流单号：</span><span>{$info.express_code}</span></p>
+						<a class="ddn3" style="margin-top:20px;" href="javascript:;" onclick="order_confirm({$info.delivery_id})">确认收货</a>
+					</if>
+					<if condition="($info.status eq 1) AND ($info.confirm_time)">
+						<p class="ddn1"><span>物流名称：</span><span>{$info.express_name}</span></p>
+						<p class="ddn1"><span>物流单号：</span><span>{$info.express_code}</span></p>
+						<h3 class="ddn2">已完成</h3>
+					</if>
+					<if condition="$info.status eq 2">
+						<h3 style="font: 700 24px/34px 'Microsoft YaHei';color: #e4393c; padding-top:20px;">申请失败</h3>
+					</if>
+				</div>
+				<div class="wacheng2 fr">
+					<div class="liuchaar p">
+						<ul>
+							<li>
+								<div class="aloinfe">
+									<i class="y-comp"></i>
+									<div class="ddfon">
+										<p>提交申请</p>
+										<p>{$info.addtime|date='Y-m-d',###}</p>
+										<p>{$info.addtime|date='H:i:s',###}</p>
+									</div>
+								</div>
+							</li>
+							<li><i class='y-comp91 <if condition="$info[status] neq 1">top322</if>'></i></li>
+							<li>
+								<div class="aloinfe fime1">
+									<i class='y-comp2 <if condition="$info[status] neq 1">lef64</if>'></i>
+									<div class="ddfon">
+										<p>审核通过</p>
+										<if condition="$info.status eq 1">
+										<p>{$info.edittime|date='Y-m-d',###}</p>
+										<p>{$info.edittime|date='H:i:s',###}</p>
+										</if>
+									</div>
+								</div>
+							</li>
+							<li><i class='y-comp91 <if condition="empty($info[express_code]) eq true">top322</if>'></i></li>
+							<li>
+								<div class="aloinfe fime2">
+									<i class='y-comp3 <if condition="empty($info[express_code]) eq true">lef64</if>'></i>
+									<div class="ddfon">
+										<p>管理员发货</p>
+										<if condition="$info[express_code]">
+											<p>{$info.delivery_time|date='Y-m-d',###}</p>
+											<p>{$info.delivery_time|date='H:i:s',###}</p>
+										</if>
+									</div>
+								</div>
+							</li>
+							<li><i class='y-comp91 <if condition="empty($info[express_code]) eq true">top322</if>'></i></li>
+							<li>
+								<div class="aloinfe fime3">
+									<i class='y-comp4 <if condition="empty($info[express_code]) eq true">lef64</if>'></i>
+									<div class="ddfon">
+										<p>等待收货</p>
+										<if condition="$info[delivery_time] gt 0">
+											<p>{$info.delivery_time|date='Y-m-d H:i:s',###}</p>
+										</if>
+									</div>
+								</div>
+							</li>
+							<li><i class='y-comp91 <if condition="empty($info[confirm_time]) eq true">top322</if>'></i></li>
+							<li>
+								<div class="aloinfe fime4">
+									<i class='y-comp5 <if condition="empty($info[confirm_time]) eq true">lef64</if>'></i>
+									<div class="ddfon">
+										<p>完成</p>
+										<if condition="$info[confirm_time]">
+											<p>{$info.confirm_time|date='Y-m-d H:i:s',###}</p>
+										</if>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="beenovercom">
+			<div class="shoptist">
+				<span>{$tpshop_config['shop_info_store_name']}<a href="tencent://message/?uin={$tpshop_config['shop_info_qq']}&Site={$tpshop_config['shop_info_store_name']}&Menu=yes" target="_blank"><i class="y-comp9"></i></a></span>
+			</div>
+			<div class="order-alone-li">
+				<table width="100%">
+					<thead>
+						<tr>
+							<th>商品名称</th>
+							<th>商品编号</th>
+							<th>数量</th>
+						</tr>
+					</thead>
+					<tbody>
+						<volist name="goods" id="vo">
+						<tr class="conten_or">
+							<td class="sx1">
+								<div class="shop-if-dif">
+									<div class="shop-difimg">
+										<a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}"><img src="{$vo.goods_id|goods_thum_images=78,78}"></a>
+									</div>
+									<div class="cebigeze">
+										<div class="shop_name"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">{$vo.goods_name}</a></div>
+										<p class="mayxl">{$vo.spec_key_name}</p>
+									</div>
+								</div>
+							</td>
+							<td class="sx2">{$vo.goods_sn}</td>
+							<td class="sx3">
+								<span>{$vo.goods_num}</span>
+							</td>
+						</tr>
+						</volist>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+	<include file="public/footer_index" />
+</div>
+<!--footer-e-->
+</body>
+</html>
+<script>
+//确定收货
+function order_confirm(id){
+	layer.confirm("你确定收到货了吗?",{
+		btn:['确定','取消']
+	},function(){
+		$.ajax({
+			type : 'get',
+			url : '/index.php?m=Home&c=Store&a=invoice_confirm&id='+id,
+			dataType : 'json',
+			success : function(data){
+				if(data.status == 1){
+					showErrorMsg(data.msg);
+					location.reload();
+				}else{
+					showErrorMsg(data.msg);
+				}
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				showErrorMsg('网络失败，请刷新页面后重试');
+			}
+		})
+	}, function(index){
+		layer.close(index);
+	});
+}
+</script>

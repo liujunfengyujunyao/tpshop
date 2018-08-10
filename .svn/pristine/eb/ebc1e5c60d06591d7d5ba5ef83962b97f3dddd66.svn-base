@@ -1,0 +1,14 @@
+<div class="seckill_img_one">
+    <empty name="flash_sale_goods">
+        <p style="font-size: 16px;margin:50px 500px;text-align: center;">--暂无秒杀商品--</p>
+    <else/>
+    <volist name="flash_sale_goods" id="vo">
+    <div class="seckill_img_left">
+        <a <if condition="$vo['percent'] lt 100">href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}"</if>>
+        <div class="seckill_img_pic"><img src="{$vo.goods_id|goods_thum_images=250,250}" width="250" height="250"/></div>
+        <h3>{$vo['goods_name']}</h3><h5>{$vo['goods_remark']}</h5><div class="seckill_price"><p>秒杀价</p></div><h6>￥{$vo['price']}</h6>
+        </a>
+    </div>
+    </volist>
+    </empty>
+</div>

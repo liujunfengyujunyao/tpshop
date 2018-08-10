@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+  <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+  <title>库存列表-{$tpshop_config['shop_info_store_title']}</title>
+  <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/global.js"></script>
+  <script src="__PUBLIC__/js/pc_common.js"></script>
+  <script src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/layer/layer.js"></script>
+  <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+  </head>
+  <body>
+    <!--evaluation start-->
+    <div id="evaluation">
+    <include file="user/header"/>
+      <!--my end-->
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <img src="__STATIC__/images/top.jpg" />
+          </div>
+        </div>
+      </div>
+      <div class="container mine">
+        <div class="row my_mall">
+          <include file="user/menu"/>
+          <div class="col-md-10 my_right">
+            <div class="row">
+              <div class="col-xs-12 set">
+                <ul>
+                  	<li><a href="{:U('/Home/partner/stock_list')}" class="current">库存列表</a></li>
+                  	<input type="hidden" value="{$count}" id="count">
+					<a onclick="apply()" href="javascript:;" class="ask" style="float: right;background: #e23435; color: #fff; padding: 5px 16px;">申请补货</a>
+                </ul>
+              </div>
+            </div>
+            <div class="row mation">
+              <div class="col-xs-4">
+                商品
+              </div>
+              <div class="col-xs-4">
+                当前库存/最大库存
+              </div>
+              <div class="col-xs-4">
+                更新时间
+              </div>
+            </div>
+            <volist name="list" id="vol">
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="{$vol.goods_id|goods_thum_images=120,120}" /></dt>
+                  <dd><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vol['goods_id']))}">{$vol.goods_name}</a></dd>
+                  <dd class="se">商品货号：{$vol.goods_sn}</dd>
+                </dl>
+              </div>
+              <div class="col-md-4 already">
+              <font <if condition="$vol.goods_num elt ($storeage/100)*($vol.stock_num)"> color="red"</if>><if condition="$vol.goods_num eq null"> 0<else />{$vol.goods_num} </if></font>/ {$vol.stock_num}
+              </div>
+              <div class="col-md-4 shou" align="center" style="padding-top: 2%;"><if condition="$vol.edittime eq null">无<else />{$vol.edittime|date="Y-m-d H:i:s",###}</if></div>
+            </div>
+            </volist>
+            <!--分页 start-->
+            <div class="operating fixed" id="bottom">
+              <div class="fn_page clearfix">
+                {$page}
+              </div>
+            </div>
+            <!--分页 end-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--evaluation end-->
+    <!--foot start-->
+      <include file="public/footer"/>
+<!--footer-e-->
+<script type="text/javascript">
+/**
+ * 申请补货弹出层
+ * 使用 公共的 layer 弹窗插件  参考官方手册 http://layer.layui.com/
+ */
+function apply() {
+	var url = "/index.php?m=Home&c=Partner&a=act_apply";
+	layer.open({
+		type: 2,
+		title: '申请补货',
+		shadeClose: true,
+		shade: 0.8,
+		area: ['880px', '380px'],
+		content: url,
+	});
+}
+</script>
+</body>
+</html>
+

@@ -1,0 +1,266 @@
+<include file="public/layout" />
+<style>
+.ncm-goods-gift {text-align: left;}
+.ncm-goods-gift ul {display: inline-block; font-size: 0; vertical-align: middle;}
+.ncm-goods-gift li {display: inline-block; letter-spacing: normal; margin-right: 4px; vertical-align: top; word-spacing: normal;}
+.ncm-goods-gift li a {background-color: #fff; display: table-cell; height: 30px; line-height: 0; overflow: hidden; text-align: center; vertical-align: middle; width: 30px;}
+.ncm-goods-gift li a img {max-height: 30px; max-width: 30px;}
+a.green{background: #fff; border: 1px solid #f5f5f5; border-radius: 4px; color: #999; cursor: pointer !important; display: inline-block; font-size: 12px; font-weight: normal; height: 20px; letter-spacing: normal; line-height: 20px; margin: 0 5px 0 0; padding: 1px 6px; vertical-align: top;}
+a.green:hover {color: #FFF; background-color: #1BBC9D; border-color: #16A086;}
+.ncap-order-style .ncap-order-details {margin: 20px auto;}
+.contact-info h3,.contact-info .form_class {display: inline-block; vertical-align: middle;}
+.form_class i.fa {vertical-align: text-bottom;}
+.ncap-order-style .ncap-order-details .text-red {color: #f00;}
+</style>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title"><a class="back" href="javascript:history.go(-1)" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+			<div class="subject">
+				<h3>补货申请详情</h3>
+				<h5>合伙人申请补货记录明细</h5>
+			</div>
+		</div>	
+	</div>
+	<form id="apply-form" method="post">
+		<!-- <input type="hidden" id="status" name="status" value="{$info.status}"> -->
+		<input type="hidden" id="act" name="act" />
+		<div class="ncap-order-style">
+			<div class="ncap-order-details">
+				<div class="tabs-panels">
+					<div class="misc-info">
+						<h3>基本信息</h3>
+						<dl>
+							<dt>申请人：</dt>
+							<dd>{$info.nickname}</dd>
+							<dt>联系电话：</dt>
+							<dd>{$info.mobile}</dd>
+							<dt>地址：</dt>
+							<dd>{$info.province} {$info.city} {$info.district}</dd>
+						</dl>
+						<dl>
+							<dt>申请时间：</dt>
+							<dd>{$info.addtime|date='Y-m-d H:i:s',###}</dd>
+							<dt>发货时间：</dt>
+							<dd>{$info.delivery_time|default="未发货"}</dd>
+							<dt>收货时间：</dt>
+							<dd>{$info.confirm_time|default="未收货"}</dd>
+						</dl>
+						<if condition="$info.express_code">
+						<dl>
+							<dt>物流名称：</dt>
+							<dd>{$info.express_name}</dd>
+							<dt>物流单号：</dt>
+							<dd><span class="text-red">{$info.express_code}</span></dd>
+						</dl>
+						</if>
+					</div>
+					<div class="goods-info">
+						<h4>商品信息</h4>
+						<table>
+							<thead>
+								<tr>
+									<th>商品编号</th>
+									<th colspan="2">商品</th>
+									<th>数量</th>
+								</tr>
+							</thead>
+							<tbody>
+								<volist name="goods" id="good">
+								<tr>
+									<td class="w90">{$good.goods_sn}</td>
+									<td class="w30"><div class="goods-thumb"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank"><img alt="" src="{$good['goods_id']|goods_thum_images=200,200}" /> </a></div></td>
+									<td style="text-align: left;"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank">{$good.goods_name}</a><br/></td>
+									<td class="w120">{$good.goods_num}</td>
+								</tr>
+							</volist>
+						</table>
+					</div>
+					<div class="total-amount contact-info">
+						<h3></h3>
+					</div>
+					<if condition="$info.status eq 0">
+					<div class="contact-info">
+						<h3>操作信息</h3>
+						<dl class="row">
+							<dt class="tit">
+								<label for="note">操作备注</label>
+							</dt>
+							<dd class="opt" style="margin-left:10px">
+								<textarea id="note" name="remark" style="width:600px" rows="6"  placeholder="请输入操作备注" class="tarea">{$info.remark}</textarea>
+							</dd>
+						</dl>
+						<dl class="row">
+							<dt class="tit">
+								<label for="note">可执行操作</label>
+							</dt>
+							<dd class="opt" style="margin-left:10px">
+								<a href="JavaScript:void(0);" onclick="delivery();" class="ncap-btn-big ncap-btn-green">去发货</a>
+								<a href="JavaScript:void(0);" onclick="cancel_apply();" class="ncap-btn-big ncap-btn-green">拒绝申请</a>
+							</dd>
+						</dl> 
+					</div>
+					</if>
+					<div class="goods-info">
+						<h4>操作记录</h4>
+						<table>
+							<thead>
+								<tr>
+									<th>操作者</th>
+									<th>操作时间</th>
+									<th>描述</th>
+									<th>备注</th>
+							 	</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>合伙人：{$info.nickname}</td>
+									<td>{$info.addtime|date='Y-m-d H:i:s',###}</td>
+									<td>提交申请</td>
+									<td></td>
+								</tr>
+								<if condition="$info.status neq 0">
+								<tr>
+									<td>管理员：{$info.user_name}</td>
+									<td>{$info.edittime|date='Y-m-d H:i:s',###}</td>
+									<td>
+										<if condition="$info.status eq 1">
+											通过申请
+										</if>
+										<if condition="$info.status eq 2">
+											拒绝申请
+										</if>
+									</td>
+									<td>{$info.remark}</td>
+								</tr>
+								</if>
+								<if condition="$info.status eq 1">
+								<tr>
+									<td>管理员：{$info.user_name}</td>
+									<td>{$info.delivery_time}</td>
+									<td>发货</td>
+									<td></td>
+								</tr>
+								</if>
+								<if condition="$info.confirm_time">
+								<tr>
+									<td>合伙人：{$info.nickname}</td>
+									<td>{$info.confirm_time}</td>
+									<td>确认收货</td>
+									<td></td>
+								</tr>
+								</if>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+</body>
+<div id="layer" style="display: none">
+	<form class="form-horizontal" id="handleForm" method="post">
+		<input type="hidden" name="act" value="delivery" />
+		<input type="hidden" name="id" value="{$Request.get.id}" />
+		<input type="hidden" name="remark" />
+		<div class="ncap-form-default">
+			<dl class="row">
+				<dt class="tit">
+					<label><em>*</em>物流名称：</label>
+				</dt>
+				<dd class="opt">
+					<input type="text" name="express_name" value="" class="input-txt" placeholder="请填写物流名称" />
+				</dd>
+			</dl>
+			<dl class="row">
+				<dt class="tit">
+					<label><em>*</em>物流单号：</label>
+				</dt>
+				<dd class="opt">
+					<input type="text" name="express_code" value="" class="input-txt" placeholder="请填写物流单号" />
+				</dd>
+			</dl>
+			<div class="bot"><a onclick="checkForm();" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认发货</a></div>
+		</div>
+	</form>
+</div>
+</html>
+<script type="text/javascript">
+// 拒绝申请
+function cancel_apply() {
+	if ($.trim($('#note').val()).length == 0) {
+		layer.alert('请填写拒绝备注', {icon: 2});
+		return false;
+	}
+	layer.confirm('确定要拒绝合伙人的补货申请吗?', {
+		btn: ['确定', '取消'] //按钮
+	}, function () {
+		// 确定
+		$('#act').val('cancel');
+		$.ajax({
+			type: "POST",
+			url: "{:U('Admin/Partner/apply_info', array('id'=>$Request.get.id))}",
+			data: $('#apply-form').serialize(),
+			dataType: "json",
+			error: function () {
+				layer.alert("服务器繁忙, 请联系管理员!");
+			},
+			success: function (data) {
+				if (data.status == 1) {
+					layer.msg(data.msg, {icon: 1});
+					layer.closeAll();
+					window.location.reload();
+				} else {
+					layer.msg(data.msg, {icon: 2});
+				}
+			}
+		});
+//		$('#apply-form').submit();
+	}, function (index) {
+		layer.close(index);
+	});
+}
+//去发货
+function delivery() {
+	if ($.trim($('#note').val()).length == 0) {
+		layer.alert('请填写操作备注', {icon: 2});
+		return false;
+	}
+	$("#layer input[name='remark']").val($('#note').val());
+	layer.open({
+		type: 1,
+		skin: 'layui-layer-rim',	//加上边框
+		area: ['550px', '300px'],	//宽、高
+		title: "发货",
+		content: $('#layer')
+	})
+}
+function checkForm(){
+	var name = $("#layer input[name='express_name']").val();
+	var code = $("#layer input[name='express_code']").val();
+
+	if ((name == '') || (code == '')) {
+		layer.alert('信息填写不完整', {icon: 2});
+		return;
+	}else {
+		$.ajax({
+			type: "POST",
+			url: "{:U('Admin/Partner/apply_info')}",
+			data: $('#handleForm').serialize(),
+			dataType: "json",
+			error: function () {
+				layer.alert("服务器繁忙, 请联系管理员!");
+			},
+			success: function (data) {
+				if (data.status == 1) {
+					layer.msg(data.msg, {icon: 1});
+					layer.closeAll();
+					window.location.reload();
+				} else {
+					layer.msg(data.msg, {icon: 2});
+				}
+			}
+		});
+	}
+}
+</script>

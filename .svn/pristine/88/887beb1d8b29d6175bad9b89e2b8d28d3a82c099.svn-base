@@ -1,0 +1,242 @@
+<include file="public/header" title="补货申请详情" body="g4"/>
+<include file="public/header_nav" title="补货申请详情" href="javascript:history.back(-1)"/>
+<script src="__PUBLIC__/static/js/layer/layer.js" type="text/javascript"></script>
+
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>基本信息</h2>
+        </div>
+        <div class="xx-list">
+            <p class="p">
+                <span class="fl">申请工厂店</span>
+                <span class="fr">{$info.store_name}(负责人：{$info.nickname})</span>
+            </p>
+            <p class="p">
+                <span class="fl">联系方式</span>
+                <span class="fr">{$info.mobile}</span>
+            </p>
+            <p class="p">
+                <span class="fl">收货地址</span>
+                <span class="fr">{$info.province_name} {$info.city_name} {$info.district_name}</span>
+            </p>
+            <p class="p">
+                <span class="fl">申请时间</span>
+                <span class="fr">{:date('Y-m-d  H:i:s', $info.addtime)}</span>
+            </p>
+            <if condition="$info.delivery_time">
+                <p class="p">
+                    <span class="fl">发货时间</span>
+                    <span class="fr">{:date('Y-m-d  H:i:s', $info.delivery_time)}</span>
+                </p>
+            </if>
+            <if condition="$info.confirm_time">
+                <p class="p">
+                    <span class="fl">收货时间</span>
+                    <span class="fr">{$info.confirm_time}</span>
+                </p>
+            </if>
+            <if condition="$info.express_name">
+                <p class="p">
+                    <span class="fl">物流名称</span>
+                    <span class="fr">{$info.express_name}</span>
+                </p>
+            </if>
+            <if condition="$info.express_code">
+                <p class="p">
+                    <span class="fl">物流单号</span>
+                    <span class="fr">{$info.express_code}</span>
+                </p>
+            </if>
+            <p class="p">
+                <span class="fl">状态</span>
+                <span class="fr">
+                    <if condition="$info.status eq 0">处理中</if>
+                    <if condition="$info.status eq 1">已处理</if>
+					<if condition="$info.status eq 2">申请失败</if>
+                </span>
+            </p>
+            <if condition="$info.remark">
+                <p class="p">
+                    <span class="fl">操作备注</span>
+                    <span class="fr">{$info.remark}</span>
+                </p>
+            </if>
+        </div>
+    </div>
+</div>
+
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>商品信息</h2>
+        </div>
+        <div class="ord_list p">
+            <div class="maleri30">
+                <volist name="goods" id="good">
+                    <div class="shopprice">
+                        <div class="img_or fl">
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$good[goods_id]))}">
+                                <img src="{$good[goods_id]|goods_thum_images=100,100}"/>
+                            </a>
+                        </div>
+                        <div class="fon_or fl">
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$good[goods_id]))}">
+                                <h2 class="similar-product-text">{$good[goods_name]}</h2>
+                            </a>
+                        </div>
+                        <div class="price_or fr">
+                            <p>x{$good['goods_num']}</p>
+                        </div>
+                    </div>
+                </volist>
+            </div>
+        </div>
+    </div>
+</div>
+
+<if condition="$info.status eq 0">
+    <div class="information_dr ma-to-20" id="apply_detail">
+        <div class="maleri30">
+            <div class="tit">
+                <h2>操作信息</h2>
+            </div>
+            <form method="post" id="apply-form">
+                <div class="xx-list">
+                    <p class="p">
+                        <span class="fl">操作备注：</span>
+                        <span>
+                            <textarea name="remark" id="remark" rows="5" cols="30" class="tarea" placeholder="请输入操作备注"></textarea>
+                        </span>
+                    </p>
+                    <p class="p">
+                        <span class="fl">可执行操作：</span>
+                        <span>
+                            <input type="hidden" name="act" id="act"/>
+                            <a class="ddn ddn2" href="javascript:void(0)" onclick="delivery()">去发货</a>
+                            <a class="ddn ddn3" href="javascript:void(0)" onclick="cancel_apply()">拒绝申请</a>
+                        </span>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</if>
+<!-- 填写物流信息弹窗s -->
+<div class="floor my p edit" id="layer" style="display: none" >
+    <form class="form-horizontal" id="handleForm" method="post">
+        <input type="hidden" name="act" value="delivery" />
+        <input type="hidden" name="remark" />
+        <div class="content">
+            <div class="floor list7">
+                <div class="myorder p">
+                    <div class="content30">
+                        <div class="order">
+                            <div class="fl">
+                                <input type="text" name="express_name" value="" class="input-txt" placeholder="请填写物流名称"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="myorder p">
+                    <div class="content30">
+                        <div class="order">
+                            <div class="fl">
+                                <input type="text" name="express_code" value="" class="input-txt" placeholder="请填写物流单号"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="edita">
+            <div class="content30">
+                <input type="button" value="确认发货" class="dotm_btn1 beett" onclick="checkForm()" />
+            </div>
+        </div>
+    </form>
+</div>
+<!-- 填写物流信息弹窗e -->
+</body>
+</html>
+<script src="__STATIC__/js/mobile-location.js"></script>
+
+<script type="text/javascript">
+    // 拒绝申请
+    function cancel_apply() {
+        if ($.trim($('#remark').val()).length == 0) {
+            layer.alert('请填写拒绝备注', {icon: 2});
+            return false;
+        }
+        layer.confirm('确定要拒绝工厂店的补货申请吗?', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            // 确定
+            $('#act').val('cancel');
+            $.ajax({
+                type: "POST",
+                url: "{:U('Mobile/Partner/store_apply_detail', array('id'=>$Request.get.id))}",
+                data: $('#apply-form').serialize(),
+                dataType: "json",
+                error: function () {
+                    layer.alert("服务器繁忙, 请联系管理员!");
+                },
+                success: function (data) {
+                    if (data.status == 1) {
+                        layer.msg(data.msg, {icon: 1});
+                        layer.closeAll();
+                        window.location.reload();
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    }
+    //去发货
+    function delivery() {
+        if ($.trim($('#remark').val()).length == 0) {
+            layer.alert('请填写操作备注', {icon: 2});
+            return false;
+        }
+        $("#layer input[name='remark']").val($('#remark').val());
+        var index = layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',	//加上边框
+            area: ['280px', '280px'],	//宽、高
+            title: "发货",
+            content: $('#layer')
+        });
+        layer.iframeAuto(index);
+    }
+    function checkForm(){
+        var name = $("#layer input[name='express_name']").val();
+        var code = $("#layer input[name='express_code']").val();
+
+        if ((name == '') || (code == '')) {
+            layer.alert('信息填写不完整', {icon: 2});
+            return;
+        }else {
+            $.ajax({
+                type: "POST",
+                url: "{:U('Mobile/Partner/store_apply_detail', array('id'=>$Request.get.id))}",
+                data: $('#handleForm').serialize(),
+                dataType: "json",
+                error: function () {
+                    layer.alert("服务器繁忙, 请联系管理员!");
+                },
+                success: function (data) {
+                    if (data.status == 1) {
+                        layer.msg(data.msg, {icon: 1});
+                        layer.closeAll();
+                        window.location.reload();
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                }
+            });
+        }
+    }
+</script>

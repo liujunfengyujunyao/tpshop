@@ -1,0 +1,232 @@
+<include file="public/layout" />
+<style>
+	body {overflow-x: hidden;}
+	.express {padding: 0 0 10px 10px}
+	.bot {text-align: center;}
+	.sign {cursor: pointer;}
+	input[type='number'] {-moz-appearance:textfield;}
+</style>
+<form class="form-horizontal" id="handleForm" method="post">
+	<input type="hidden" value="{$count_value}" id="count_value">
+	<div class="flexigrid">
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<th axis="col0">
+								<div style="width: 50px;"></div>
+							</th>
+							<th align="center" axis="col4" class="">
+								<div style="text-align: center; width: 420px;" class="">商品名称</div>
+							</th>
+							<th align="center" axis="col4" class="">
+								<div style="text-align: center; width: 200px;" class="">本店单价</div>
+							</th>
+							<th align="center" axis="col5" class="">
+								<div style="text-align: center; width: 155px;" class="">商品数量</div>
+							</th>
+							<th style="width:100%" axis="col7">
+								<div></div>
+							</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+						<if condition="count($info) eq 0">
+							<tr>
+								<td class="f-sign" axis="col0">
+									<div style="text-align: center; width: 50px;">
+										<a title="添加行" onclick="addLine()" class="plus"><span class="fa fa-plus"></span></a>
+										<a title="删除行" onclick="delLine(this)" class="minus"><span class="fa fa-minus"></span></a>
+									</div>
+								</td>
+								<td align="left" class="">
+									<div style="text-align: center; width: 420px;">
+										<select onchange="getId(this)">
+											<option value="">请选择</option>
+											<volist name='list' id='v'>
+											<option value="{$v.goods_id}" price="{$v.shop_price}">{$v.goods_name}</option>
+											</volist>
+										</select>
+									</div>
+								</td>
+
+								<td align="left" class="">
+									<div style="text-align: center; width: 200px;">
+										<input type="text" class="price" readonly="readonly" value="" />
+									</div>
+								</td>
+
+								<td align="left" class="">
+									<div style="text-align: center; width: 155px;">
+										<input type="text" class="number" value="1" onchange="count_price()" onkeyup='this.value=this.value.replace(/\D/gi,"")' />
+									</div>
+								</td>
+								<td align="" class="" style="width: 100%;">
+									<div>&nbsp;</div>
+								</td>
+							</tr>
+						<else />
+							<foreach name="info" item="vo">
+								<tr>
+									<td class="f-sign" axis="col0">
+										<div style="text-align: center; width: 50px;">
+											<a title="添加行" onclick="addLine()" class="plus"><span class="fa fa-plus"></span></a>
+											<a title="删除行" onclick="delLine(this)" class="minus"><span class="fa fa-minus"></span></a>
+										</div>
+									</td>
+									<td align="left" class="">
+										<div style="text-align: center; width: 420px;">
+											<select onchange="getId(this)" name="goods['{$vo.goods_id}'][goods_id]">
+												<option value="">请选择</option>
+												<volist name='list' id='v'>
+												<option value="{$v.goods_id}" price="{$v.shop_price}" <if condition="$v['goods_id'] eq $vo['goods_id']">selected</if>>{$v.goods_name}</option>
+												</volist>
+											</select>
+										</div>
+									</td>
+
+									<td align="left" class="">
+										<div style="text-align: center; width: 200px;">
+											<input type="text" class="price" readonly="readonly" value="￥{$vo.shop_price}" />
+										</div>
+									</td>
+
+									<td align="left" class="">
+										<div style="text-align: center; width: 155px;">
+											<input type="text" class="number" name="goods['{$vo.goods_id}'][number]" value="{$vo.goods_num}" onchange="count_price()" onkeyup='this.value=this.value.replace(/\D/gi,"")' />
+										</div>
+									</td>
+									<td align="" class="" style="width: 100%;">
+										<div>&nbsp;</div>
+									</td>
+								</tr>
+							</foreach>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="bot">
+		<span style="float:left; margin-left:150px; margin-top:8px; font-size:14px;">总价: ￥<span class="a" id="count_price">0.00</span></span>
+		<input type="hidden" id="input_count_price" name="goods_value" value="0">
+			<a onclick="checkForm();" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认配货</a>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+window.onload = count_price;
+
+function addLine(){
+	var content = $("#flexigrid table tr:first").html();
+	content = "<tr>" + content + "</tr>";
+	$("#flexigrid table tr:last").after(content);
+	$("#flexigrid table tr:last").find(".number").css('border', '1px solid #dfdfdf');
+}
+function delLine(obj){
+	var length = $("#flexigrid tr").length;
+	if (length == 1) {
+		layer.alert('请至少保留一项！');
+	}else {
+		$(obj).parents('tr').remove();
+	}
+}
+function getId(opt) {
+	var id = $(opt).val();
+	var name1 = "goods['" + id + "'][goods_id]";
+	var name2 = "goods['" + id + "'][number]";
+	$(opt).attr('name', name1);
+	$(opt).parents('tr').find('.number').attr('name', name2);
+	var store_price = $(opt).find('option:selected').attr('price');
+	$(opt).parents('tr').find('.price').val("￥"+store_price);
+	count_price();
+}
+//更改商品和数量时候自动计算价格
+function count_price(){
+	var count_price = 0;
+	$("#flexigrid tr").each(function(index, el) {
+		var goods = $(el).find('select').val();
+		var price = $(el).find("option:selected").attr("price");
+		var val = $(el).find(".number").val();
+		var el_price;
+		price == null ? el_price = 0 : el_price = price * val;
+		count_price += el_price;
+	});
+
+	$('#count_price').text(count_price.toFixed(2));
+	$('#input_count_price').val(count_price.toFixed(2));
+}
+function checkForm(){
+	var count_value = $("#count_value").val();
+	var count_price = $('#count_price').text();
+
+	if (Number(count_price) > Number(count_value)) {
+		alert('商品总价值已超出！');
+		return false;
+	}
+
+	var arr = [];
+	var res = 0;
+	//var storeage = "{$storeage}";
+	$("#flexigrid tr").each(function(index, el) {
+		var goods = $(el).find('select').val();
+		var max = $(el).find("option:selected").attr("max");
+		//max = (max != false )? max : storeage;
+		var val = $(el).find(".number").val();
+		$(el).find('.number').css("border", '1px solid #dfdfdf');
+
+		if ($.inArray(goods, arr) == -1) {
+			if (goods != false) {
+				arr.push(goods);
+			}
+		}else {
+			res = 1;	//重复选择商品
+			return false;
+		}
+
+		if (parseInt(max) < parseInt(val)) {
+			res = 2;	//当前商品补货数量超过最大库存
+			$(el).find('.number').css("border", '1px solid #f00');
+			return false;
+		}
+	});
+
+	if (arr.length == 0) {
+		layer.alert('请至少选择一项商品！');
+	}else if (res == 1) {
+		layer.alert('请勿重复添加商品！');
+	}else if (res == 2) {
+		layer.alert('补货数量超过最大库存量！');
+	}else {
+		var id = "{$type_id}";
+		$.ajax({
+			type: "POST",
+			url: "/index.php?m=Admin&c=Store&a=delivery&id="+id,
+			data: $('#handleForm').serialize(),
+			dataType: "json",
+			error: function () {
+				layer.alert("服务器繁忙, 请联系管理员!");
+			},
+			success: function (data) {
+				if (data.status == 1) {
+					layer.msg(data.msg, {icon: 1, time: 2000}, function() {
+						//关闭iframe页面
+						var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+						parent.layer.close(index);
+						parent.location.href = "{:U('Admin/Store/typeList')}";
+					});
+				} else {
+					layer.msg(data.msg, {icon: 2});
+				}
+			}
+		});
+	}
+}
+</script>

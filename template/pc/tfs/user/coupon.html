@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <title>我的优惠券-{$tpshop_config['shop_info_store_title']}</title>
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+    </head>
+    <body>
+        <!--coupon start-->
+        <div id="coupon">
+            <include file="user/header"/>
+            <!--my end-->
+            <div class="container">
+                <adv pid="407" limit="1" item="v">
+                    <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%" /></a>
+                </adv>
+            </div>
+            <div class="container mine">
+                <div class="row my_mall">
+                    <include file="user/menu"/>
+                    <div class="col-md-10 my_right">
+                        <div>
+                            <ol class="breadcrumb">
+                                <li><i class="glyphicon glyphicon-home"></i></li>
+                                <li><a href="{:U('Home/User/index')}">用户中心</a></li>
+                                <li class="active">我的优惠券</li>
+                            </ol>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 set">
+                                <ul class="pull-left list-inline">
+                                    <li>
+                                        <a href="{:U('/Home/User/coupon')}" class="<if condition="$Request.param.type eq ''">current</if>">全部</a>
+                                    </li>
+                                    <li>
+                                        <a href="{:U('/Home/User/coupon',array('type'=>3))}" class="<if condition="$Request.param.type eq 3">current</if>">未使用</a>
+                                    </li>
+                                    <li>
+                                        <a href="{:U('/Home/User/coupon',array('type'=>1))}" class="<if condition="$Request.param.type eq 1">current</if>">已使用</a>
+                                    </li>
+                                    <li>
+                                        <a href="{:U('/Home/User/coupon',array('type'=>2))}" class="<if condition="$Request.param.type eq 2">current</if>">已失效</a>
+                                    </li>
+                                </ul>
+                                <a href="{:U('Home/Activity/coupon_list')}" class="pull-right btn btn-danger">领取优惠券</a>
+                            </div>
+                        </div>
+                        <div class="top">
+                            <div class="col-xs-3">优惠券</div>
+                            <div class="col-xs-2">金额</div>
+                            <div class="col-xs-3">使用规则</div>
+                            <div class="col-xs-2">截止有效期</div>
+                            <div class="col-xs-2">状态</div>
+                        </div>
+                        <if condition="$coupon_list">
+                        <volist name="coupon_list" id="vo">
+                        <div class="parti">
+                            <div class="col-md-3 img">
+                                <div class=" <if condition="$vo.pred eq '3'">coupon_img_pic<else/>coupon_img_pic2</if>">
+                                    <div class="coupon_img_bor">
+                                        <div class="coupon_bor_left">
+                                            <h5>{$vo.money|intval}</h5>
+                                        </div>  
+                                        <div class="coupon_bor_right">
+                                            <h5>{$vo.name}</h5>
+                                            <p>Coupons</p>
+                                            <h6>满{$vo.condition|intval}元使用</h6>
+                                        </div>
+                                        <div class="coupon_bor_post">
+                                            <p>￥</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 one">￥{$vo.money}</div>
+                            <div class="col-md-3 one">满{$vo.condition}元使用</div>
+                            <div class="col-md-2 one">{$vo.use_end_time|date="Y.m.d",###}</div>
+                            <div class="col-md-2 one">
+                                <if condition="$vo.pred eq '3'">
+                                <span class="red">未使用</span>
+                                <elseif condition="$vo.pred eq '1'">
+                                已使用
+                                <else/>
+                                已失效
+                                </if>
+                            </div>
+                        </div>
+                        </volist>
+                        <else />
+                        <div class="partia">
+                            <if condition="$Request.param.type eq ''">
+                            还没有优惠券，<a href="{:U('Home/Activity/coupon_list')}" class="style-red">快去领取吧~</a>
+                            <elseif condition="$Request.param.type eq 3">
+                            还没有可使用的优惠券，<a href="{:U('Home/Activity/coupon_list')}" class="style-red">快去领取吧~</a>
+                            <else/>
+                            暂无记录~
+                            </if>
+                        </div>
+                        </if>
+                        <!--分页 start-->
+                        <if condition="$coupon_list">
+                        <div class="operating fixed consume_log" id="bottom">
+                            <div class="fn_page clearfix">{$page}</div>
+                        </div>
+                        </if>
+                        <!--分页 end-->
+                    </div>
+                </div>
+            </div>      
+        </div>
+        <!--coupon end-->
+        <!--foot start-->
+            <include file="public/footer"/>
+            <!--foot end-->
+    </body>
+</html>

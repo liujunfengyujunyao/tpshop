@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>库存管理-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<style>
+#stockList .goodpiece .ask {background: #e23435; color: #fff; padding: 5px 16px}
+#stockList .sx1 {width: 60%}
+#stockList .sx2 {width: 20%}
+#stockList .sx2 .red {font-weight: bold;}
+#stockList .sx3 {width: 20%}
+#stockList .empty {text-align: center; padding: 10px 0; font-size: 16px}
+</style>
+</head>
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+	<div class="w1224">
+		<div class="g-crumbs">
+			<volist name='navigate_user' id='vo'>
+				<a href="{$vo}">{$key}</a><if condition="$i neq count($navigate_user)"><i class="litt-xyb"></i></if>
+			</volist>
+		</div>
+		<div class="home-main" id="stockList">
+			<include file="user/menu"/>
+			<div class="ri-menu fr">
+				<div class="menumain p">
+					<div class="goodpiece">
+						<h1>库存列表</h1>
+						<a onclick="apply()" href="javascript:;" class="ask">申请补货</a>
+					</div>
+					<div class="card-list accbala">
+						<ul>
+							<li class="sx1"><span>商品名称</span></li>
+							<li class="sx2"><span>当前库存 / 最大库存量</span></li>
+							<li class="sx3"><span>更新时间</span></li>
+						</ul>
+					</div>
+					<if condition="$list">
+					<volist name="list" id="vo">
+						<div class="card-list c_contan accbala-list">
+							<ul>
+								<li class="sx1"><span>{$vo.goods_name}</span></li>
+								<li class="sx2"><span <if condition="$vo.goods_num elt ($storeage/100)*($vo.stock_num)">class="red"</if>>{$vo.goods_num|default="0"} / {$vo.stock_num}</span></li>
+								<li class="sx3"><span>{$vo.edittime|default="无"}</span></li>
+							</ul>
+						</div>
+					</volist>
+					<div class="operating fixed consume_log" id="bottom">
+						<div class="fn_page clearfix">{$page}</div>
+					</div>
+					<else />
+					<div class="red empty">暂无记录</div>
+					</if>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+	<include file="public/footer_index" />
+</div>
+<!--footer-e-->
+<script type="text/javascript">
+/**
+ * 申请补货弹出层
+ * 使用 公共的 layer 弹窗插件  参考官方手册 http://layer.layui.com/
+ */
+function apply() {
+	var url = "/index.php?m=Home&c=Partner&a=act_apply";
+	layer.open({
+		type: 2,
+		title: '申请补货',
+		shadeClose: true,
+		shade: 0.8,
+		area: ['880px', '380px'],
+		content: url,
+	});
+}
+</script>
+</body>
+</html>
+

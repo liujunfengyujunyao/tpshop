@@ -1,0 +1,73 @@
+<include file="public/header" title="配货申请" body="g4"/>
+<include file="public/header_nav" title="配货申请" href="javascript:history.back(-1)"/>
+
+<div class="allaccounted">
+    <div class="maleri30">
+        <if condition="empty($list)">
+            <div class="ma-to-20">
+                <div class="nonenothing">
+                    <img src="__STATIC__/images/none.png"/>
+                    <p>暂无记录</p>
+                </div>
+            </div>
+        <else/>
+            <div class="allpion">
+                <div class="fll_acc fll_acc-h storenav">
+                    <ul>
+                        <li class="orderid-h">工厂店</li>
+                        <li class="price-h"><span class="lb"></span><i></i></li>
+                        <li class="time-h">操作</li>
+                    </ul>
+                </div>
+                <div class="fil_all_comm">
+                    <div class="maleri30">
+                        <ul>
+                            <li class="<if condition="$Request.param.status eq ''">on</if>" style="display:none">状态</li>
+                            <li>
+                                <a href="{:U('Mobile/Partner/store_apply',array('status'=>0))}" class="<if condition="$Request.param.status eq '0'">on red</if>">全部</a>
+                            </li>
+                            <li>
+                                <a href="{:U('Mobile/Partner/store_apply',array('status'=>1))}" class="<if condition="$Request.param.status eq 1">on red </if>">处理中</a>
+                            </li>
+                            <li>
+                                <a href="{:U('Mobile/Partner/store_apply',array('status'=>2))}" class="<if condition="$Request.param.status eq 2">on red</if>">已处理</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="storenav">
+                    <foreach name="list" item="vo">
+                        <div class="fll_acc">
+                            <div class="des-h"><span>负责人:{$vo.nickname}</span><span style="margin-left:2rem;">电话:{$vo.mobile}</span></div>
+                            <ul>
+                                <li class="orderid-h">{$vo.store_name}</li>
+                                <li class="price-h">
+                                    <if condition="$vo[status] eq 0">处理中</if>
+                                    <if condition="$vo[status] eq 1">已处理</if>
+                                    <if condition="$vo[status] eq 2">申请失败</if>
+                                </li>
+                                <li class="time-h"><a href="{:U('Mobile/Partner/store_apply_detail', array('id'=>$vo['id']))}">查看详情</a></li>
+                            </ul>
+                            <div class="des-h"><span style="float:right;">申请日期：{$vo.addtime|date="Y-m-d H:i:s",###}</span></div>
+                        </div>
+                    </foreach>
+                </div>
+
+            </div>
+        </if>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //显示综合筛选弹窗
+        $('.storenav .lb').click(function(){
+            $('.fil_all_comm').show();
+            cover();
+            $('.classreturn,.fll_acc-h').addClass('pore');
+        });
+        $('.lb').text($('.on').text());
+    })
+</script>
+</body>
+</html>

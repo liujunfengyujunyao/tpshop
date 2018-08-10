@@ -1,0 +1,76 @@
+<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+    <table>
+        <tbody>
+        <volist name="sarkList" id="list">
+            <tr>
+                <td class="sign">
+                    <div style="width: 24px;"><i class="ico-check"></i></div>
+                </td>
+                <td align="left">
+                    <div style="text-align: center; width: 60px;">{$list.id}</div>
+                </td>
+                <td align="left">
+                    <div style="text-align: center; width: 100px;">{$list.sark_code}</div>
+                </td>
+                <td align="left">
+                    <div style="text-align: center; width: 100px;">{$list.store_name}</div>
+                </td>
+                <td align="left">
+                    <div style="text-align: center; width: 100px;">{$list.addtime}</div>
+                </td>
+                <td align="left">
+                    <div style="text-align: center; width: 100px;">{$list.confirm_time|default='未确认'}</div>
+                </td>
+                <td align="center" class="handle">
+                    <div style="text-align: center; width: 100px; max-width: 170px;">
+                        <a class="btn blue" href="{:U('Admin/Sark/sark_info',array('id'=>$list['id']))}"><i class="fa fa-pencil-square-o"></i>查看编辑</a>
+                        <a class="btn red" href="javascript:void(0)" onclick="del('{$list[id]}')"><i class="fa fa-trash-o"></i>删除</a>
+                    </div>
+                </td>
+                <td align="" class="" style="width: 100%">
+                    <if condition="$list.wx_image eq null">
+                        <div><a href="{:U('Admin/Sark/getQRcode',array('code' => $list['sark_code']))}">生成二维码</a></div>
+                    <else />
+                        <div><a href="{:U('Admin/Sark/printImg',array('id' => $list['id']))}">查看二维码</a></div>
+                    </if>
+
+                </td>
+            </tr>
+        </volist>
+        </tbody>
+    </table>
+</div>
+<!-- 分页位置 -->
+{$page}
+<script>
+    $(document).ready(function(){
+        //表格行点击选中切换
+        $('#flexigrid>table>tbody>tr').click(function(){
+            $(this).toggleClass('trSelected');
+        });
+        $('#count').empty().html("{$pager->totalRows}");
+    });
+
+    //点击分页触发的事件
+    $(".pagination a").click(function(){
+        cur_page = $(this).data('p');
+        ajax_get_table('search-form1',cur_page);
+    });
+
+    //删除操作
+    function del(id){
+        if(!confirm('确定要删除吗?'))
+            return false;
+        $.ajax({
+            url: "/index.php?m=Admin&c=Sark&a=del&id="+id,
+            success: function(v){
+                var v = eval('('+v+')');
+                if(v.hasOwnProperty('status') && (v.status == 1))
+                    ajax_get_table('search-form1',cur_page);
+                else
+                    layer.msg(v.msg,{icon: 2,time: 1000});
+            }
+        });
+        return false;
+    }
+</script>

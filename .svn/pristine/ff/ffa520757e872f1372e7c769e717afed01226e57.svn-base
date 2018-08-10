@@ -1,0 +1,39 @@
+<include file="public/header" title="测肤报告" body="f3"/>
+        <div class="quedbox">
+            <div class="shpmi p">
+                <div class="maleri30">
+                    <div class="dinaot">
+                        <span class="naem">测肤报告</span>
+                        <span class="red">{$time}</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <p style="padding:30px;line-height: 200px" align="center">
+                        <span style="font-size:30px;">{$type}:<em>{$value}%</em></span>
+                    </p>
+                    
+                </div>
+            </div>
+            <div class="fukcuid">
+                <h2 style="padding:40px;border-bottom: 1px solid gray;">推荐产品</h2>
+                <foreach name="products" item="vol">
+                <div class="maleri30" style="padding-top:30px;">
+                    <div>
+                        <div class="img_or fl"><img height="220px" src="{$vol.photo_url}"></div>
+                        <div class="fon_or fl">
+                            <h2 style="padding:20px;margin-bottom: 30px;"><a href="#">{$vol.name}</a></h2>
+                            <p style="color:gray;width: 400px;padding-bottom:20px">产品优势：{$vol.advantage}</p>
+                            <p style="width:420px">产品简介：{$vol.comment}</p>
+                        </div>
+                    </div>
+                        
+                </div>
+                </foreach>
+            </div>
+        </div>
+
+<div class="mask-filter-div" style="display: none;"></div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<footer>
+    <div class="flool1">
+        <ul>
+            <if condition="isset($_COOKIE['user_id'])">
+                <if condition="$_COOKIE['user_id'] eq 0">
+                    <li><a href="{:U('Mobile/User/index')}">{$_COOKIE['uname']}</a></li>
+                <else/>
+                    <li><a href="{:U('Mobile/User/index')}"><?php echo getSubstr(urldecode($_COOKIE['uname']),0,3);?></a></li>
+                </if>
+                <li><a href="{:U('Mobile/User/logout')}">退出</a></li>
+            <else/>
+                <li><a href="{:U('Mobile/User/login')}">登录</a></li>
+                <li><a href="{:U('Mobile/User/reg')}">注册</a></li>
+            </if>
+            <li><a href="tel:{$tpshop_config['shop_info_phone']}">反馈</a></li>
+            <li class="comebackTop">回到顶部</li>
+        </ul>
+    </div>
+
+    <div class="flool3">
+        <p>Copyright © {$tpshop_config['shop_info_store_name']|default='肽风尚商城'} 版权所有</p>
+    </div>
+</footer>

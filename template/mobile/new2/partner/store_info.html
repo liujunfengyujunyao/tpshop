@@ -1,0 +1,68 @@
+<include file="public/header" title="工厂店详情" body="g4"/>
+<include file="public/header_nav" title="工厂店详情" href="javascript:history.back(-1)"/>
+
+<div class="myhearder" id="store-info">
+    <div class="person">
+        <div class="lors" style="margin:0rem; font-size:0.7rem;overflow: hidden;">
+            <span>{$info.store_name}</span>
+        </div>
+        <div style="font-size: 0.5rem;color:#fff;margin-top:0.5rem;overflow: hidden">
+            <img src="__STATIC__/images/dw1.png" style="float: left; margin-right: 0.5rem"/>
+            <span style="float: left; width: 80%">{$info.province}{$info.city}{$info.town}{$info.pickup_address}</span>
+        </div>
+    </div>
+
+    <div class="scgz">
+        <ul>
+            <li>
+                <a href="javascript:void(0)">
+                    <p>负责人：{$info.nickname}</p>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">
+                    <p>类型：{$info.type_name}</p>
+                </a>
+            </li>
+
+        </ul>
+        <ul>
+            <li>
+                <a href="javascript:void(0)">
+                    <p>联系方式：{$info.mobile}</p>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">
+                    <p>添加时间：{:date('Y-m-d', $info.addtime)}</p>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+<div class="floor my p">
+    <div class="content">
+        <div class="floor list7 ma-to-20">
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/store_stock', array('store_id'=>$info['store_id']))}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p3.png"/>
+                                <span>工厂店库存</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

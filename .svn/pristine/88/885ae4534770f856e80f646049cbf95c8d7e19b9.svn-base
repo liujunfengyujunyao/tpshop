@@ -1,0 +1,139 @@
+<include file="public/layout" />
+<style>
+.ncap-order-style .ncap-order-details { margin: 20px auto;}
+.ncap-order-style .ncap-order-details .text-red { color: #f00; }
+</style>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title"><a class="back" href="javascript:history.go(-1)" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+			<div class="subject">
+				<h3>订单详情</h3>
+			</div>
+		</div>
+	</div>
+	<div class="ncap-order-style">
+		<div class="titile">
+			<h3></h3>
+		</div>
+		<div class="ncap-order-details">
+			<div class="tabs-panels">
+				<div class="misc-info">
+					<h3>基本信息</h3>
+					<dl>
+						<dt>工厂店名称：</dt>
+						<dd>{$order.store_id}</dd>
+						<dt>订单编号：</dt>
+						<dd>{$order.order_sn}</dd>
+					</dl>
+					<dl>
+						<dt>订单金额：</dt>
+						<dd>{$order.total_amount}</dd>
+						<dt>订单状态：</dt>
+						<dd>{$order_status[$order[order_status]]} / {$pay_status[$order[pay_status]]}
+							<if condition="$order['pay_code'] eq 'cod'"><span style="color: red">(货到付款)</span></if> / {$shipping_status[$order[shipping_status]]}
+						</dd>
+					</dl>
+					<dl>
+						<dt>下单时间：</dt>
+						<dd>{$order.add_time|date='Y-m-d H:i:s',###}</dd>
+						<dt>支付时间：</dt>
+						<dd>
+							<if condition="$order.pay_time neq 0">
+								{$order.pay_time|date='Y-m-d H:i:s',###}
+                            <else/>
+                            	未付款
+                        	</if>
+                        </dd>
+					</dl>
+					<dl>
+						<dt>支付方式：</dt>
+						<dd>{$order.pay_name|default='其他方式'}</dd>
+						<dt>发票抬头：</dt>
+						<dd>{$order.invoice_title|default="无"}</dd>
+					</dl>
+					<dl>
+						<dt>核销编码：</dt>
+						<dd>{$order.safecode}</dd>
+					</dl>
+				</div>
+				<div class="addr-note">
+					<h4>收货信息</h4>
+					<dl>
+						<dt>收货人：</dt>
+						<dd>{$order.consignee}</dd>
+						<dt>联系方式：</dt>
+						<dd>{$order.mobile}</dd>
+					</dl>
+					<dl>
+						<dt>收货地址：</dt>
+						<dd>{$order.address2}</dd>
+						<dt>邮编：</dt>
+						<dd>{$order.zipcode|default="无"}</dd>
+					</dl>
+					<dl>
+						<dt>留言：</dt>
+						<dd>{$order.user_note|default='无'}</dd>
+					</dl>
+				</div>
+				<div class="goods-info">
+					<h4>商品信息</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>商品编号</th>
+								<th colspan="2">商品</th>
+								<th>规格属性</th>
+								<th>数量</th>
+								<th>单品价格</th>
+								<th>会员折扣价</th>
+								<th>单品小计</th>
+							</tr>
+						</thead>
+						<tbody>
+							<volist name="orderGoods" id="goods">
+							<tr>
+								<td class="w60">{$goods.goods_sn}</td>
+								<td class="w30"><div class="goods-thumb"><a href="{:U('Home/Goods/goodsInfo', array('id'=>$goods['goods_id']))}" target="_blank"><img alt="" src="{$goods['goods_id']|goods_thum_images=200,200}" /> </a></div></td>
+								<td style="text-align: left;"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}" target="_blank">{$goods.goods_name}</a><br/></td>
+								<td class="w80">{$goods.spec_key_name}</td>
+								<td class="w60">{$goods.goods_num}</td>
+								<td class="w100">{$goods.goods_price}</td>
+								<td class="w60">{$goods.member_goods_price}</td>
+								<td class="w80">{$goods.goods_total}</td>
+							</tr>
+							</volist>
+						</tbody>
+					</table>
+				</div>
+				<div class="total-amount contact-info">
+					<h3>订单总额：￥{$order.goods_price}</h3>
+				</div>
+				<div class="contact-info">
+					<h3>费用信息 </h3>  
+					<dl>
+						<dt>小计：</dt>
+						<dd>{$order.goods_price}</dd>
+						<dt>运费：</dt>
+						<dd>+{$order.shipping_price}</dd>
+						<dt>积分 (-{$order.integral})：</dt>
+						<dd>-{$order.integral_money}</dd>
+					</dl>
+					<dl>
+						<dt>余额抵扣：</dt>
+						<dd>-{$order.user_money}</dd>
+						<dt>优惠券抵扣：</dt>
+						<dd>-{$order.coupon_price}</dd>
+						<dt>价格调整：</dt>
+						<dd>减：{$order.discount}</dd>
+					</dl>
+					<dl>
+						<dt>应付：</dt>
+						<dd><strong class="red_common">{$order.order_amount}</strong></dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

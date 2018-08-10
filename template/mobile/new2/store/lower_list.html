@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我的团队</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/distribut/css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css"/>
+    <script src="__STATIC__/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body class="bag_gray2">
+<include file="public/header" title="店会员" body="g4"/>
+<include file="public/header_nav" title="店会员"  href="{:U('Mobile/Store/index')}" />
+<if condition="!empty($lists)">
+    <div id="lower-list">
+        <foreach name="lists" item="v">
+            <div class="my_team_alon p">
+                    <div class="team_head">
+                        <img src="{$v[head_pic]|default='__STATIC__/images/headpic.jpg'}"/>
+                    </div>
+                    <div class="team_name_time">
+                        <span class="t_n">{$v[nickname]}</span>
+                    </div>
+                    <span class="team_price">{$v[mobile]}</span>
+            </div>
+        </foreach>
+    </div>
+<else/>
+    <!--没有内容时-s-->
+    <div class="comment_con p">
+        <div style="padding:1rem;text-align: center;font-size: .59733rem;color: #777777;"><img src="__STATIC__/images/none.png"/><br /><br />您还没有下线，快去邀请好友吧~</div>
+    </div>
+    <!--没有内容时-e-->
+</if>
+</body>
+</html>

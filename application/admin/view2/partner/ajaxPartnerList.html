@@ -1,0 +1,95 @@
+<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+	<table cellspacing="0" cellpadding="0">
+		<tbody>
+		<if condition="empty($partnerList) eq true">
+			<tr data-id="0">
+				<td class="no-data" align="center" axis="col0" colspan="50">
+					<i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+				</td>
+			</tr>
+		<else/>
+		<volist name="partnerList" id="list">
+			<tr>
+				<td class="sign">
+					<div style="width: 24px;"><i class="ico-check"></i></div>
+				</td>
+				<td align="left" class="">
+					<div style="text-align: center; width: 50px;">{$list.partner_id}</div>
+				</td>
+				<td align="left" class="">
+					<div style="text-align: center; width: 100px;">{$list.nickname|getSubstr=0,33}</div>
+				</td>
+				<td align="left" class="">
+					<div style="text-align: center; width: 120px;">{$list.phone}</div>
+				</td>
+				<td align="left" class="">
+					<div style="text-align: center; width: 100px;">{$list.money}</div>
+				</td>
+				<td align="left" class="">
+					<div style="text-align: center; width: 80px;">{$list.pay_points}</div>
+				</td>
+				<td align="left" class="">
+					<div style="text-align: center; width: 220px;">{$list.province_name} {$list.city_name} {$list.town_name}</div>
+				</td>
+				<td align="left" class="">
+					<div style="text-align: center; width: 80px;">{$list.addtime}</div>
+				</td>
+				<td align="center" class="handle">
+					<div style="text-align: center; width: 170px; max-width:170px;">
+						<a class="btn blue"  href="javascript:void(0)" onclick="view('{$list[partner_id]}')" ><i class="fa fa-search"></i>查看</a>
+						<a class="btn green" href="{:U('Admin/Partner/edit',array('partner_id'=>$list['partner_id']))}"><i class="fa fa-pencil-square-o"></i>编辑</a>
+						<a class="btn red"  href="javascript:void(0)" onclick="del('{$list[partner_id]}')" ><i class="fa fa-trash-o"></i>删除</a>
+					</div>
+				</td>
+			</tr>
+		</volist>
+		</if>
+		</tbody>
+	</table>
+</div>
+<!--分页位置-->
+{$page}
+<script>
+	$(document).ready(function(){
+		// 表格行点击选中切换
+		$('#flexigrid>table>tbody>tr').click(function(){
+			$(this).toggleClass('trSelected');
+		});
+		$('#count').empty().html("{$pager->totalRows}");
+	});
+	// 点击分页触发的事件
+	$(".pagination  a").click(function(){
+		cur_page = $(this).data('p');
+		ajax_get_table('search-form2',cur_page);
+	});
+
+	//查看操作
+	function view(id) {
+		layer.open({
+			type: 2,
+			skin: 'layui-layer-rim',
+			title: '工厂店列表',
+			area: ['700px', '500px'],
+			content: "/index.php?m=Admin&c=Partner&a=view&partner_id="+id+"&p="+1
+		})
+	}
+
+	// 删除操作
+	function del(id) {
+		layer.confirm('确定要删除吗？', {btn: ['确定', '取消']}, function(index){
+			layer.close(index);
+			$.ajax({
+				url:"/index.php?m=Admin&c=Partner&a=del&partner_id="+id,
+				success: function(v){
+					var v = eval('('+v+')');
+					if(v.hasOwnProperty('status') && (v.status == 1)){
+						layer.msg(v.msg, {icon: 1});
+						ajax_get_table('search-form2',cur_page);
+					}else {
+						layer.msg(v.msg, {icon: 2,time: 1000});
+					}
+				}
+			});
+		});
+	}
+</script>

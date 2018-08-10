@@ -1,0 +1,51 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255,255,255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>风尚美人柜二维码图片查看</h3>
+                <h5>风尚美人柜二维码图片查看,打印</h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color:#2CA8A3; background-color: #EDFBF8; width:99%; height:100%;">
+        <div id="checkZoom" class="title">
+            <i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>风尚美人柜二维码图片在此查看、打印.</li>
+        </ul>
+    </div>
+
+    <div style="margin: auto; width: 60%">
+        <div style="float: left;">
+            <img src="__ROOT__/public/{$img.wx_image}" width="430" height="430" title="扫码注册">
+            <div style="text-align: center; font-size: 20px; color: #f00;">扫码注册</div>
+        </div>
+        <div style="float: left;;">
+            <img src="__ROOT__/public/{$img.sp_image}" width="430" height="430" title="扫码登录">
+            <div style="text-align: center; font-size: 20px; color: #f00;">扫码登录</div>
+        </div>
+        <div style="clear: both; text-align: center" class="no-print">
+            <a href="javascript:printDiv();" style="float:center" class="ncap-btn-big ncap-btn-green" ><i class="fa fa-print"></i>打印</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function printDiv()
+    {
+        var oldStr = document.body.innerHTML;
+        $('.no-print').hide();
+        window.print();
+        document.body.innerHTML = oldStr;
+    }
+</script>
+</body>
+</html>

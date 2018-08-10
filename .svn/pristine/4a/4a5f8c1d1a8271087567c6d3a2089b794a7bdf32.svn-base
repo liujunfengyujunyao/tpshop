@@ -1,0 +1,746 @@
+<?php
+/**
+ * tfs-shop
+ * ============================================================================
+ * 版权所有 2017-2027 北京鑫泰亿联视讯科技有限公司，并保留所有权利。
+ * 网站地址: http://www.elvision.cn
+ * ----------------------------------------------------------------------------
+ * 这不是一个自由软件！
+ * 不允许对程序代码以任何形式任何目的的再发布。
+ * 采用TP5助手函数可实现单字母函数M D U等,也可db::name方式,可双向兼容
+ * ============================================================================
+ * Author: ShenCheng
+ * Date: 2017/07/27
+ */
+
+namespace app\admin\controller;
+
+use app\admin\logic\OrderLogic;
+use think\AjaxPage;
+use think\Page;
+use think\Db;
+use think\Loader;
+
+class Store extends Base
+{
+
+    public function index()
+    {
+        $this->assign('province', $this->getRegion(0, 1));
+        return $this->fetch();
+    }
+
+    /**
+     * 工厂店列表
+     * @author ShenCheng
+     * Date: 2017/08/07
+     */
+    public function ajaxStoreList()
+    {
+        $province_id = I('post.province_id');
+        $city_id = I('post.city_id');
+        $district_id = I('post.district_id');
+        $key_word = I('post.key_word');
+        $store_where = array();
+
+        if (!empty($province_id)) {
+            $store_where['u1.province'] = $province_id;
+        }
+        if (!empty($city_id)) {
+            $store_where['u1.city'] = $city_id;
+        }
+        if (!empty($district_id)) {
+            $store_where['u1.district'] = $district_id;
+        }
+        if (!empty($key_word)) {
+            $store_where['s.store_name'] = array('like', "%$key_word%");
+        }
+        $store_where['s.status'] = 1;
+
+        $count = DB::name('store')
+            ->alias('s')
+            ->join('__USERS__ u1', 'u1.user_id = s.user_id', 'LEFT')
+            ->where($store_where)
+            ->count();
+
+        $Page = new AjaxPage($count, 10);
+        $show = $Page->show();
+
+        $list = DB::name('store')
+            ->alias('s')
+            ->field("s.*, u1.nickname as user, u1.user_money, u2.nickname as partner, st.type_name")
+            ->join('__USERS__ u1', 'u1.user_id = s.user_id', 'LEFT')
+            ->join('__PARTNER__ p', 'p.partner_id = s.partner_id', 'LEFT')
+            ->join('__STORE_TYPE__ st', 'st.id = s.type_id', 'LEFT')
+            ->join('__USERS__ u2', 'u2.user_id = p.user_id', 'LEFT')
+            ->where($store_where)
+            ->order('s.store_id')
+            ->limit($Page->firstRow . ',' . $Page->listRows)
+            ->select();
+
+        $this->assign('list', $list);
+        $this->assign('page', $show); //赋值 分页输出
+        $this->assign('pager', $Page);
+        return $this->fetch();
+    }
+
+    /**
+     * 获取省、市、区列表
+     * @param  int $pid 父级id
+     * @param  int $level 地区等级
+     * @return array      地区列表
+     */
+    public function getRegion($pid, $level)
+    {
+        $region = M('region')->where(array('parent_id' => $pid, 'level' => $level))->select();
+        return $region;
+    }
+
+    /**
+     * 工厂店添加/修改
+     * @author ShenCheng
+     * Date: 2017/07/27
+     */
+    public function addEditStore()
+    {
+        $type_arr = Db::name('store_type')->getField('id,type_name');  //所有工厂店类型 
+        //获取所有合伙人
+        $partner_arr = DB::name('partner')
+            ->alias('p')
+            ->field("p.partner_id, u.nickname")
+            ->join('__USERS__ u', 'u.user_id = p.user_id', 'LEFT')
+            ->where("p.status=1")
+            ->order('p.partner_id')
+            ->select();
+
+        if (IS_GET) {
+            $act = I('get.act');
+            if ($act == '_EDIT_') {
+                $id = I('get.id');
+                $info = DB::name('store')
+                    ->alias('s')
+                    ->field("s.*, u.nickname, u.province, u.city, u.district")
+                    ->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+                    ->where(array('store_id' => $id))
+                    ->find();
+                $this->assign('province', $this->getRegion(0, 1));
+                $this->assign('city', $this->getRegion($info['province'], 2));
+                $this->assign('district', $this->getRegion($info['city'], 3));
+                $this->assign('info', $info);
+                $this->assign('type_arr', $type_arr);
+                $this->assign('partner_arr', $partner_arr);
+                $this->assign('act', '_EDIT_');
+            }
+
+            if ($act == '_ADD_') {
+                $this->assign('province', $this->getRegion(0, 1));
+                $this->assign('type_arr', $type_arr);
+                $this->assign('partner_arr', $partner_arr);
+                $this->assign('act', '_ADD_');
+            }
+            return $this->fetch('_addEditStore');
+        }
+
+        $act = I('post.act');
+        $data = I('post.');
+
+        if ($act == '_ADD_') {
+            $user = array(
+                'nickname' => $data['nickname'],
+                'password' => encrypt($data['password']),
+                'mobile' => $data['mobile'],
+                'mobile_validated' => 1,    //手机号已验证
+                //'email'         => $data['email'],
+                'is_distribut' => 1,
+                'reg_time' => time(),
+                'level' => 9,
+                'province' => $data['province'],
+                'city' => $data['city'],
+                'district' => $data['district'],
+                'first_leader' => DB::name('partner')->where(array('partner_id' => intval($data['partner_id'])))->getField('user_id')
+            );
+
+            $user_count = Db::name('users')->where('mobile', $user['mobile'])->count();
+
+            if ($user_count > 0) {
+                $this->error("手机号已存在", U('Admin/Store/index'));
+                exit();
+            }else{
+                $user_id = Db::name('users')->add($user);
+                if (!$user_id) {
+                    $this->error("添加失败", U('Admin/Store/index'));
+                } else {
+                    $info = array(
+                        'user_id' => intval($user_id),
+                        'partner_id' => intval($data['partner_id']),
+                        'store_name' => $data['store_name'],
+                        'type_id' => intval($data['type_id']),
+                        'phone' => $data['mobile'],
+                        'addtime' => time()
+                    );
+                    $r = Db::name('store')->add($info);
+                    //根据类型将初始配置写入工厂店库存
+                    $store_conf = M('store_type_conf')->field('goods_id,goods_num')->where('type_id', $info['type_id'])->select();
+                    $sql = "INSERT IGNORE INTO __PREFIX__store_stock (`store_id`,`goods_id`,`stock_num`) VALUES ";
+                    foreach ($store_conf as $conf) {
+                        $values[] = "(" . $r . "," . $conf['goods_id'] . "," . $conf['goods_num'] . ")";
+                    }
+                    $value = implode(',', $values);
+                    $sql_query = $sql . $value;
+                    $res = DB::query($sql_query);
+
+                    if ($r && $res) {
+                        $this->success("操作成功", U('Admin/Store/index'));
+                    } else {
+                        $this->error("操作成功", U('Admin/Store/index'));
+                    }
+                }
+            }
+        }
+
+        if ($act == '_EDIT_') {
+            $uid = $data['user_id'];
+            $user = array(
+                'nickname' => $data['nickname'],
+                'mobile' => $data['mobile'],
+                //'email'         => $data['email'],
+                'is_distribut' => 1,
+                'reg_time' => time(),
+                'province' => $data['province'],
+                'city' => $data['city'],
+                'district' => $data['district'],
+                'first_leader' => DB::name('partner')->where(array('partner_id' => intval($data['partner_id'])))->getField('user_id')
+            );
+            if ($data['password'] !== '') {
+                $user['password'] = encrypt($data['password']);
+            }
+
+            if (!empty($user['mobile'])) {
+                $mobile = trim($user['mobile']);
+                $c = M('users')->where("user_id != $uid and mobile = '$mobile'")->count();
+                $c && exit($this->error('手机号不得和已有用户重复'));
+            }
+
+            $user_id = Db::name('users')->where("user_id = $uid")->save($user);
+
+            if (!$user_id) {
+                $this->error("修改失败", U('Admin/Store/index'));
+            } else {
+                $info = array(
+                    'user_id' => intval($uid),
+                    'partner_id' => intval($data['partner_id']),
+                    'store_name' => $data['store_name'],
+                    'type_id' => intval($data['type_id']),
+                    'phone' => $data['mobile']
+                );
+
+                $r = Db::name('store')->where(array('store_id' => $data['store_id']))->save($info);
+
+                if ($r !== false) {
+                    $this->success("操作成功", U('Admin/Store/index'));
+                } else {
+                    $this->error("操作成功", U('Admin/Store/index'));
+                }
+            }
+        }
+
+        if ($act == '_DEL_') {
+            $id = I('post.id');
+            $user_id = DB::name('store')->where("store_id=$id")->getField('user_id');
+
+            if (M('store_stock')->where('store_id', $id)->sum('goods_num') > 0) {
+                $this->ajaxReturn(['status' => 2, 'msg' => '此工厂店下还有库存，无法删除!']);
+            } else {
+                $r = Db::name('store')->where("store_id=$id")->setField('status', 0);
+                Db::name('users')->where("user_id=$user_id")->setField('level', 1);
+                if ($r) $this->ajaxReturn(['status' => 1, 'msg' => '操作成功!']);
+            }
+        }
+
+        if ($r) {
+            $this->success("操作成功", U('Admin/Store/index'));
+        } else {
+            $this->error("操作失败", U('Admin/Store/index'));
+        }
+    }
+
+    /**
+     * 工厂店分类列表
+     * @author ShenCheng
+     * Date: 2017/07/27
+     */
+    public function typeList()
+    {
+        $list = M('Store_type')->select();
+        $this->assign('list', $list);
+        return $this->fetch();
+    }
+
+    /**
+     * 工厂店分类添加/修改
+     * @author ShenCheng
+     * Date: 2017/07/27
+     */
+    public function addEditType()
+    {
+        $store_type_db = M('Store_type');
+
+        if (IS_GET) {
+            $act = I('get.act');
+            if ($act == '_EDIT_') {
+                $id = I('get.id');
+                $info = $store_type_db->where("id=$id")->find();
+                $this->assign('info', $info);
+                $this->assign('act', '_EDIT_');
+            }
+
+            if ($act == '_ADD_') {
+                $this->assign('act', '_ADD_');
+            }
+            return $this->fetch('_addEditType');
+        }
+
+        $data['type_name'] = I('get.type_name', '', 'htmlspecialchars');
+        $data['count_value'] = I('get.count_value', '', 'htmlspecialchars');
+        $data['addtime'] = time();
+
+        $act = I('post.act');
+
+        if ($act == '_ADD_') {
+            $r = $store_type_db->add($data);
+            if ($r !== false) {
+                $this->success("操作成功", U('Admin/Store/typeList'));
+            } else {
+                $this->error("操作成功", U('Admin/Store/typeList'));
+            }
+        }
+
+        if ($act == '_EDIT_') {
+            $id = I('post.id');
+            $data['type_name'] = I('post.type_name');
+            $data['count_value'] = I('post.count_value');
+            $r = $store_type_db->where("id=$id")->save($data);
+            if ($r !== false) {
+                $this->success("操作成功", U('Admin/Store/typeList'));
+            } else {
+                $this->error("操作成功", U('Admin/Store/typeList'));
+            }
+        }
+
+        if ($act == '_DEL_') {
+            $id = I('post.id');
+            // if(M('ad')->where('pid',$data['position_id'])->count()>0){
+            //     $this->error("此广告位下还有广告，请先清除",U('Admin/Ad/positionList'));
+            // }else{
+            $r = $store_type_db->where("id=$id")->delete();
+            if ($r) exit(json_encode(1));
+            // }
+        }
+
+        if ($r) {
+            $this->success("操作成功", U('Admin/Store/typeList'));
+        } else {
+            $this->error("操作失败", U('Admin/Store/typeList'));
+        }
+    }
+
+    /**
+     * 工厂店类型配货
+     */
+    public function delivery()
+    {
+        $type_id = I('get.id/d');
+
+        if (IS_POST) {
+            if ($type_id) {
+                $data = I('post.');
+
+                $r = DB::name('store_type_conf')->where(array('type_id' => $type_id))->find();
+                if ($r !== NULL) {
+                    DB::name('store_type_conf')->where(array('type_id' => $type_id))->delete();
+                }
+                foreach ($data['goods'] as $key => $value) {
+                    $goods['goods_id'] = $value['goods_id'];
+                    $goods['goods_num'] = $value['number'];
+                    $goods['price'] = DB::name('goods')->where(array('goods_id' => $value['goods_id']))->getField('shop_price');
+                    $goods['type_id'] = $type_id;
+                    $goods['admin_id'] = $_SESSION['admin_id'];
+                    $goods['addtime'] = time();
+                    $goods['edittime'] = time();
+
+                    DB::name('store_type_conf')->add($goods);
+                }
+                DB::name('store_type')->where(array('id' => $type_id))->save(array('goods_value' => $data['goods_value']));
+                $this->ajaxReturn(array('status' => 1, 'msg' => '操作成功！'));
+            } else {
+                $this->ajaxReturn(array('status' => 0, 'msg' => '操作失败！'));
+            }
+        } else {
+            //读取商品配置清单
+            $info = DB::name('store_type_conf')
+                ->alias('stc')
+                ->field('stc.goods_id, stc.goods_num, g.shop_price')
+                ->join('__GOODS__ g', 'g.goods_id = stc.goods_id')
+                ->where(array('type_id' => $type_id))
+                ->select();
+
+            $list = DB::name('goods')
+                ->field('goods_id, goods_name, shop_price')
+                ->where(array('is_on_sale' => 1))
+                ->select();
+            $count_value = DB::name('store_type')->where(array('id' => $type_id))->getField('count_value');
+            $this->assign('list', $list);
+            $this->assign('info', $info);
+            $this->assign('count_value', $count_value);
+            $this->assign('type_id', $type_id);
+            $this->assign('count', count($list));
+            return $this->fetch();
+        }
+    }
+
+    /**
+     * 工厂店提现申请记录列表
+     * @author ShenCheng
+     * update 2017/08/07
+     */
+    public function withdrawals()
+    {
+        $data = I('post.');
+        //筛选条件
+        if (!empty($data['create_time'])) {
+            $create_time2 = explode('-', $data['create_time']);
+            $where['w.create_time'] = array(array('egt', strtotime($create_time2[0])), array('elt', strtotime($create_time2[1])), 'AND');
+            $this->assign('start_time', $create_time2[0]);
+            $this->assign('end_time', $create_time2[1]);
+        }
+        if (!empty($data['store_name'])) {
+            $where['s.store_name'] = array('like', "%" . $data['store_name'] . "%");
+        }
+        if (!empty($data['account_bank'])) {
+            $where['w.account_bank'] = array('like', "%" . $data['account_bank'] . "%");
+        }
+        if ($data['status'] === '0' || $data['status'] > 0) {
+            $where['w.status'] = $data['status'];
+        }
+        $where['u.level'] = 9;
+        
+        $count = DB::name('withdrawals')
+            ->alias('w')
+            ->join('__USERS__ u', 'u.user_id = w.user_id', 'LEFT')
+            ->join('__STORE__ s', 's.user_id = w.user_id', 'LEFT')
+            ->where($where)
+            ->count();
+
+        $Page = new Page($count, 20);
+        $show = $Page->show();
+
+        $list = DB::name('withdrawals')
+            ->alias('w')
+            ->field('w.*,u.*,s.store_name')
+            ->join('__USERS__ u', 'u.user_id = w.user_id', 'LEFT')
+            ->join('__STORE__ s', 's.user_id = w.user_id', 'LEFT')
+            ->where($where)
+            ->order("w.create_time desc")
+            ->limit($Page->firstRow . ',' . $Page->listRows)
+            ->select();
+        $this->assign('page', $show);
+        $this->assign('pager', $Page);
+        $this->assign('list', $list);
+        C('TOKEN_ON', false); //关闭表单令牌验证
+        return $this->fetch();
+    }
+
+    /**
+     * 编辑工厂店提现申请
+     */
+    public function editWithdrawals()
+    {
+        $id = I('get.id/d');
+
+        $record = DB::name('withdrawals')
+            ->alias('w')
+            ->field('w.*, s.store_name, u.user_money')
+            ->join('__USERS__ u', 'u.user_id = w.user_id', 'LEFT')
+            ->join('__STORE__ s', 's.user_id = w.user_id', 'LEFT')
+            ->where(array('w.id' => $id))
+            ->find();
+
+        if (IS_POST) {
+            $data = I('post.');
+            // 如果是已经给用户转账 则生成转账流水记录
+            if ($data['status'] == 1 && $record['status'] != 1) {
+                if ($record['user_money'] < $record['money']) {
+                    $this->error('用户余额不足' . $record['money'] . '，不够提现！');
+                    exit;
+                }
+                accountLog($record['user_id'], ($record['money'] * -1), 0, "平台提现");
+
+                $remittance = array(
+                    'user_id' => $record['user_id'],
+                    'bank_name' => $record['bank_name'],
+                    'account_bank' => $record['account_bank'],
+                    'account_name' => $record['account_name'],
+                    'money' => $record['money'],
+                    'status' => 1,
+                    'create_time' => time(),
+                    'admin_id' => session('admin_id'),
+                    'withdrawals_id' => $record['id'],
+                    'remark' => $data['remark'],
+                );
+                M('remittance')->add($remittance);
+            }
+            $r = DB::name('withdrawals')->update($data);
+
+            if ($r) {
+                if ($data['status'] == 1 && $record['status'] != 1) {
+                    adminLog('管理员通过了工厂店负责人-' . $record['nickname'] . '的提现申请');
+                } else if ($data['status'] == 2) {
+                    adminLog('管理员拒绝了工厂店负责人-' . $record['nickname'] . '的提现申请');
+                }
+                $this->success("操作成功!", U('Admin/Store/remittance'), 3);
+            } else {
+                $this->error("操作失败!");
+            }
+            exit;
+        }
+
+        $this->assign('data', $record);
+        return $this->fetch();
+    }
+
+    /**
+     * 删除工厂店提现申请记录
+     */
+    public function delWithdrawals()
+    {
+        $id = I('get.id/d');
+        $nickname = DB::name('withdrawals')
+            ->alias('w')
+            ->join('__USERS__ u', 'u.user_id = w.user_id', 'LEFT')
+            ->where(array('w.id' => $id))
+            ->getField('u.nickname');
+        $res = DB::name('withdrawals')->where(array('id' => $id))->delete();
+        if (!$res) {
+            $this->ajaxReturn(array('status' => 0, 'msg' => '操作失败！'));
+        }
+        adminLog('管理员删除了工厂店负责人-' . $nickname . '的提现申请');
+        $this->ajaxReturn(array('status' => 1, 'msg' => '操作成功！'));
+    }
+
+    /**
+     *  转账汇款记录
+     */
+    public function remittance()
+    {
+        $data = I('post.');
+
+        //筛选条件
+        if (!empty($data['create_time'])) {
+            $create_time2 = explode('-', $data['create_time']);
+            $where['r.create_time'] = array(array('egt', strtotime($create_time2[0])), array('elt', strtotime($create_time2[1])), 'AND');
+            $this->assign('start_time', $create_time2[0]);
+            $this->assign('end_time', $create_time2[1]);
+        }
+        if (!empty($data['store_name'])) {
+            $where['s.store_name'] = array('like', "%" . $data['store_name'] . "%");
+        }
+        if (!empty($data['account_bank'])) {
+            $where['r.account_bank'] = array('like', "%" . $data['account_bank'] . "%");
+        }
+        $where['u.level'] = 9;
+
+        $count = DB::name('remittance')
+            ->alias('r')
+            ->join('__USERS__ u', 'u.user_id = r.user_id', 'LEFT')
+            ->join('__STORE__ s', 's.user_id = r.user_id', 'LEFT')
+            ->where($where)
+            ->count();
+        $Page = new Page($count, 20);
+        $show = $Page->show();
+
+        $list = DB::name('remittance')
+            ->alias('r')
+            ->join('__USERS__ u', 'u.user_id = r.user_id', 'LEFT')
+            ->join('__STORE__ s', 's.user_id = r.user_id', 'LEFT')
+            ->where($where)
+            ->order("r.create_time desc")
+            ->limit($Page->firstRow . ',' . $Page->listRows)
+            ->select();
+
+        $this->assign('page', $show);
+        $this->assign('pager', $Page);
+        $this->assign('list', $list);
+        C('TOKEN_ON', false); //关闭表单令牌验证
+        return $this->fetch();
+    }
+
+    /**
+     * 库存管理
+     */
+    public function stockList()
+    {
+        $data = I('post.');
+        $where = array();
+
+        if (!empty($data['province_id'])) {
+            $where['u.province'] = $data['province_id'];
+        }
+        if (!empty($data['city_id'])) {
+            $where['u.city'] = $data['city_id'];
+        }
+        if (!empty($data['district_id'])) {
+            $where['u.district'] = $data['district_id'];
+        }
+        if (!empty($data['store_name'])) {
+            $where['s.store_name'] = array('like', '%' . $data['store_name'] . '%');
+        }
+        $where['s.status'] = 1;
+
+        $count = DB::name('store')
+            ->alias('s')
+            ->where($where)
+            ->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+            ->count();
+
+        $Page = new Page($count, 10);
+        $show = $Page->show();
+
+        $list = DB::name('store')
+            ->alias('s')
+            ->field("s.store_id, s.store_name, u.province, u.city, u.district, u.mobile")
+            ->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+            ->where($where)
+            ->limit($Page->firstRow . ',' . $Page->listRows)
+            ->select();
+
+        foreach ($list as $key => &$value) {
+            $province = DB::name('region')->where(array('id' => $value['province']))->getField('name');
+            $city = DB::name('region')->where(array('id' => $value['city']))->getField('name');
+            $district = DB::name('region')->where(array('id' => $value['district']))->getField('name');
+            $value['address'] = $province . $city . $district;
+            $goods = DB::name('store_stock')
+                ->alias('s_s')
+                ->field("s_s.*, g.goods_name, FROM_UNIXTIME(s_s.edittime, '%Y-%m-%d %H:%i:%s') as edittime")
+                ->join('__GOODS__ g', 'g.goods_id = s_s.goods_id', 'LEFT')
+                ->where(array('s_s.store_id' => $value['store_id']))
+                ->order('s_s.edittime desc, s_s.stock_id, s_s.goods_id desc')
+                ->select();
+            $value['goods'] = $goods;
+        }
+
+        $this->assign('page', $show);
+        $this->assign('pager', $Page);
+        $this->assign('list', $list);
+        $this->assign('province', $this->getRegion(0, 1));
+        $this->assign('storeage', tpCache('basic.store_storeage')); //工厂店库存预警比例配置
+        return $this->fetch();
+    }
+
+    /**
+     * 库存日志
+     * @author: Ly
+     * @date: 2017-10-11
+     */
+    public function stocklog()
+    {
+        $data = I('post.');
+
+        $where = array();
+        //筛选条件
+        if (!empty($data['ctime'])) {
+            $create_time2 = explode(',', $data['ctime']);
+            $where['l.ctime'] = array(array('egt', strtotime($create_time2[0])), array('elt', strtotime($create_time2[1])), 'AND');
+            $this->assign('start_time', $create_time2[0]);
+            $this->assign('end_time', $create_time2[1]);
+        }
+        if (!empty($data['mobile'])) {
+            $where['s.phone'] = array('like', '%' . $data['mobile'] . '%');
+        }
+
+        $content = D('store')->getStockLog($where);
+
+        $this->assign('page', $content['page']);
+        $this->assign('pager', $content['pager']);
+        $this->assign('list', $content['list']);
+        return $this->fetch('stocklog');
+    }
+
+    /**
+     * 工厂店订单列表，按工厂店分组获取
+     * @author  ShenCheng
+     * update 2017/08/12
+     */
+    public function orderList()
+    {
+        $data = I('post.');
+        $where = array();
+
+        if (!empty($data['province_id'])) {
+            $where['u.province'] = $data['province_id'];
+        }
+        if (!empty($data['city_id'])) {
+            $where['u.city'] = $data['city_id'];
+        }
+        if (!empty($data['district_id'])) {
+            $where['u.district'] = $data['district_id'];
+        }
+        if (!empty($data['store_name'])) {
+            $where['s.store_name'] = array('like', '%' . $data['store_name'] . '%');
+        }
+
+        $count = DB::name('store')
+            ->alias('s')
+            ->where($where)
+            ->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+            ->count();
+
+        $Page = new Page($count, 10);
+        $show = $Page->show();
+
+        $list = DB::name('store')
+            ->alias('s')
+            ->field('s.store_id, s.store_name, u.province, u.city, u.district, u.mobile')
+            ->join('__USERS__ u', 'u.user_id = s.user_id', 'LEFT')
+            ->where($where)
+            ->limit($Page->firstRow . ',' . $Page->listRows)
+            ->select();
+        foreach ($list as $key => &$value) {
+            $province = DB::name('region')->where(array('id' => $value['province']))->getField('name');
+            $city = DB::name('region')->where(array('id' => $value['city']))->getField('name');
+            $district = DB::name('region')->where(array('id' => $value['district']))->getField('name');
+            $value['address'] = $province . $city . $district;
+        }
+
+        $this->assign('page', $show);
+        $this->assign('pager', $Page);
+        $this->assign('list', $list);
+        $this->assign('province', $this->getRegion(0, 1));
+
+        return $this->fetch();
+    }
+
+    /**
+     * 工厂店订单列表
+     * @author ShenCheng
+     * update 2017/08/16
+     */
+    public function ajaxOrderList()
+    {
+        $orderLogic = new OrderLogic();
+        $where['store_id'] = $_POST['id'];
+
+        $count = DB::name('order')
+            ->where($where)
+            ->count();
+        $Page = new AjaxPage($count, 20);
+        $show = $Page->show();
+
+        $condition['s.store_id'] = $_POST['id'];
+        $list = $orderLogic->getOrderList($condition, $sort_order, $Page->firstRow, $Page->listRows);
+
+        $this->assign('page', $show);
+        $this->assign('is_page', $count - 20);
+        $this->assign('list', $list);
+        return $this->fetch();
+    }
+}

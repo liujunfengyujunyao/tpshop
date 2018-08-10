@@ -1,0 +1,3 @@
+<?php
+//000000000001a:1:{i:0;a:16:{s:5:"ad_id";i:16;s:3:"pid";i:406;s:10:"media_type";i:0;s:7:"ad_name";s:33:"【商品分类页】顶部广告";s:7:"ad_link";s:19:"javascript:void(0);";s:7:"ad_code";s:65:"/public/upload/ad/2017/11-07/52faa53fbfe32c7e388f9a269025952f.jpg";s:10:"start_time";i:1451577600;s:8:"end_time";i:1546272000;s:8:"link_man";s:0:"";s:10:"link_email";s:0:"";s:10:"link_phone";s:0:"";s:11:"click_count";i:0;s:7:"enabled";i:1;s:7:"orderby";i:0;s:6:"target";i:0;s:7:"bgcolor";s:7:"#000000";}}
+?>

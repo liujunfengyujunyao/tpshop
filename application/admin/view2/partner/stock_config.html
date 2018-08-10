@@ -1,0 +1,151 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title">
+			<div class="subject">
+				<h3>库存配置</h3>
+				<h5>网站系统合伙人库存配置</h5>
+			</div>
+		</div>
+	</div>
+
+	<!-- 操作说明 -->
+	<div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
+		</div>
+		<ul>
+			<li>合伙人默认的商品最大库存量，在此配置</li>
+		</ul>
+	</div>
+
+	<!-- 商品默认的最大库存量 -->
+	<div class="flexigrid" id="ajax_return">
+		<div class="mDiv">
+			<div class="ftitle">
+				<h3>库存配置</h3>
+				<h5>(共{$pager->totalRows}条记录)</h5>
+			</div>
+			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+		</div>
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<thead>
+						<tr>
+							<th class="sign" axis="col0">
+								<div style="width: 24px;"><i class="ico-check"></i></div>
+							</th>
+							<th align="center" axis="col3" class="">
+								<div style="text-align: center; width: 50px;" class="">编号</div>
+							</th>
+							<th align="center" axis="col4" class="">
+								<div style="text-align: center; width: 650px;" class="">商品名称</div>
+							</th>
+							<th align="center" axis="col5" class="">
+								<div style="text-align: center; width: 100px;" class="">配额</div>
+							</th>
+							<th align="center" axis="col1" class="handle">
+								<div style="text-align: center; width: 170px;">操作</div>
+							</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="tDiv">
+			<div class="tDiv2">
+				<div class="fbutton">
+					<a href="javascript:void(0)" onclick="show('0')">
+						<div class="add" title="添加">
+							<span><i class="fa fa-plus"></i>添加</span>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div style="clear:both"></div>
+		</div>
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+					<volist name="list" id="vo">
+						<tr>
+							<td class="sign">
+								<div style="width: 24px;"><i class="ico-check"></i></div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 50px;">{$key+1}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 650px;">{$vo.goods_name|getSubstr=0,60}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 100px;">{$vo.stock}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 170px;">
+									<a class="btn green" href="javascript:void(0)" onclick="show({$vo['goods_id']})"><i class="fa fa-pencil"></i>编辑</a>
+									<a class="btn red" href="javascript:void(0)" onclick="del({$vo['goods_id']})"><i class="fa fa-trash-o"></i>删除</a>
+								</div>
+							</td>
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!--分页位置-->
+		{$page}
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+	// 点击刷新数据
+	$('.fa-refresh').click(function() {
+		location.href = location.href;
+	});
+
+	// 表格行点击选中切换
+	$('#flexigrid > table>tbody >tr').click(function(){
+		$(this).toggleClass('trSelected');
+	});
+});
+
+/* 显示添加、编辑弹出层 */
+function show(id) {
+	layer.open({
+		type: 2,
+		skin: 'layui-layer-rim',
+		title: '商品库存配置',
+		area: ['900px', '550px'],
+		content: "/index.php?m=Admin&c=Partner&a=add_config&id="+id
+	})
+}
+
+// 删除操作
+function del(id) {
+	layer.confirm('确定要删除吗？', {btn: ['确定', '取消']}, function(index){
+		layer.close(index);
+		$.ajax({
+			url:"/index.php?m=Admin&c=Partner&a=del_config&id="+id,
+			success: function(v){
+				var v = eval('('+v+')');
+				if(v.hasOwnProperty('status') && (v.status == 1)){
+					layer.msg(v.msg, {icon: 1});
+					location.href = location.href;
+				}else {
+					layer.msg(v.msg, {icon: 2,time: 1000});
+				}
+			}
+		});
+	});
+}
+</script>
+</body>
+</html>

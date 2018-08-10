@@ -1,0 +1,93 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的收藏</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10">
+                <div>
+                    <ol class="breadcrumb">
+                        <li><i class="glyphicon glyphicon-home"></i></li>
+                        <li><a href="{:U('Home/User/index')}">用户中心</a></li>
+                        <li class="active">我的收藏</li>
+                    </ol>
+                </div>
+
+                <div class="my_right per_main_r">
+                    <div class="">
+                        <div class="stock_list_main">
+                            <ul class="collection_title">
+                                <li>商品</li>
+                                <li>价格</li>
+                                <li>收藏时间</li>
+                                <li>操作</li>
+                            </ul>
+
+                            <empty name="lists">
+                                    <p class="ncyekjl"><center>--暂无记录--</center></p>
+                            </empty>
+
+                            <volist name="lists" id="list">
+                            <ul class="collection_goods">
+                                <li class="col_goods_img"><div class="goods_img_pic"><img src="{$list['goods_id']|goods_thum_images=80,80}" width="80" height="80" /></div>
+                                <div class="goods_img_title"><h6>{$list.goods_name}</h6></div><p>商品货号：{$list.goods_sn}</p></li>
+                                <li><span>{$list.shop_price}</span></li>
+                                <li>{$list.add_time|date="Y-m-d H:i:s",###}</li>
+                                <li><a onclick="AjaxAddCart({$list[goods_id]},1,0);" class="collection_jion">加入购物车</a><a onclick="del_all({$list[collect_id]})" href="javascript:" class="collection_cancel">取消收藏</a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                            </volist>
+
+                        </div>
+
+                        <div class="eva_page text-right">
+                            {$page}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+
+</body>
+</html>
+<script type="text/javascript">
+    function del_all(del_ids)
+    {
+        //询问框
+        layer.confirm('您确定要取消收藏', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            window.location.href='/index.php?m=Home&c=User&a=del_goods_collect&id='+del_ids;
+        });
+
+    }
+</script>

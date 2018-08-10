@@ -1,0 +1,181 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title">
+			<div class="subject">
+				<h3>合伙人库存日志</h3>
+				<h5>网站系统合伙人库存日志</h5>
+			</div>
+		</div>
+	</div>
+	<!-- 操作说明 -->
+	<div class="explanation">
+		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
+		</div>
+		<ul>
+			<li>合伙人库存日志</li>
+		</ul>
+	</div>
+	<div class="flexigrid">
+		<div class="mDiv">
+			<div class="ftitle">
+				<h3>库存日志</h3>
+				<h5>(共{$pager->totalRows}条记录)</h5>
+			</div>
+			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+			<form class="navbar-form form-inline" id="search-form" method="post" action="{:U('Partner/stockLog')}" onsubmit="return check_form();">
+				<input type="hidden" name="ctime" id="ctime" value="{$ctime}">
+				<div class="sDiv">
+					起始时间：
+					<div class="sDiv2" style="margin-right: 5px;">
+						<input type="text" size="30" id="start_time" value="{$start_time}" placeholder="起始时间" class="qsbox">
+					</div>
+					截止时间：
+					<div class="sDiv2" style="margin-right: 5px;">
+						<input type="text" size="30" id="end_time" value="{$end_time}" placeholder="截止时间" class="qsbox">
+					</div>
+					<!-- <div class="sDiv2" style="margin-right: 10px;">
+						<select class="form-control" id="status" name="mtype" style="border: none;">
+							<option value="">全部</option>
+							<option value="1" <if condition="$_REQUEST['mtype'] eq 1">selected</if>>入库</option>
+							<option value="-1" <if condition="$_REQUEST['mtype'] eq -1">selected</if>>出库</option>
+						</select>
+					</div> -->
+					<div class="sDiv2">
+						<input size="30" placeholder="合伙人手机号" value="{$Think.request.mobile}" name="mobile" class="qsbox" type="text">
+						<input class="btn" value="搜索" type="submit">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0" style="width: 100%">
+					<thead>
+					<tr>
+						<th class="sign" axis="col0">
+							<div style="width: 24px;"><i class="ico-check"></i></div>
+						</th>
+						<th align="center" abbr="article_title" axis="col3" class="">
+							<div style="text-align: center; width: 50px;" class="">编号</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 100px;" class="">合伙人</div>
+						</th>
+						<th align="center" abbr="ac_id" axis="col4" class="">
+							<div style="text-align: center; width: 400px;" class="">商品名称</div>
+						</th>
+						<th align="center" abbr="article_show" axis="col5" class="">
+							<div style="text-align: center; width: 100px;" class="">库存</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 150px;" class="">变动时间</div>
+						</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+					<if condition="empty($list) eq true">
+						<tr data-id="0">
+							<td class="no-data" align="center" axis="col0" colspan="50">
+								<i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+							</td>
+						</tr>
+					<else/>
+					<volist name="list" id="v">
+						<tr>
+							<td class="sign">
+								<div style="width: 24px;"><i class="ico-check"></i></div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 50px;">{$v.id}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 100px;">{$v.nickname}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 400px;">{$v.goods_name|getSubstr=0,40}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 100px;">{$v.stock}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 150px;">{$v.ctime|date="Y-m-d H:i:s",###}</div>
+							</td>
+						</tr>
+					</volist>
+					</if>
+					</tbody>
+				</table>
+			</div>
+			<div class="iDiv" style="display: none;"></div>
+		</div>
+		<!--分页位置-->
+		{$page}
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		// 表格行点击选中切换
+		$('#flexigrid > table>tbody >tr').click(function(){
+			$(this).toggleClass('trSelected');
+		});
+
+		// 点击刷新数据
+		$('.fa-refresh').click(function(){
+			location.href = location.href;
+		});
+
+		// 选择起始日期、截止日期
+		var start = {
+			elem: '#start_time',
+			format: 'YYYY-MM-DD hh:mm:ss', //日期格式
+			istime: true, //是否开启时间选择
+			choose: function(datas){
+				end.min = datas; //开始日选好后，重置结束日的最小日期
+				end.start = datas //将结束日的初始值设定为开始日
+			}
+		};
+		var end = {
+			elem: '#end_time',
+			format: 'YYYY-MM-DD hh:mm:ss', //日期格式
+			istime: true, //是否开启时间选择
+			choose: function(datas){
+				start.max = datas; //结束日选好后，重置开始日的最大日期
+			}
+		};
+
+		laydate.skin('molv');
+		laydate(start);
+		laydate(end);
+	});
+
+	function check_form(){
+		var start_time = $.trim($('#start_time').val());
+		var end_time =  $.trim($('#end_time').val());
+		if(start_time == '' ^ end_time == ''){
+			layer.alert('请选择完整的时间间隔', {icon: 2});
+			return false;
+		}
+		if(start_time !== '' && end_time !== ''){
+			$('#ctime').val(start_time + "," + end_time);
+		}
+		if(start_time == '' && end_time == ''){
+			$('#ctime').val('');
+		}
+		return true;
+	}
+</script>
+</body>
+</html>

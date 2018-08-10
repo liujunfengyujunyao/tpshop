@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+  <title>肽风尚 我的评价</title>
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="bootstrap/js/jquery.min.js"></script>
+  <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
+  </head>
+  <body>
+    <!--evaluation start-->
+    <div id="evaluation">
+      <div class="container jf-header">
+        <div class="row">
+          <div class="col-md-6 jf-top">
+            <ul>
+              <li class="user">用户名xxxxx</li>
+              <li><a href="#">消息</a></li>
+              <li><a href="#">退出</a></li>
+              <li>|</li>
+              <li>配 送：北京市/市辖区/丰台区</li>
+            </ul>
+          </div>
+          <div class="col-md-6 w">
+            <ul class="fr">
+              <li class="spacer"></li>
+              <li><a href="#">我的订单</a></li>
+              <li class="spacer"></li>
+              <li><a href="#">我的浏览</a></li>
+              <li class="spacer"></li>
+              <li><a href="#">我的优惠券</a></li>
+              <li class="spacer"></li>
+              <li><a href="#">我的收藏</a></li>
+              <li class="spacer"></li>
+              <li><a href="#">在线客服</a></li>
+              <li class="spacer"></li>
+              <li><a href="#">网站导航<img src="img/down.png" /></a></li>
+              <!--<li class="fore9 dorpdown" id="ttbar-navs">
+                      <div class="dt cw-icon">网站导航<img src="img/down.png" /></div>
+                      <div class="dd dorpdown-layer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;肽风尚网站的导航栏目</div>
+                  </li>-->
+              <li class="spacer"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--jf-header-->
+      <!--my start-->
+      <div id="my">
+        <div class="container mymall">
+          <div class="row">
+            <div class="col-md-3">
+              <dl>
+                <dt><img src="img/mall.png" /></dt>
+                <dd class="one">我的商城</dd>
+                <dd><a href="#" class="return">返回商城首页</a></dd>
+              </dl>
+            </div>
+            <div class="col-md-3 account">
+              <a href="#">账户设置 <img src="img/bai.png" /></a>
+              <a href="#" class="inte">积分商城</a>
+            </div>
+            <div class="col-md-3">
+              <div class="search">
+                    <div class="search-m">
+                      <div class="form">
+                        <input type="text" onkeydown="javascript:if(event.keyCode==13) search('key');" autocomplete="off" id="key" accesskey="s" class="text" />
+                        <button onclick="search('key');return false;" class="button"><i class="iconfont"><img src="img/search.png" /></i></button>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-md-3">
+              <div class="settleup">
+                    <div class="cw-icon">
+                        <i class="iconfont"><img src="img/car.png" /></i>
+                        <a href="#">我的购物车<b>&nbsp;&nbsp;<span>(0)</span></b></a>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <!--mymall end-->
+      </div>
+      <!--my end-->
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <img src="img/top.jpg" />
+          </div>
+        </div>
+      </div>
+      <div class="container mine">
+        <div class="row my_mall">
+          <div class="col-md-2 my_left">
+            <ul>
+              <p class="top"><img src="img/xiaoren.png" /> 我的商城</p>
+              <li class="dot">交易中心</li>
+              <li><a href="#">我的订单</a></li>
+              <li><a href="#">我的评价</a></li>
+              <li class="dot">资产中心</li>
+              <li><a href="#">我的积分</a></li>
+              <li><a href="#">我的优惠券</a></li>
+              <li><a href="#">账户余额</a></li>
+              <li class="dot">我的关注</li>
+              <li><a href="#">我的收藏</a></li>
+              <li><a href="#">我的足迹</a></li>
+              <li class="dot">个人中心</li>
+              <li><a href="#">个人信息</a></li>
+              <li><a href="#">地址管理</a></li>
+              <li><a href="#">安全设置</a></li>
+              <li class="dot">服务中心</li>
+              <li><a href="#">退货管理</a></li>
+              <li class="dot">分销中心</li>
+              <li><a href="#">我的推广</a></li>
+              <li><a href="#">我的收益</a></li>
+              <li class="dot">工厂店管理</li>
+              <li><a href="#">工厂店列表</a></li>
+              <li><a href="#">工厂店订单</a></li>
+              <li class="dot">库存管理</li>
+              <li><a href="#">库存列表</a></li>
+              <li><a href="#">库存日志</a></li>
+              <li><a href="#">发货单</a></li>
+            </ul>
+          </div>
+          <div class="col-md-10 my_right">
+            <div class="row">
+              <div class="col-xs-12 set">
+                <ul>
+                  <li><a href="#" class="current">我的评价</a></li>
+                  <li><a href="#">全部</a></li>
+                  <li><a href="#">待评论订单</a></li>
+                  <li><a href="#">已评论</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="row mation">
+              <div class="col-xs-4">
+                宝贝信息
+              </div>
+              <div class="col-xs-4">
+                我的评价
+              </div>
+              <div class="col-xs-4">
+                状态
+              </div>
+            </div>
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="img/bb.png" /></dt>
+                  <dd>肽风尚饱润肽水润气垫BB霜</dd>
+                  <dd class="se">颜色：自然色</dd>
+                </dl>
+              </div>
+              <div class="col-md-4 shou">收到货就迫不及待的打开看了，当天就用了面膜和试用装，
+很清爽不油腻。  </br>     <span>2017-9-26 &nbsp; 17：12:55</span></div>
+              <div class="col-md-4 already">已评价<span><a href="#">查看</a></span></div>
+            </div>
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="img/bb.png" /></dt>
+                  <dd>肽风尚饱润肽水润气垫BB霜</dd>
+                  <dd class="se">颜色：自然色</dd>
+                </dl>
+              </div>
+              <div class="col-md-4 shou">收到货就迫不及待的打开看了，当天就用了面膜和试用装，
+很清爽不油腻。  </br>     <span>2017-9-26 &nbsp; 17：12:55</span></div>
+              <div class="col-md-4 already">已评价<span><a href="#">查看</a></span></div>
+            </div>
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="img/bb.png" /></dt>
+                  <dd>肽风尚饱润肽水润气垫BB霜</dd>
+                  <dd class="se">颜色：自然色</dd>
+                </dl>
+              </div>
+              <div class="col-md-4 shou">收到货就迫不及待的打开看了，当天就用了面膜和试用装，
+很清爽不油腻。  </br>     <span>2017-9-26 &nbsp; 17：12:55</span></div>
+              <div class="col-md-4 already">未评价<span><a href="#">评价</a></span></div>
+            </div>
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="img/bb.png" /></dt>
+                  <dd>肽风尚饱润肽水润气垫BB霜</dd>
+                  <dd class="se">颜色：自然色</dd>
+                </dl>
+              </div>
+              <div class="col-md-4 shou">收到货就迫不及待的打开看了，当天就用了面膜和试用装，
+很清爽不油腻。  </br>     <span>2017-9-26 &nbsp; 17：12:55</span></div>
+              <div class="col-md-4 already">未评价<span><a href="#">评价</a></span></div>
+            </div>
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="img/bb.png" /></dt>
+                  <dd>肽风尚饱润肽水润气垫BB霜</dd>
+                  <dd class="se">颜色：自然色</dd>
+                </dl>
+              </div>
+              <div class="col-md-4 shou">收到货就迫不及待的打开看了，当天就用了面膜和试用装，
+很清爽不油腻。  </br>     <span>2017-9-26 &nbsp; 17：12:55</span></div>
+              <div class="col-md-4 already">未评价<span><a href="#">评价</a></span></div>
+            </div>
+            <!--分页 start-->
+            <div class="row page">
+              <div class="col-xs-12">
+                <div class="zxf_pagediv"></div>
+                  <script src="js/zxf_page.js" type="text/javascript"></script>
+                  <script type="text/javascript">
+                  $(".zxf_pagediv").createPage({
+                      pageNum: 20,
+                      current: 6,
+                      backfun: function(e) {
+                      //console.log(e);//回调
+                    }
+                  });
+                  </script>
+              </div>
+            </div>
+            <!--分页 end-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--evaluation end-->
+    <!--foot start-->
+      <div id="foot">
+        <div class="gray">
+          <div class="Promise">
+            <dl>
+              <dt><img src="img/you.png" /></dt>
+              <dd class="pin">品质保障</dd>
+              <dd>Quality assurance</dd>
+            </dl>
+            <dl>
+              <dt><img src="img/hua.png" /></dt>
+              <dd class="pin">联系客服</dd>
+              <dd>Contact Customer Service</dd>
+            </dl>
+            <dl class="shou">
+              <dt><img src="img/you.png" /></dt>
+              <dd class="pin">售后无忧</dd>
+              <dd>Worry free after sale</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <div class="footend">
+          <div class="endone">
+            <ul>
+              <li class="Shopping">购物指南</li>
+              <li><a href="#">购物指南</a></li>
+              <li><a href="#">会员介绍</a></li>
+              <li><a href="#">常见问题</a></li>
+              <li><a href="#">联系客服</a></li>
+            </ul>
+            <ul>
+              <li class="Shopping">支付方式</li>
+              <li><a href="#">货到付款</a></li>
+              <li><a href="#">在线支付</a></li>
+              <li><a href="#">分期付款</a></li>
+              <li><a href="#">银行转账</a></li>
+            </ul>
+            <ul>
+              <li class="Shopping">售后服务</li>
+              <li><a href="#">售后政策</a></li>
+              <li><a href="#">退款说明</a></li>
+              <li><a href="#">返修/退换货</a></li>
+              <li><a href="#">取消订单</a></li>
+            </ul>
+            <ul>
+              <li class="Shopping">帮助中心</li>
+              <li><a href="#">新手指南</a></li>
+              <li><a href="#">常见问题</a></li>
+              <li><a href="#">意见反馈</a></li>
+            </ul>
+            <p class="code"><img src="img/erweima.png" /></br>手机扫码注册</p>
+            <div class="clear"></div>
+          </div>
+          <p class="write"></p>
+          <p class="bjtfs">北京鑫泰集团有限公司 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地址：北京市丰台区马家堡路180号蓝光云鼎219室</br>联系电话：xxx-xxxxx</br>邮箱：xintai@xxxxxxxxx.com</p>
+        </div>
+      </div>
+      <!--foot end-->
+  </body>
+</html>

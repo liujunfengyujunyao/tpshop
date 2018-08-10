@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>首页-{$tpshop_config['shop_info_store_title']}</title>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}"/>
+	<meta name="description" content="{$tpshop_config['shop_info_store_desc']}"/>
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<!--Required libraries-->
+	<script src="__STATIC__/js/jquery-v1.10.2.min.js" type="text/javascript"></script>
+	<script src="__STATIC__/js/modernizr-custom-v2.7.1.min.js" type="text/javascript"></script>
+	<script src="__STATIC__/js/jquery-finger-v0.1.0.min.js" type="text/javascript"></script>
+	<!--Include flickerplate-->
+	<link href="__STATIC__/css/flickerplate.css"  type="text/css" rel="stylesheet">
+	<script src="__STATIC__/js/flickerplate.min.js" type="text/javascript"></script>
+	<!--Execute flickerplate-->
+	<script type="text/javascript" src="__PUBLIC__/js/global.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen"/>
+	<script>
+		$(document).ready(function(){
+			$('.flicker-example').flicker();
+		});
+	</script>
+</head>
+<body style="background: #f6f6f6">
+<!--header-s-->
+<include file="public/header"/>
+<!--header-e-->
+
+<div id="index">
+	<!--tfscolumn start-->
+	<div id="tfscolumn">
+		<div class="leftcolumn">
+			<ul>
+				<li class="tfs-column"><img src="__STATIC__/images/yellow.png" />&nbsp;&nbsp;&nbsp;全部商品分类</li>
+				<volist name="goods_category_tree" id="v" key="kr">
+					<li><a href="{:U('Home/Goods/goodsList',array('id'=>$v[id]))}"><img src="__STATIC__/images/dian.png" />{$v[mobile_name]}&nbsp;></a></li>
+				</volist>
+			</ul>
+		</div>
+		<!--leftcolumn-->
+
+		<div class="middlecolumn">
+			<div class="flicker-example" data-block-text="false">
+				<ul>
+					<adv pid="2" item="v1" limit="5">
+						<li data-background="{$v1[ad_code]}"></li>
+					</adv>
+				</ul>
+			</div>
+
+			<div class="middle-down">
+				<a href="#">
+					<dl class="one">
+						<dt><img src="__STATIC__/images/ruye.png" /></dt>
+						<dd class="hu">护肤神器</dd>
+						<dd class="tiao"></dd>
+						<dd class="yuana">饱润肽丝滑精萃原液</dd>
+					</dl>
+				</a>
+				<a href="#">
+					<dl class="two">
+						<dt><img src="__STATIC__/images/ruye2.png" /></dt>
+						<dd class="hu">素颜神器</dd>
+						<dd class="tiao"></dd>
+						<dd class="yuana">饱润肽雪肌焕采素颜霜</dd>
+					</dl>
+				</a>
+			</div><!--middle-down-->
+			<div class="clear"></div>
+		</div><!--middlecolumn-->
+
+		<div class="rightcolumn">
+			<p class="hui"><a href="{:U('Home/user/login')}">会员登录</a></p>
+			<p class="yuan"><a href="{:U('Home/user/reg')}">会员注册</a></p>
+			<div class="tsf-tab">
+				<div class="tab">
+					<ul class="tab-hd tab_menu">
+						<li class="active gg">公告信息</li>
+						<li>促销活动</li>
+					</ul>
+					<ul class="tab-bd">
+						<li class="thisclass">
+							<foreach name="notice" item="vo">
+								<a href="#"><span><i class="glyphicon glyphicon-stop"></i></span>{$vo.title|getSubstr=0,10}</a>
+							</foreach>
+						</li>
+						<li>
+							<foreach name="promotion" item="vo">
+								<a href="#"><span><i class="glyphicon glyphicon-stop"></i></span>{$vo.name|getSubstr=0,10}</a>
+							</foreach>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<script type="text/javascript">
+				$(function(){
+					function tabs(tabTit,on,tabCon){
+						$(tabTit).children().hover(function(){
+							$(this).addClass(on).siblings().removeClass(on);
+							var index = $(tabTit).children().index(this);
+							$(tabCon).children().eq(index).show().siblings().hide();
+						});
+					};
+					tabs(".tab-hd","active",".tab-bd");
+				});
+			</script>
+		</div><!--rightcolumn-->
+	</div>
+	<div class="clear"></div>
+	<!--tfscolumn end-->
+
+	<div id="miaddle">
+		<if condition="$new_goods">
+		<!--grounding start-->
+		<div id="grounding">
+			<p class="new"><img src="__STATIC__/images/three.png" />新品上架<img src="__STATIC__/images/three1.png" /></p>
+			<div id="tfsnews">
+				<foreach name="new_goods" item="new" key="k">
+					<a href="{:U('Home/Goods/goodsInfo',array('id'=>$new['goods_id']))}">
+						<dl <if condition="$k neq count($new_goods)-1">class="triggers"</if>>
+							<dt class="img"><img src="{$new['goods_id']|goods_thum_images=140,140}" width="140" height="140"/></dt>
+							<dt><img src="__STATIC__/images/yin.png" /></dt>
+							<dd>{$new.goods_name|getSubstr=0,10}</dd>
+							<dd class="money">￥{$new.shop_price}<span>￥{$new.market_price}</span></dd>
+						</dl>
+					</a>
+				</foreach>
+			</div>
+			<div class="clear"></div>
+			<!--tfsnews end-->
+			<adv  pid="401" limit="1" item="v">
+				<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+			</adv>
+		</div>
+		</if>
+		<!--grounding end-->
+
+		<!--classify start-->
+		<div id="classify">
+			<div class="Building">
+				<p class="Buildinga">精品推荐</p>
+				<ul class="Buildingb">
+					<volist name="cate_child1" id="child1" offset="0" length="4">
+						<li><a href="{:U('Home/Goods/goodsList',array('id'=>$child1['id']))}">{$child1.name}</a></li>
+					</volist>
+				</ul>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<!--classify end-->
+
+		<!--recommend start-->
+		<div id="recommend">
+			<div class="recommenda">
+				<adv  pid="402" limit="1" item="v">
+					<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" /></a>
+				</adv>
+			</div>
+
+			<div class="recommendb">
+				<volist name="recommend_goods" id="vo" offset="0" length="6">
+					<a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">
+						<dl>
+							<dt><img src="{$vo['goods_id']|goods_thum_images=140,140}" width="140" height="140"/></dt>
+							<dd>{$vo.goods_name|getSubstr=0,15}</dd>
+							<dd><span>￥{$vo.shop_price}</span></dd>
+						</dl>
+					</a>
+				</volist>
+			</div>
+			<div class="recommendc">
+				<volist name="recommend_goods" id="vo" offset="6" length="3">
+					<a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">
+						<dl class="ooo">
+							<dt><img src="{$vo['goods_id']|goods_thum_images=110,140}" width="110" height="140"/></dt>
+							<dd class="tai">{$vo.goods_name|getSubstr=0,15}</dd>
+							<dd class="mon"><span class="one">￥{$vo.shop_price}</br><span class="two">￥{$vo.market_price}</span></dd>
+							<dd class="aaaa">去看看 &nbsp;></dd>
+						</dl>
+					</a>
+				</volist>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<!--recommend end-->
+
+		<!--classify start-->
+		<div id="classify">
+			<div class="Building">
+				<p class="Buildinga">热销商品</p>
+				<ul class="Buildingb">
+					<volist name="cate_child1" id="child1" offset="4" length="4">
+						<li><a href="{:U('Home/Goods/goodsList',array('id'=>$child1['id']))}">{$child1.name}</a></li>
+					</volist>
+				</ul>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<!--classify end-->
+
+		<!--recommend start-->
+		<div id="recommend">
+			<div class="recommenda">
+				<adv  pid="403" limit="1" item="v">
+					<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" /></a>
+				</adv>
+			</div>
+			<div class="recommendb">
+				<volist name="hot_goods" id="vo" offset="0" length="6">
+					<a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">
+						<dl>
+							<dt><img src="{$vo['goods_id']|goods_thum_images=140,140}" width="140" height="140"/></dt>
+							<dd>{$vo.goods_name|getSubstr=0,15}</dd>
+							<dd><span>￥{$vo.shop_price}</span></dd>
+						</dl>
+					</a>
+				</volist>
+			</div>
+			<div class="recommendc">
+				<volist name="hot_goods" id="vo" offset="6" length="3">
+					<a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">
+						<dl class="ooo">
+							<dt><img src="{$vo['goods_id']|goods_thum_images=110,140}" width="110" height="140"/></dt>
+							<dd class="tai">{$vo.goods_name|getSubstr=0,15}</dd>
+							<dd class="mon"><span class="one">￥{$vo.shop_price}</br><span class="two">￥{$vo.market_price}</span></dd>
+							<dd class="aaaa">去看看 &nbsp;></dd>
+						</dl>
+					</a>
+				</volist>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<!--recommend end-->
+
+		<adv  pid="405" limit="1" item="v">
+			<a href="{$v['ad_link']}"><img src="{$v['ad_code']}" class="zibanner" width="100%"/></a>
+		</adv>
+	</div>
+</div>
+<include file="public/footer"/>
+</body>
+</html>

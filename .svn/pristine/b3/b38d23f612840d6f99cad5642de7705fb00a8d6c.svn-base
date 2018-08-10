@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+  <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+  <title>库存日志-{$tpshop_config['shop_info_store_title']}</title>
+  <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/global.js"></script>
+  <script src="__PUBLIC__/js/pc_common.js"></script>
+  <script src="__STATIC__/js/common.js"></script>
+  <script src="__PUBLIC__/js/layer/layer.js"></script>
+  <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+  </head>
+  <body>
+    <!--evaluation start-->
+    <div id="evaluation">
+    <include file="user/header"/>
+      <!--my end-->
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <img src="__STATIC__/images/top.jpg" />
+          </div>
+        </div>
+      </div>
+      <div class="container mine">
+        <div class="row my_mall">
+          <include file="user/menu"/>
+          <div class="col-md-10 my_right">
+            <div class="row">
+              <div class="col-xs-12 set">
+                <ul>
+                  <li><a href="" class="current">库存日志</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="row mation">
+              <div class="col-xs-4">
+                商品
+              </div>
+              <div class="col-xs-4">
+                库存
+              </div>
+              <div class="col-xs-4">
+                变动时间
+              </div>
+            </div>
+            <if condition="$list">
+			<volist name="list" id="vo">
+            <div class="row list">
+              <div class="col-md-4">
+                <dl>
+                  <dt><img src="{$vo.goods_id|goods_thum_images=120,120}" /></dt>
+                  <dd><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">{$vo.goods_name}</a></dd>
+                  <dd class="se">商品货号：{$vo.goods_sn}</dd>
+                </dl>
+              </div>
+              <div class="col-md-4 already">{$vo.stock}</div>
+              <div class="col-md-4 shou" align="center" style="padding-top: 2%;">
+              {$vo.add_time|date='Y-m-d H:i:s',###}
+              </div>
+            
+            </div>
+            </volist>
+          <else/>
+            <div class="row list">
+              暂无记录~
+            </div>
+          </if>
+            <!--分页 start-->
+            <div class="operating fixed" id="bottom">
+              <div class="fn_page clearfix">
+                {$page}
+              </div>
+            </div>
+            <!--分页 end-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--evaluation end-->
+    <!--foot start-->
+      <include file="public/footer"/>
+    <!--foot end-->
+  </body>
+</html>

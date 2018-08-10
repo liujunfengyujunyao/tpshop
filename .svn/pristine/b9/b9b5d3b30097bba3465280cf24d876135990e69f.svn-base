@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<title>发货单-{$tpshop_config['shop_info_store_title']}</title>
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<script src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+	</head>
+	<body>
+		<!--invoice start-->
+		<div id="invoice">
+			<include file="user/header"/>
+			<!--my end-->
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12">
+						<img src="__STATIC__/images/top.jpg" />
+					</div>
+				</div>
+			</div>
+			<div class="container mine">
+				<div class="row my_mall">
+					<include file="user/menu"/>
+					<div class="col-md-10 my_right">
+						<div class="row hair">
+							<div class="col-xs-12"><span>发货单</span>（公司配货给合伙人的记录）</div>
+						</div>
+						<if condition="$list">
+						<div class="row top">
+							<div class="col-xs-2">物流名称</div>
+							<div class="col-xs-3">物流单号</div>
+							<div class="col-xs-3">发货时间</div>
+							<div class="col-xs-2">操作人员</div>
+							<div class="col-xs-2">操作</div>
+						</div>
+						<volist name="list" id="vo">
+						<div class="row parti">
+							<div class="col-md-2 one">{$vo.express_name}</div>
+							<div class="col-md-3 one">{$vo.express_code}</div>
+							<div class="col-md-3 one">{$vo.addtime|date="Y-m-d H:i:s",###}</div>
+							<div class="col-md-2 one">{$vo.user_name}</div>
+							<div class="col-md-2 <if condition="empty($vo.confirm_time)">yes<else/>one</if>">
+							<a href="{:U('Partner/invoiceInfo', array('id'=>$vo['id']))}">查看详情</a></br>
+							<if condition="empty($vo.confirm_time)"></br><a href="javascript:void(0)" onclick="order_confirm({$vo.id})" class="cargo confirm">确认收货</a></if>
+							</div>
+						</div>
+						</volist>
+						<else />
+						<div class="row partia">
+							暂无记录~
+						</div>
+						</if>
+						<!--分页 start-->
+						<if condition="$list">
+						<div class="operating fixed consume_log" id="bottom">
+							<div class="fn_page clearfix">{$page}</div>
+						</div>
+						</if>
+						<!--分页 end-->
+					</div>
+				</div>
+			</div>		
+		</div>
+		<!--invoice end-->
+		<!--foot start-->
+			<include file="public/footer"/>
+			<!--foot end-->
+	</body>
+</html>
+<script>
+//确定收货
+function order_confirm(id){
+	layer.confirm("你确定收到货了吗?",{
+		btn:['确定','取消']
+	},function(){
+		$.ajax({
+			type : 'post',
+			url : '/index.php?m=Home&c=Partner&a=invoice_confirm&id='+id,
+			dataType : 'json',
+			success : function(data){
+				if(data.status == 1){
+					showErrorMsg(data.msg);
+					location.reload();
+					//window.location.href = data.url;
+				}else{
+					showErrorMsg(data.msg);
+				}
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				showErrorMsg('网络失败，请刷新页面后重试');
+			}
+		})
+	}, function(index){
+		layer.close(index);
+	});
+}
+</script>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>库存日志-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<style>
+#stockLog .sx1 {width: 60%}
+#stockLog .sx2 {width: 20%}
+#stockLog .sx3 {width: 20%}
+#stockLog .empty {text-align: center; padding: 10px 0; font-size: 16px}
+</style>
+</head>
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+	<div class="w1224">
+		<div class="g-crumbs">
+			<volist name='navigate_user' id='vo'>
+				<a href="{$vo}">{$key}</a><if condition="$i neq count($navigate_user)"><i class="litt-xyb"></i></if>
+			</volist>
+		</div>
+		<div class="home-main" id="stockLog">
+			<include file="user/menu"/>
+			<div class="ri-menu fr">
+				<div class="menumain p">
+					<div class="goodpiece">
+						<h1>库存日志</h1>
+					</div>
+					<div class="card-list accbala">
+						<ul>
+							<li class="sx1"><span>商品名称</span></li>
+							<li class="sx2"><span>库存</span></li>
+							<li class="sx3"><span>変动时间</span></li>
+						</ul>
+					</div>
+					<if condition="$list">
+					<volist name="list" id="vo">
+						<div class="card-list c_contan accbala-list">
+							<ul>
+								<li class="sx1"><span>{$vo.goods_name}</span></li>
+								<li class="sx2"><span>{$vo.stock}</span></li>
+								<li class="sx3"><span>{$vo.ctime|date="Y-m-d H:i:s",###}</span></li>
+							</ul>
+						</div>
+					</volist>
+					<div class="operating fixed consume_log" id="bottom">
+						<div class="fn_page clearfix">{$page}</div>
+					</div>
+					<else />
+					<div class="red empty">暂无记录</div>
+					</if>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+	<include file="public/footer_index" />
+</div>
+<!--footer-e-->
+</body>
+</html>
+

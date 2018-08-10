@@ -1,0 +1,43 @@
+<include file="public/header" title="测肤报告" body="f3"/>
+        <div class="">
+            <div class="shpmi p" style="background: #f23030;color:white">
+                <div align="center" style="padding: 20px 0;">
+                    <div class="dinaot">
+                        <span class="naem" >测肤报告</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <div style="padding:20px 10px;font-size: 1rem;background: white">测肤时间：{$time}</div>
+                    <p style="padding:30px;line-height: 100px; font-size: 1rem" align="center">
+                        <span style="font-size:30px;">{$type}：<em style="color:#E23435">{$value}%</em></span>
+                    </p>
+                </div>
+            </div>
+            <div class="fukcuid">
+                <h1 style="padding:20px;border-bottom: 2px solid #f23030;font-size: 1rem">推荐产品</h1>
+                <foreach name="products" item="vol">
+                <div style="padding: 30px 10px">
+                    <div>
+<<<<<<< .mine
+                        <div class="img_or fl"><img height="220px" src="http://54.64.191.2/EZM_Work/trunk/admin/webroot/upload/{$vol.photo_url}"></div>
+                        <div class="fon_or fl">
+                            <h2 style="padding:20px;margin-bottom: 30px;"><a href="#">{$vol.name}</a></h2>
+=======
+                        <div class="img_or fl" style="width: 40%"><img src="http://54.64.191.2/EZM_Work/trunk/admin/webroot/upload/{$vol.photo_url}" width="90%"></div>
+                        <div class="fon_or fl" style="padding: 10px;width: 60%">
+                            <h2 style="margin-bottom: 20px;font-size: 1rem"><a href="#">{$vol.name}</a></h2>
+                            <div style="line-height:30px; font-size:0.7rem;"><b>产品简介：</b>{$vol.comment}</div>
+>>>>>>> .r605
+                            <!-- <p style="color:gray;width: 400px;padding-bottom:20px;line-height:25px">产品优势：{$vol.advantage}</p> -->
+                        </div>
+                    </div>
+                </div>
+                </foreach>
+            </div>
+        </div>
+
+<div class="mask-filter-div" style="display: none;"></div>
+</body>
+</html>

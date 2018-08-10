@@ -1,0 +1,159 @@
+<div id="shortcut">
+	<div class="w">
+		<ul class="fr">
+			<li class="fore1" id="ttbar-login">欢迎进入肽风尚商城，</li>
+			<li class="fore1 nologin" id="ttbar-login">
+				<a href="{:U('Home/user/login')}" class="link-login style-red">请登录</a>&nbsp;&nbsp;<a href="{:U('Home/user/reg')}" class="link-regist">免费注册</a>
+			</li>
+			<li class="fore1 islogin">
+				<a class="style-red userinfo" href="{:U('Home/user/index')}" ></a>&nbsp;&nbsp;
+				<a  href="{:U('Home/user/logout')}"  title="退出" target="_self">安全退出</a>
+			</li>
+			<li class="kong-a"></li>
+			<li class="spacer"></li>
+			<li class="fore2">
+				<div class="dt"><a href="{:U('Home/Order/order_list')}">我的订单</a></div>
+			</li>
+			<li class="spacer"></li>
+			<li class="fore4">
+				<div class="dt"><a href="{:U('Home/User/visit_log')}">我的浏览</a></div>
+			</li>
+			<li class="spacer"></li>
+			<li class="fore4">
+				<div class="dt"><a href="{:U('Home/User/goods_collect')}">我的优惠券</a></div>
+			</li>
+			<li class="spacer"></li>
+			<li class="fore5">
+				<div class="dt"><a href="{:U('Home/User/goods_collect')}">我的收藏</a></div>
+			</li>
+			<li class="spacer"></li>
+			<li class="fore4">
+				<div class="dt"><a href="tencent://message/?uin={$tpshop_config['shop_info_qq2']}&amp;Site={$tpshop_config['shop_info_store_name']}&amp;Menu=yes">在线客服</a></div>
+			</li>
+			<li class="spacer"></li>
+			<li class="fore9 dorpdown" id="ttbar-navs">
+				<div class="dt cw-icon">网站导航<i class="iconfont">&#xe605;</i><i class="ci-right"><s>◇</s></i></div>
+				<div class="dd dorpdown-layer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/Activity/group_list')}">团购</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/Activity/flash_sale_list')}">抢购</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/Article/detail')}">帮助中心</a></div>
+			</li>
+		</ul>
+	</div>
+</div>
+<!--header start-->
+<div id="header">
+	<div class="w">
+		<div id="logo" class="logo">
+			<h1 class="logo_tit"><a href="__ROOT__" class="logo_tit_lk">肽风尚</a></h1>
+		</div>
+
+		<div id="search">
+			<div class="search-m">
+				<div class="form">
+				<form id="searchForm" name="" method="get" action="{:U('Home/Goods/search')}" class="ecsc-search-form">
+					<input name="q" type="text" autocomplete="off" id="key" accesskey="s" class="text" value="{$Request.param.q}" placeholder="请输入搜索关键字"/>
+					<button type="submit" class="button"><i class="iconfont"><img src="__STATIC__/images/search.png" /></i></button>
+					<div class="candidate p">
+						<ul id="search_list"></ul>
+					</div>
+					<script type="text/javascript">
+						;(function($){
+							$.fn.extend({
+								donetyping: function(callback,timeout){
+									timeout = timeout || 1e3;
+									var timeoutReference,
+											doneTyping = function(el){
+												if (!timeoutReference) return;
+												timeoutReference = null;
+												callback.call(el);
+											};
+									return this.each(function(i,el){
+										var $el = $(el);
+										$el.is(':input') && $el.on('keyup keypress',function(e){
+											if (e.type=='keyup' && e.keyCode!=8) return;
+											if (timeoutReference) clearTimeout(timeoutReference);
+											timeoutReference = setTimeout(function(){
+												doneTyping(el);
+											}, timeout);
+										}).on('blur',function(){
+											doneTyping(el);
+										});
+									});
+								}
+							});
+						})(jQuery);
+
+						$('.ecsc-search-input').donetyping(function(){
+							search_key();
+						},500).focus(function(){
+							var search_key = $.trim($('#q').val());
+							if(search_key != ''){
+								$('.candidate').show();
+							}
+						});
+						$('.candidate').mouseleave(function(){
+							$(this).hide();
+						});
+
+						function searchWord(words){
+							$('#q').val(words);
+							$('#searchForm').submit();
+						}
+						function search_key(){
+							var search_key = $.trim($('#q').val());
+							if(search_key != ''){
+								$.ajax({
+									type:'post',
+									dataType:'json',
+									data: {key: search_key},
+									url:"{:U('Home/Api/searchKey')}",
+									success:function(data){
+										if(data.status == 1){
+											var html = '';
+											$.each(data.result, function (n, value) {
+												html += '<li onclick="searchWord(\''+value.keywords+'\');"><div class="search-item">'+value.keywords+'</div><div class="search-count">约'+value.goods_num+'个商品</div></li>';
+											});
+											html += '<li class="close"><div class="search-count">关闭</div></li>';
+											$('#search_list').empty().append(html);
+											$('.candidate').show();
+										}else{
+											$('#search_list').empty();
+										}
+									}
+								});
+							}
+						}
+					</script>
+				</form>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="settleup">
+			<div class="cw-icon">
+				<i class="iconfont">&#xe607;</i>
+				<a href="{:U('Home/Cart/cart')}">我的购物车<b>&nbsp;&nbsp;<span>(<em class="sc_z" id="cart_quantity"></em>)</span></b></a>
+			</div>
+		</div>
+
+		<div id="hotwords">
+			<ul class="tfsclassify">
+				<foreach name="tpshop_config.hot_keywords" item="wd" key="k">
+					<li><a href="{:U('Home/Goods/search',array('q'=>$wd))}" target="_blank">{$wd}</a></li>
+				</foreach>
+			</ul>
+		</div>
+
+		<!-- navitems start -->
+		<div id="navitems">
+			<ul id="navitems-group1">
+				<li <if condition=" CONTROLLER_NAME eq 'Index' ">class="selected"</if>><a href="{:U('Index/index')}">首页</a></li>
+				<tpshop sql="SELECT * FROM `__PREFIX__navigation` where is_show = 1 ORDER BY `sort` DESC" key="k" item='v'>
+					<li <?php if($_SERVER['REQUEST_URI']==str_replace('&amp;','&',$v[url])){ echo "class='selected'";}?>>
+					<a href="{$v[url]}" <if condition="$v[is_new] eq 1">target="_blank" </if> >{$v[name]}</a>
+					</li>
+				</tpshop>
+			</ul>
+		</div>
+		<!-- navitems end -->
+	</div>
+</div>

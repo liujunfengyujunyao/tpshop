@@ -1,0 +1,72 @@
+<include file="public/layout" />
+<style>
+.ncap-order-style .ncap-order-details { margin: 20px auto;}
+.ncap-order-style .ncap-order-details .text-red { color: #f00; }
+</style>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title"><a class="back" href="javascript:history.go(-1)" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+			<div class="subject">
+				<h3>配货单详情</h3>
+			</div>
+		</div>
+	</div>
+	<div class="ncap-order-style">
+		<div class="titile">
+			<h3></h3>
+		</div>
+		<div class="ncap-order-details">
+			<div class="tabs-panels">
+				<div class="misc-info">
+					<h3>基本信息</h3>
+					<dl>
+						<dt>操作用户：</dt>
+						<dd>{$info.user_name}</dd>
+						<dt>配给合伙人：</dt>
+						<dd>{$info.name}</dd>
+					</dl>
+					<dl>
+						<dt>联系方式：</dt>
+						<dd><span class="text-red">{$info.phone}</span></dd>
+						<dt>收货地址：</dt>
+						<dd>{$info.province_name} {$info.city_name} {$info.town_name}</dd>
+					</dl>
+					<dl>
+						<dt>发货时间：</dt>
+						<dd>{$info.addtime|date='Y-m-d H:i:s',###}</dd>
+						<dt>收货时间：</dt>
+						<dd>{$info.confirm_time|default='未确认收货'}</dd>
+					</dl>
+					<dl>
+						<dt>物流名称：</dt>
+						<dd>{$info.express_name}</dd>
+						<dt>物流单号：</dt>
+						<dd><span class="text-red">{$info.express_code}</span></dd>
+					</dl>
+				</div>
+				<div class="goods-info">
+					<h4>商品信息</h4>
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2">商品</th>
+								<th>发货数量</th>
+							</tr>
+						</thead>
+						<tbody>
+							<volist name="orderGoods" id="goods">
+							<tr>
+								<td class="w30"><div class="goods-thumb"><a href="{:U('Goods/addEditGoods',array('id'=>$goods['goods_id']))}" target="_blank"><img src="{$goods['goods_id']|goods_thum_images=200,200}" /> </a></div></td>
+								<td style="text-align: left;"><a href="{:U('Goods/addEditGoods',array('id'=>$goods['goods_id']))}" target="_blank">{$goods.goods_name}</a><br/></td>
+								<td class="w240">{$goods.goods_num}</td>
+							</tr>
+							</volist>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

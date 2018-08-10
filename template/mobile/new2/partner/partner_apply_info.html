@@ -1,0 +1,73 @@
+<include file="public/header" title="补货申请详情" body="g4" />
+<include file="public/header_nav" title="补货申请详情" href="javascript:history.back(-1);" />
+
+<!--补货申请详情-s-->
+<div class="attention-shoppay" id="returninfo">
+	<if condition="($info.status eq 1) AND ($info.confirm_time)">
+		<div class="dindboxt p">
+			<div class="maleri30">
+				<div class="fl_addextra fl">
+					<p><span class="gray">物流名称：</span><span>{$info.express_name}</span></p>
+					<p><span class="gray">物流单号：</span><span>{$info.express_code}</span></p>
+				</div>
+			</div>
+		</div>
+	</if>
+	<div class="orderlistshpop mabo20 p">
+		<div class="maleri30">
+			<!--商品信息-s-->
+			<volist name="goods" id="vo">
+				<div class="sc_list se_sclist paycloseto">
+					<div class="shopimg fl">
+						<img src="{$vo.goods_id|goods_thum_images=100,100}">
+					</div>
+					<div class="deleshow fr">
+						<div class="deletes">
+							<span class="similar-product-text">{$vo.goods_name}</span>
+						</div>
+						<div class="qxatten">
+							<p class="weight"><span>数量</span>&nbsp;<span>x{$vo.goods_num}</span></p>
+						</div>
+					</div>
+				</div>
+			</volist>
+			<!--商品信息-e-->
+		</div>
+	</div>
+	<div class="listschdule ma-to-20">
+		<div class="tittimlord red-around">
+			<h2>您的补货申请提交成功，等待系统管理员审核中</h2>
+			<p>{$info.addtime|date='Y-m-d H:i:s',###}</p>
+		</div>
+		<if condition="$info[status] eq 1">
+			<div class="tittimlord red-around">
+				<h2>您的补货申请已通过审核</h2>
+				<p>{$info.edittime|date='Y-m-d H:i:s',###}</p>
+				<p><span>操作人：</span><span class="store_dd">系统管理员</span></p>
+			</div>
+		</if>
+		<if condition="$info[status] eq 2">
+			<div class="tittimlord red-around">
+				<h2>很抱歉！您的补货申请未通过审核</h2>
+				<p>{$info.edittime|date='Y-m-d H:i:s',###}</p>
+				<p><span>操作人：</span><span class="store_dd">系统管理员</span></p>
+			</div>
+		</if>
+		<if condition="$info[express_code]">
+			<div class="tittimlord red-around">
+				<h2>系统管理员已发货</h2>
+				<p>{$info.delivery_time}</p>
+				<p><span>操作人：</span><span class="store_dd">系统管理员</span></p>
+			</div>
+		</if>
+		<if condition="$info[confirm_time]">
+			<div class="tittimlord red-around">
+				<h2>您已确认收货</h2>
+				<p>{$info.confirm_time}</p>
+			</div>
+		</if>
+	</div>
+</div>
+<!--补货申请详情-e-->
+</body>
+</html>

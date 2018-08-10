@@ -1,0 +1,47 @@
+<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+	<table>
+		<tbody>
+			<if condition="empty($list) eq true">
+			<tr data-id="0">
+				<td class="no-data" align="center" axis="col0" colspan="10">
+					<i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+				</td>
+			</tr>
+			<else/>
+			<volist name="$list" id="v">
+				<tr>
+					<td class="sign">
+						<div style="width: 24px;"><i class="ico-check"></i></div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 50px;">{$v.goods_id}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 400px;">{$v.goods_name}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 200px; <if condition="$v.goods_num elt ($storeage/100)*($v.stock_num)">color:#D91222;font-weight:bold</if>">{$v.goods_num|default="0"} / {$v.stock_num}</div>
+					</td>
+					<td align="left" class="">
+						<div style="text-align: center; width: 150px;">{$v.edittime|default="无"}</div>
+					</td>
+				</tr>
+			</volist>
+			</if>
+		</tbody>
+	</table>
+</div>
+<!--分页位置-->
+{$page}
+<script>
+$(document).ready(function(){
+	$('#flexigrid>table>tbody>tr').click(function(){
+		$(this).toggleClass('trSelected');
+	});
+});
+
+$(".pagination a").click(function(){
+	var page = $(this).data('p');
+	ajax_get_list(cur_id, page);
+});
+</script>

@@ -1,0 +1,100 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>账户余额</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 account_main">
+                <div class="account_title"><h4>账户余额</h4></div>
+                <div class="account_con">
+                    <div class="account_o_t">
+                        <table>
+                            <tr class="member_o_tatil">
+                                <td>姓名</td>
+                                <td>日期</td>
+                                <td>账户余额</td>
+                                <if condition="$user.level eq 9 || $user.level eq 8">
+                                <td>操作</td>
+                                </if>
+                            </tr>
+                            <tr class="member_o_con">
+                                <td><?php
+                                echo $_SESSION['user']['nickname'];?></td>
+                                <td><?php
+                                echo date('Y-m-d H:i:s');?></td>
+                                <td>￥{$user.user_money}</td>
+                                <if condition="$user.level eq 9 || $user.level eq 8">
+                                <td><a href="{:U('Home/User/withdrawals')}">提现</a></td>
+                                </if>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="account_detail_t"><h5>账户明细</h5></div>
+                    <empty name="lists">
+                        <tr class="account_det_tatil">
+                            <td>暂无记录</td>
+                        </tr>
+                    <else/>
+                        <div class="account_detail">
+                            <table>
+                            
+                                <tr class="account_det_tatil">
+                                    <td>时间</td>
+                                    <td>金额</td>
+                                    <td>订单号</td>
+                                    <td>备注</td>
+                                </tr>
+                            <volist name="lists" id="list">
+                                <tr class="account_det_con">
+                                    <td>{$list.change_time|date='Y-m-d H:i:s',###}</td>
+                                    <td  class="accout_mon">{$list.user_money}</td>
+                                    <td>{$list.order_sn}</td>
+                                    <td>{$list.desc}</td>
+                                </tr>    
+                            </volist>
+                            
+                            </table>
+                        </div>
+                        <div class="eva_page">
+                            {$page}
+                        </div>
+                    </empty>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

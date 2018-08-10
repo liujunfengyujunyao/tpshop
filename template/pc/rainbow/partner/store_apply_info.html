@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>工厂店补货申请明细-{$tpshop_config['shop_info_store_title']}</title>
+<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+<link rel="shortcut  icon" type="image/x-icon" href="__STATIC__/images/favicon.ico" media="screen"  />
+<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+<style>
+.base-info {padding: 10px 0; border-bottom: 1px solid #ccc}
+.ncap-form-default dl dt, .base-info dl dt {min-width: 100px; text-align: right; color: #999; vertical-align: top;}
+.ncap-form-default dl dd, .base-info dl dd {min-width: 200px; color: #333;}
+.ncap-form-default dl dt, .ncap-form-default dl dd, .base-info dl dt, .base-info dl dd {display: inline-block;}
+.order-alone-li th {background: #f5f5f5; height: 40px;}
+.order-alone-li tr {border-bottom: 1px solid #f5f5f5;}
+.beenovercom .order-alone-li h3 {padding: 10px 0;}
+.beenovercom .order-alone-li .cebigeze {padding: 13px 0}
+.beenovercom .order-alone-li .cebigeze .shop_name a {display: inline; margin-left: 20px;}
+.numzjsehe .ddn {color: #fff; padding: 8px 15px; cursor: pointer;}
+.numzjsehe .ddn:hover {background: #fff;}
+.numzjsehe .ddn3 {background: #e23435; border: 1px solid #e23435;}
+.numzjsehe .ddn3:hover {color: #e23435;}
+.numzjsehe .ddn2 {background: #00BFFF; border: 1px solid #00BFFF;}
+.numzjsehe .ddn2:hover {color: #00BFFF;}
+.ncap-form-default input[type='text'], .tarea {border: 1px solid #d7d7d7; padding: 2px 4px; border-radius: 3px;}
+.tarea {width: 600px; height: 100px;}
+.ncap-form-default dl {line-height: 35px;}
+.ncap-form-default input[type='text']:focus, .tarea:focus {border: 1px solid #2cbca3; box-shadow: 0 0 0 2px rgba(82, 168, 236, 0.15)}
+</style>
+</head>
+
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+	<div class="w1224">
+	   <div class="g-crumbs">
+			<volist name='navigate_user' id='vo'>
+				<a href="{$vo}">{$key}</a><if condition="$i neq count($navigate_user)"><i class="litt-xyb"></i></if>
+			</volist>
+		</div>
+		<div class="home-main">
+			<include file="user/menu"/>
+			<div class="ri-menu fr">
+				<div class="menumain p">
+					<div class="beenovercom">
+						<div class="shoptist">
+							<span>{$tpshop_config['shop_info_store_name']}<a href="tencent://message/?uin={$tpshop_config['shop_info_qq']}&Site={$tpshop_config['shop_info_store_name']}&Menu=yes" target="_blank"><i class="y-comp9"></i></a></span>
+						</div>
+						<div>
+							<div class="base-info">
+								<h3>基本信息</h3>
+								<dl>
+									<dt>申请工厂店：</dt>
+									<dd>{$info.store_name}（负责人：{$info.nickname}）</dd>
+									<dt>联系方式：</dt>
+									<dd>{$info.mobile}</dd>
+									<dt>收货地址：</dt>
+									<dd>{$info.province_name} {$info.city_name} {$info.district_name}</dd>
+								</dl>
+								<dl>
+									<dt>申请时间：</dt>
+									<dd>{$info.addtime|date="Y-m-d H:i:s",###}</dd>
+									<dt>发货时间：</dt>
+									<dd>{$info.delivery_time|default="未发货"}</dd>
+									<dt>收货时间：</dt>
+									<dd>{$info.confirm_time|default="未收货"}</dd>
+								</dl>
+								<if condition="$info.delivery_id">
+								<dl>
+									<dt>物流名称：</dt>
+									<dd>{$info.express_name}</dd>
+									<dt>物流单号：</dt>
+									<dd>{$info.express_code}</dd>
+								</dl>
+								</if>
+								<dl>
+									<dt>状态：</dt>
+									<dd>
+										<if condition="$info.status eq 0">处理中</if>
+										<if condition="$info.status eq 1">已处理</if>
+										<if condition="$info.status eq 2">申请失败</if>
+									</dd>
+									<dt>操作备注：</dt>
+									<dd>{$info.remark|default="无"}</dd>
+								</dl>
+							</div>
+
+							<div class="order-alone-li">
+								<h3>商品信息</h3>
+								<table width="100%">
+									<thead>
+										<tr>
+											<th width="65%">商品名称</th>
+											<th width="35%">数量</th>
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="goods" id="vo">
+										<tr class="conten_or">
+											<td class="sx1">
+												<div class="shop-if-dif">
+													<div class="shop-difimg">
+														<a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}"><img src="{$vo.goods_id|goods_thum_images=78,78}"></a>
+													</div>
+													<div class="cebigeze">
+														<div class="shop_name"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}">{$vo.goods_name}</a></div>
+													</div>
+												</div>
+											</td>
+											<td class="sx1" align="center">
+												<span>{$vo.goods_num}</span>
+											</td>
+										</tr>
+										</volist>
+									</tbody>
+								</table>
+							</div>
+
+							<if condition="$info.status eq 0">
+							<form method="post" id="apply-form">
+							<div class="base-info">
+								<h3>操作信息</h3>
+								<dl>
+									<dt>操作备注</dt>
+									<dd>
+										<textarea name="remark" id="remark" rows="6" class="tarea" placeholder="请输入操作备注">{$info.remark}</textarea>
+									</dd>
+								</dl>
+								<dl class="numzjsehe">
+									<dt>可执行操作</dt>
+									<dd>
+										<input type="hidden" name="act" id="act" />
+										<a class="ddn ddn2" href="javascript:void(0)" onclick="delivery()">去发货</a>
+										<a class="ddn ddn3" href="javascript:void(0)" onclick="cancel_apply()">拒绝申请</a>
+									</dd>
+								</dl>
+							</div>
+							</form>
+							</if>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+	<include file="public/footer_index" />
+</div>
+<!--footer-e-->
+</body>
+<div id="layer" style="display: none">
+	<form class="form-horizontal" id="handleForm" method="post">
+		<input type="hidden" name="act" value="delivery" />
+		<input type="hidden" name="id" value="{$Request.get.id}" />
+		<input type="hidden" name="remark" />
+		<div class="ncap-form-default">
+			<dl class="row">
+				<dt>
+					<label><em>*</em>物流名称：</label>
+				</dt>
+				<dd>
+					<input type="text" name="express_name" value="" class="input-txt" placeholder="请填写物流名称" />
+				</dd>
+			</dl>
+			<dl class="row">
+				<dt>
+					<label><em>*</em>物流单号：</label>
+				</dt>
+				<dd>
+					<input type="text" name="express_code" value="" class="input-txt" placeholder="请填写物流单号" />
+				</dd>
+			</dl>
+			<dl class="row numzjsehe">
+				<dt></dt>
+				<dd>
+					<a onclick="checkForm();" class="ddn ddn3">确认发货</a>
+				</dd>
+			</dl>
+		</div>
+	</form>
+</div>
+</html>
+<script type="text/javascript">
+// 拒绝申请
+function cancel_apply() {
+	if ($.trim($('#remark').val()).length == 0) {
+		layer.alert('请填写拒绝备注', {icon: 2});
+		return false;
+	}
+	layer.confirm('确定要拒绝工厂店的补货申请吗?', {
+		btn: ['确定', '取消'] //按钮
+	}, function () {
+		// 确定
+		$('#act').val('cancel');
+		$('#apply-form').submit();
+	}, function (index) {
+		layer.close(index);
+	});
+}
+//去发货
+function delivery() {
+	if ($.trim($('#remark').val()).length == 0) {
+		layer.alert('请填写操作备注', {icon: 2});
+		return false;
+	}
+	$("#layer input[name='remark']").val($('#remark').val());
+	layer.open({
+		type: 1,
+		skin: 'layui-layer-rim',	//加上边框
+		area: ['550px', '300px'],	//宽、高
+		title: "发货",
+		content: $('#layer')
+	})
+}
+function checkForm(){
+	var name = $("#layer input[name='express_name']").val();
+	var code = $("#layer input[name='express_code']").val();
+
+	if ((name == '') || (code == '')) {
+		layer.alert('信息填写不完整', {icon: 2});
+		return;
+	}else {
+		$.ajax({
+			type: "POST",
+			url: "{:U('Partner/store_apply_info')}",
+			data: $('#handleForm').serialize(),
+			dataType: "json",
+			error: function () {
+				layer.alert("服务器繁忙, 请联系管理员!");
+			},
+			success: function (data) {
+				if (data.status == 1) {
+					layer.msg(data.msg, {icon: 1});
+					layer.closeAll();
+					window.location.reload();
+				} else {
+					layer.msg(data.msg, {icon: 2});
+				}
+			}
+		});
+	}
+}
+</script>

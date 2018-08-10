@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>自提订单-{$tpshop_config['shop_info_store_title']}</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/layer/layer-min.js"></script><!--弹窗js 参考文档 http://layer.layui.com/-->
+</head>
+<style type="text/css">
+body {background: #f2f2f2; border-top: 1px solid #d2d2d2}
+.check_safecode {margin-top: 30px}
+.style-red {color: #c81623;}
+</style>
+<body>
+<div class="container">
+	<h5 class="text-center"><b>校验提货码</b></h5>
+	<div class="check_safecode">
+		<form action="" method="post" onSubmit="return checkForm()" class="form-horizontal">
+			<input type="hidden" name="order_id" value="{$order_id}" />
+			<input type="hidden" name="order_sn" value="{$order_sn}" />
+			<div class="form-group">
+				<label class="col-sm-5 text-right control-label">订单编号：</label>
+				<div class="col-sm-6">
+					<p class="form-control-static">{$order_sn}</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-5 text-right control-label" for="safecode"><span class="style-red">*</span> 提货码：</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" placeholder="请输入6位提货码" maxlength="6" name="safecode" id="safecode" />
+				</div>
+			</div>
+			<div>
+				<div class="col-sm-offset-5 col-sm-2">
+					<input type="submit" value="提货" class="btn btn-danger btn-block" />
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+	function checkForm() {
+		var safecode = $('input[name="safecode"]').val();
+		var error = '';
+
+		if (safecode == '') {
+			error += '提货码 <br/>';
+		}
+		if (error) {
+			layer.alert(error, {icon: 2});
+			return false;
+		}
+		return true;
+	}
+</script>
+</body>
+</html>

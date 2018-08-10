@@ -1,0 +1,175 @@
+<include file="public/header" title="商品列表" />
+<include file="public/header_nav" title="商品列表" href="javascript:history.back(-1)" />
+
+<div class="p search_pl">
+	<div class="maleri30">
+		<div class="search2">
+			<form method="get" action="" id="sourch_form">
+				<div class="le_inp">
+					<input type="text" name="key_word" size="30" id="search" placeholder="输入商品名称" value="{:I('key_word')}" />
+				</div>
+				<a href="javascript:;" onclick="ajaxsecrch()">
+					<div class="ri_ss"><img src="__STATIC__/images/sea.png" /></div>
+				</a>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!--商品详情s-->
+<form id="add_form" name="formCart" action="{:U('Mobile/Partner/act_apply')}" method="post">
+	<empty name="goodsList">
+		<!--没有内容时-s-->
+		<div class="comment_con p">
+			<div style="padding:1rem;text-align: center;font-size: .59733rem;color: #777777;">
+				<img src="__STATIC__/images/none.png" /><br /><br />抱歉暂时没有相关商品！
+			</div>
+		</div>
+		<!--没有内容时-e-->
+	<else />
+		<div id="act-apply">
+			<div id="goods_list">
+				<foreach name="goodsList" item="vo" key="k">
+					<div class="orderlistshpop p" id="list{$vo.goods_id}">
+						<div class="maleri30">
+							<!--商品列表-s-->
+							<div class="sc_list">
+								<div class="radio fl">
+									<!--商品勾选按钮-->
+									<if condition="$vo.max_num gt 0">
+		                                <span onClick="checkgood(this)" class="che ">
+		                                    <input type="checkbox" style="display: none" autocomplete="off"
+		                                           name="goods[{$vo.goods_id}][goods_id]" value="{$vo.goods_id}">
+		                                    <input type="checkbox" style="display: none" autocomplete="off"
+		                                           name="goods[{$vo.goods_id}][number]" <if condition="$vo.max_num eq 0">value="0"<else />value="1"</if>>
+		                                    <i></i>
+		                                </span>
+									<else/>
+										<span class="che-disabled">&nbsp;</span>
+									</if>
+								</div>
+								<div class="shopimg fl">
+									<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}">
+										<!--商品图片-->
+										<img src="{$vo.goods_id|goods_thum_images=100,100}">
+									</a>
+								</div>
+								<div class="deleshow fr">
+									<div class="deletes">
+										<!--商品名-->
+			                            <span class="similar-product-text fl">
+			                                <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}">{$vo[goods_name]|getSubstr=0,20}</a>
+			                            </span>
+									</div>
+									<div class="prices">
+										<!--加减数量-->
+										<div class="plus fr get_mp">
+											<span class="mp_minous" onclick="switch_num(-1, {$vo.goods_id}, {$vo.max_num})">-</span>
+											<span class="mp_mp">
+												<input id="goods_num[{$vo.goods_id}]" type="text" onKeyDown='if(event.keyCode == 13) event.returnValue = false'
+												<if condition="$vo.max_num eq 0">value="0"<else />value="1"</if>
+												class="input-num" onblur="switch_num(0,{$vo.goods_id},{$vo.max_num})" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" />
+											</span>
+											<span class="mp_plus" onclick="switch_num(1, {$vo.goods_id}, {$vo.max_num})">+</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--商品列表-e-->
+						</div>
+					</div>
+				</foreach>
+			</div>
+		</div>
+	</empty>
+</form>
+<!--商品详情e-->
+<!--提交栏-s-->
+<div class="foohi foohiext">
+	<div class="payit ma-to-20 payallb">
+		<div class="fl alllef">
+			<div class="radio fl " onclick="chkAll_onclick()">
+                 <span class="che alltoggle">
+                     <i></i>
+                 </span>
+				<span class="all">全选</span>
+			</div>
+		</div>
+		<div class="fr">
+			<a href="javascript:void(0);" onclick="return confirm_submit()">提交</a>
+		</div>
+	</div>
+</div>
+<!--提交栏-e-->
+
+<script type="text/javascript">
+	/* 搜索 */
+	function ajaxsecrch() {
+		if ($.trim($('#search').val()) != '') {
+			$("#sourch_form").submit();
+		} else {
+			layer.open({content: '请输入搜索关键字', time: 2});
+		}
+	}
+	//勾选商品
+	function checkgood(obj) {
+		if ($(obj).hasClass('check_t')) {
+			//取消选中
+			$(obj).find('input').prop('checked', false);
+		} else {
+			//勾选选中
+			$(obj).find('input').prop('checked', true);
+		}
+	}
+
+	//确认添加多个
+	function confirm_submit() {
+		//获取选中的商品个数
+		var j = 0;
+		$("input[type='checkbox']:checked").each(function () {
+			j++;
+		});
+		//选择数大于0
+		if (j > 0) {
+			$("#add_form").submit()
+		} else {
+			layer.open({content: '请选择要添加的商品！', time: 2});
+			return false;
+		}
+	}
+	//全选按钮
+	function chkAll_onclick() {
+		//取消全选
+		if (!$('.alltoggle').hasClass('check_t')) {
+			$('.sc_list .che').each(function () {
+				$('.sc_list  .che').removeClass('check_t');
+				//全部商品取消checked
+				$("input[type='checkbox']").prop('checked', false);
+			})
+		} else {
+			//全选
+			$('.sc_list .che').each(function () {
+				$('.sc_list .che').addClass('check_t');
+				$("input[type='checkbox']").prop('checked', true);
+			})
+		}
+	}
+	/*
+	 * 商品数量加加减减
+	 * 数量 , 商品id , 最大库存量
+	 */
+	function switch_num(num,goods_id,store_count){
+		var num2 = parseInt($("input[id='goods_num["+goods_id+"]']").val());
+		//加减数量
+		num2 += num;
+		if(num2 < 1) num2 = 1;  // 保证购买数量不能少于 1
+		if(num2 > store_count) { //保证 不超过库存
+			layer.open({content:"补货数量超过当前商品最大库存量",time:2})
+			num2 = store_count; // 保证购买数量不能多余库存数量
+		}
+		$("input[id='goods_num["+goods_id+"]']").val(num2);
+		$("input[name='goods["+goods_id+"][number]']").val(num2);
+	}
+</script>
+</body>
+</html>

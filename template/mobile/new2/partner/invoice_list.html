@@ -1,0 +1,45 @@
+<include file="public/header" title="配货单" body="g4"/>
+<include file="public/header_nav" title="配货单" href="javascript:history.back(-1)"/>
+
+<div class="allaccounted" id="invoice">
+    <div class="maleri30">
+        <if condition="empty($list)">
+            <div class="ma-to-20">
+                <div class="nonenothing">
+                    <img src="__STATIC__/images/none.png"/>
+                    <p>暂无记录</p>
+                </div>
+            </div>
+        <else/>
+            <div class="allpion">
+                <div class="fll_acc fll_acc-h">
+                    <ul>
+                        <li class="orderid-h">工厂店</li>
+                        <li class="time-h">发货时间</li>
+                        <li class="price-h">操作</li>
+                    </ul>
+                </div>
+                <foreach name="list" item="vo">
+                    <div class="fll_acc">
+                        <ul>
+                            <li class="orderid-h">
+                                <p>{$vo.store_name}</p>
+                                <p>({$vo.name})</p>
+                            </li>
+                            <li class="time-h">
+                                <if condition="$vo.addtime eq null">
+                                    无
+                                <else/>
+                                    <p>{$vo.addtime|date="Y-m-d H:i:s",###}</p>
+                                </if>
+                            </li>
+                            <li class="price-h"><a href="{:U('Mobile/Partner/invoiceInfo', array('id'=>$vo['id']))}" class="red">查看详情</a></li>
+                        </ul>
+                    </div>
+                </foreach>
+            </div>
+        </if>
+    </div>
+</div>
+</body>
+</html>

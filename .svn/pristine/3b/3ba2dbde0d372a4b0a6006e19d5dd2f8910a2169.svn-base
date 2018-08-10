@@ -1,0 +1,93 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的积分</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10">
+                <div>
+                    <ol class="breadcrumb">
+                        <li><i class="glyphicon glyphicon-home"></i></li>
+                        <li><a href="{:U('Home/User/index')}">用户中心</a></li>
+                        <li class="active">我的积分</li>
+                    </ol>
+                </div>
+
+                <div class="my_right per_main_r">
+                    <div class="">
+                        <div class="integral_top">
+                            <div class="integral_l"><h5>可用积分<span>{$user.pay_points}</span></h5></div>
+                            <div class="integral_l"><h5>可用余额<span>{$user.user_money}</span></h5></div>
+                            <div class="integral_l"><a href="{:U('Home/Goods/integralMall')}">兑换超值商品与优惠劵</a></div>
+                        </div>
+
+                        <div class="integral_bot">
+                            <div class="integral_menu"><h5>积分明细</h5></div>
+                            <div class="integral_title">
+                                <ul>
+                                    <li>订单编号</li>
+                                    <li>详情</li>
+                                    <li>积分变化</li>
+                                    <li>时间</li>
+                                </ul>
+
+                                <empty name="account_log">
+                                    <p class="ncyekjl">--暂无记录--</p>
+                                </empty>
+
+                                <volist name="account_log" id="log">
+                                    <if condition="$log.pay_points neq 0">
+                                        <ul>
+                                            <li>{$log.order_sn|default='无'}</li>
+                                            <li>{$log.desc}</li>
+                                            <li><span><if condition="$log[pay_points] gt 0">+</if>{$log.pay_points}</span></li>
+                                            <li>{$log.change_time|date='Y-m-d H:i',###}</li>
+                                        </ul>
+                                    </if>
+                                </volist>
+                            </div>
+                        </div>
+
+                        <div class="eva_page text-right">
+                            {$page}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

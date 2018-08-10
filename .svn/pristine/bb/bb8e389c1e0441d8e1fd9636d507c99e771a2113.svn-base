@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>注册-{$tpshop_config['shop_info_store_title']}</title>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+	<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/icomoon.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+<body>
+<div class="login_icon">
+	<div class="login_icon_inner">
+		<div class="login_icon_img">
+			<a href="/index.php" title="首页"> <img src="{$tpshop_config['shop_info_store_logo']}" /> </a>
+		</div>
+		<h3>肽风尚商城</h3>
+	</div>
+</div>
+<div class="login_banner">
+	<div class="login_banner_inner">
+		<div class="advertisement">
+			<adv pid="9" item="v" key="k">
+				<a href="{$v[ad_link]}">
+					<img src="{$v[ad_code]}" title="{$v[title]}" style="{$v[style]}"/>
+				</a>
+			</adv>
+		</div>
+		<div class="login_entry">
+			<div class="login_entry_tital">
+				<a href="{:U('Home/User/login')}" class="register_tital_one">用户登录</a><a href="javascript:void(0)" class="register_tital_two">新用户注册</a>
+			</div>
+			<div class="register_sec" id="cont">
+				<form id="reg_form2"  method="post">
+					<input type="hidden" name="scene" value="1">
+					<div class="text-input">
+						<label>手机号码：</label><input type="text" class="login_user" placeholder="请输入手机号码" name="username" id="username">
+					</div>
+					<div class="register_sec_tel text-input">
+						<label>图像验证码：</label>
+						<input type="text" class="register_identifying" placeholder="请输入验证码" name="verify_code">
+						<div class="reg_yanzheng_img">
+							<img width="83" height="37" src="/index.php/Home/User/verify/type/user_reg.html" id="reflsh_code2" onclick="verify('reflsh_code2')">
+						</div>
+					</div>
+					<if condition="$tpshop_config['sms_regis_sms_enable'] eq 1" >
+						<div class="register_sec_tel text-input">
+							<label>手机验证码：</label>
+							<input type="text" class="login_user" placeholder="请输入验证码" id="code" name="code">
+							<label class="register_getkey"><button type="button" onclick="send_sms_reg_code()" id="count_down">获取验证码</button></label>
+						</div>
+					</if>
+					<div class="text-input">
+						<label>设置密码：</label><input type="password" class="login_user" placeholder="6-16位字母、数字或符号的组合" id="password" name="password">
+					</div>
+					<div class="text-input">
+						<label>确认密码：</label><input type="password" class="login_user" placeholder="请再次输入密码" id="password2" name="password2">
+					</div>
+					<div class="text-input">
+						<input id="agreement" type="checkbox" checked />
+						我已阅读并同意<a class="itxt" href="{:U('Home/Article/detail',['article_id'=>1415])}" target="_blank"><tpshop sql="select title from `__PREFIX__article` where article_id = 1415" key="k" item='v'>《{$v.title}》</tpshop></a>
+					</div>
+				</form>
+				<div class="register_get"><a href="javascript:void(0);" onClick="check_submit();">注 册</a></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="login_footer">
+	<div class="login_footer_inner">
+		<ul>
+			<tpshop sql="select * from `__PREFIX__article_cat` where parent_id = 2" key="k" item='v'>
+				<tpshop sql="select * from `__PREFIX__article` where cat_id = $v[cat_id]  and is_open=1" key="k2" item='v2'>
+					<li><a href="{:U('Home/Article/detail',array('article_id'=>$v2[article_id]))}">{$v2[title]}</a></li>
+				</tpshop>
+			</tpshop>
+		</ul>
+		<div class="login_footer_txt">
+			<p>Copyright &copy; {$tpshop_config['shop_info_store_name']|default='肽风尚商城'} 版权所有 </p></div>
+	</div>
+</div>
+</body>
+</html>
+
+<script>
+	// 普通 图形验证码
+	function verify(id) {
+		$('#' + id).attr('src', '/index.php?m=Home&c=User&a=verify&type=user_reg&r=' + Math.random());
+	}
+	function check_submit() {
+		if($('#agreement').is(':checked') == false) {
+			layer.alert('请阅读用户协议并勾选', {icon: 2});
+			return;
+		}
+		$.ajax({
+			type: "POST",
+			url: "{:U('Home/User/reg')}",
+			dataType: "json",
+			data: $('#reg_form2').serialize(),
+			success: function (data) {
+				if (data.status == 1) {
+					layer.msg(data.msg, {icon: 1}, function () {
+						window.location.href = "{:U('Home/Index/index')}";
+					});
+				} else {
+					layer.alert(data.msg, {icon: 2}, function (index) {
+						//$('.verifyImg').trigger('click');
+						layer.close(index);
+					});
+				}
+			}
+		});
+	}
+	// 发送手机短信
+	function send_sms_reg_code() {
+		var mobile = $('input[name="username"]').val();
+		var verify_code = $('input[name="verify_code"]').val();
+		if (!checkMobile(mobile)) {
+			layer.alert('请输入正确的手机号码', {icon: 2});//alert('请输入正确的手机号码');
+			return;
+		}
+		if (verify_code == '') {
+			layer.alert('请输入图像验证码', {icon: 2});//alert('请输入正确的手机号码');
+			return;
+		}
+
+		var url = "/index.php?m=Home&c=Api&a=send_validate_code&scene=1&type=mobile&mobile=" + mobile + "&verify_code=" + verify_code;
+		$.ajax({
+			url: url,
+			dataType: "json",
+			success: function (res) {
+				if (res.status == 1) {
+					$('#count_down').attr("disabled", "disabled");
+					intAs = 60; // 手机短信超时时间
+					jsInnerTimeout('count_down', intAs);
+					layer.alert(res.msg, {icon: 1});
+				} else {
+					layer.alert(res.msg, {icon: 2});
+					verify('reflsh_code2')
+				}
+			}
+		});
+	}
+	$('#count_down').removeAttr("disabled");
+	//倒计时函数
+	function jsInnerTimeout(id, intAs) {
+		var codeObj = $("#" + id);
+		intAs--;
+		if (intAs <= -1) {
+			codeObj.removeAttr("disabled");
+			codeObj.text("获取验证码");
+			return true;
+		}
+		codeObj.text('重新获取' + intAs + '秒');
+		setTimeout("jsInnerTimeout('" + id + "'," + intAs + ")", 1000);
+	}
+	function checkMobile(tel) {
+		var reg = /(^1[3|4|5|7|8][0-9]{9}$)/;
+		if (reg.test(tel)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+</script>

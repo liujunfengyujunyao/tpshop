@@ -1,0 +1,153 @@
+<include file="public/header" title="个人中心" body="g4"/>
+<style>
+    .my .content .floor_order ul li {
+        width: 25%;
+    }
+</style>
+<div class="myhearder">
+    <div class="person">
+        <div class="fl personicon">
+            <div class="personicon">
+                <img src="{$user[head_pic]|default="__STATIC__/images/user68.jpg"}"/>
+            </div>
+        </div>
+        <div class="fl lors">
+            <span>合伙人：{$user['nickname']}</span>
+        </div>
+    </div>
+
+    <div class="scgz">
+        <ul>
+            <li>
+                <a href="javascript:void(0)">
+                    <p>联系方式：{$partner.phone}</p>
+                </a>
+
+            </li>
+            <li>
+                <a href="{:U('Mobile/Partner/rebate_log')}">
+                    <p>收益：￥{$income|default='0'}</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="floor my p">
+    <div class="content">
+        <div class="floor list7 ma-to-20">
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/storeList')}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p1.png"/>
+                                <span>工厂店管理</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/store_apply')}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p2.png"/>
+                                <span>工厂店补货申请</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/stockList')}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p3.png"/>
+                                <span>库存管理</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/apply')}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p4.png"/>
+                                <span>合伙人补货申请</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/orderList')}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p5.png"/>
+                                <span>订单管理</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/deliveryList')}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p6.png"/>
+                                <span>收货单</span><span style="color: red; font-size:0.5rem;">(公司发给合伙人)</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="myorder p">
+                <div class="content30">
+                    <a href="{:U('Mobile/Partner/invoiceList')}">
+                        <div class="order">
+                            <div class="fl">
+                                <img src="__STATIC__/images/p7.png"/>
+                                <span>配货单</span><span style="color: red; font-size: 0.5rem">(合伙人配货给工厂店)</span>
+                            </div>
+                            <div class="fr">
+                                <i class="Mright"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--底部导航-start-->
+<include file="public/footer_nav"/>
+<!--底部导航-end-->
+<script src="__STATIC__/js/style.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>安全设置-{$tpshop_config['shop_info_store_title']}</title>
+	<meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+	<meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+	<link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<script src="__STATIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<div id="security">
+	<div class="container mine">
+		<div class="row my_mall">
+			<include file="user/menu" />
+			<div class="col-md-10 col-sm-9 col-lg-10">
+				<div>
+					<ol class="breadcrumb">
+						<li><i class="glyphicon glyphicon-home"></i></li>
+						<li><a href="#">用户中心</a></li>
+						<li class="active">安全设置</li>
+					</ol>
+				</div>
+				<div class="my_right">
+					<!--<div class="row">-->
+						<!--<div class="col-xs-12 set">安全设置</div>-->
+					<!--</div>-->
+					<div class="row name">
+						<div class="col-md-2 text-right"><img src="__STATIC__/images/lan.png" /></div>
+						<div class="col-md-10 grade">
+							<span class="you">{$user['nickname']}</span></br>
+							<span class="di">
+								安全级别：
+								<if condition="($user['mobile_validated'] eq 1) and ($user[paypwd] eq null)">
+									<div class="progress">
+										<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="90" style="width: 30%;">
+											<span class="sr-only"></span>
+										</div>
+									</div>
+								<elseif condition="($user['mobile_validated'] eq 1) and ($user['email_validated'] eq 1 or $user[paypwd] neq null)" />
+									<div class="progress">
+										<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="90" style="width: 60%;">
+											<span class="sr-only"></span>
+										</div>
+									</div>
+								<elseif condition="($user['mobile_validated'] eq 1) and ($user['email_validated'] eq 1) and ($user[paypwd] neq null)" />
+									<div class="progress">
+										<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="90" style="width: 100%;">
+											<span class="sr-only"></span>
+										</div>
+									</div>
+								</if>
+								<span class="jian">
+									<if condition="($user['mobile_validated'] eq 1) and ($user[paypwd] eq null)">低级</if>
+									<if condition="($user['mobile_validated'] eq 1) and ($user['email_validated'] eq 1 or $user[paypwd] neq null)">中级</if>
+									<if condition="($user['mobile_validated'] eq 1) and ($user['email_validated'] eq 1) and ($user[paypwd] neq null)">高级</if>
+									建议您启动全部安全设置，以保障账户及资金安全。
+								</span>
+							</span>
+						</div>
+					</div>
+					<div class="modi">
+						<div class="col-md-3 one"><img src="__STATIC__/images/lv.png" /><span>登录密码</span></div>
+						<div class="col-md-7 two">互联网账号存在被盗风险，建议您定期更改密码以保护账户安全。</div>
+						<div class="col-md-2 three text-center"><a href="{:U('Home/User/password')}">修改</a></div>
+						<div class="clear"></div>
+						<p class="down"></p>
+					</div>
+					<div class="modi">
+						<div class="col-md-3 one">
+							<empty name="user[paypwd]">
+								<img src="__STATIC__/images/tan.png" />
+							<else />
+								<img src="__STATIC__/images/lv.png" />
+							</empty>
+							<span>支付密码</span>
+						</div>
+						<div class="col-md-7 two">申请提现、余额支付或积分支付时，均需支付密码进行身份验证。</div>
+						<div class="col-md-2 three text-center"><a href="{:U('Home/User/paypwd')}"><empty name="user[paypwd]">设置<else/>修改</empty></a></div>
+						<div class="clear"></div>
+						<p class="down"></p>
+					</div>
+					<div class="modi">
+						<div class="col-md-3 one">
+							<if condition="$user['mobile_validated'] eq 1">
+								<img src="__STATIC__/images/lv.png" />
+							<else />
+								<img src="__STATIC__/images/tan.png" />
+							</if>
+							<span>手机验证</span>
+						</div>
+						<div class="col-md-7 two">
+							<if condition="$user['mobile_validated'] eq 0">
+								互联网账号存在被盗风险，建议您立即绑定手机号以保护账户安全。
+							<else/>
+								您验证的手机：<b>{$user['mobile']|substr=0,3}****{$user['mobile']|substr=7,4}</b> 若已丢失或停用，请立即更换，<mark>避免账户被盗</mark>
+							</if>
+						</div>
+						<div class="col-md-2 three text-center"><a <if condition='$user[mobile_validated] eq 0'>class='now'</if> href="{:U('Home/User/mobile_validate',array('type'=>'mobile','step'=>1))}"><if condition="$user['mobile_validated'] eq 0">未验证(点击验证)<else/>已验证(点击修改)</if></a></div>
+						<div class="clear"></div>
+						<p class="down"></p>
+					</div>
+					<div class="modi">
+						<div class="col-md-3 one">
+							<if condition="$user['email_validated'] eq 1">
+								<img src="__STATIC__/images/lv.png" />
+							<else />
+								<img src="__STATIC__/images/tan.png" />
+							</if>
+							<span>邮箱验证</span>
+						</div>
+						<div class="col-md-7 two">
+							<if condition="$user['email_validated'] eq 0">
+								互联网账号存在被盗风险，建议您立即绑定邮箱以保护账户安全。
+							<else/>
+								您验证的邮箱：<b>{$user['email']}</b> 若已丢失或停用，请立即更换，<mark>避免账户被盗</mark>
+							</if>
+						</div>
+						<div class="col-md-2 three text-center"><a <if condition='$user[email_validated] eq 0'>class='now'</if> href="{:U('Home/User/email_validate',array('type'=>'email','step'=>1))}"><if condition="$user['email_validated'] eq 0">未验证(点击验证)<else/>已验证(点击修改)</if></a></div>
+						<div class="clear"></div>
+						<p class="down"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

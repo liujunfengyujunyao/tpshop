@@ -1,0 +1,30 @@
+<div class="news_content">
+	<ul>
+		<volist name="list" id="vo">
+			<li>
+				<if condition="$vo.link">
+					<a href="$vo.link"><h4 class="news-title">{$vo.title}</h4></a>
+				<else />
+					<a href=""><h4 class="news-title">{$vo.title}</h4></a>
+				</if>
+				<small class="news-time">{$vo.add_time|date='Y-m-d H:i:s',###}</small>
+				<p>{$vo.description|getSubstr=0,30}
+					<if condition="$vo.link">
+						<a href="$vo.link">【查看详情】</h4></a>
+					<else />
+						<a href="">【查看详情】</a>
+					</if>
+				</p>
+			</li>
+		</volist>
+	</ul>
+</div>
+<div class="eva_page">
+	{$page}
+</div>
+<script type="text/javascript">
+	// 点击分页触发的事件
+	$("#ajax_content .pagination  a").click(function(){
+		ajax_news_list(cat_id, $(this).data('p'));
+	});
+</script>

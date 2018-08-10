@@ -1,0 +1,107 @@
+<include file="public/header" title="入库单详情" body="g4"/>
+<include file="public/header_nav" title="入库单详情" href="javascript:history.back(-1)"/>
+<script src="__PUBLIC__/static/js/layer/layer.js" type="text/javascript"></script>
+
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>基本信息</h2>
+        </div>
+        <div class="xx-list">
+            <p class="p">
+                <span class="fl">操作用户</span>
+                <span class="fr">{$info.nickname}</span>
+            </p>
+            <p class="p">
+                <span class="fl">发货时间</span>
+                <span class="fr">{:date('Y-m-d  H:i:s', $info.addtime)}</span>
+            </p>
+            <if condition="!empty($info.confirm_time)">
+                <p class="p">
+                    <span class="fl">收货时间</span>
+                    <span class="fr">{$info.confirm_time|default="未确认收货"}</span>
+                </p>
+            </if>
+            <if condition="$info.express_name">
+                <p class="p">
+                    <span class="fl">物流名称</span>
+                    <span class="fr">{$info.express_name}</span>
+                </p>
+            </if>
+            <if condition="$info.express_code">
+                <p class="p">
+                    <span class="fl">物流单号</span>
+                    <span class="fr">{$info.express_code}</span>
+                </p>
+            </if>
+        </div>
+    </div>
+</div>
+
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>商品信息</h2>
+        </div>
+        <div class="ord_list p">
+            <div class="maleri30">
+                <volist name="goods" id="good">
+                    <div class="shopprice">
+                        <div class="img_or fl">
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$good[goods_id]))}">
+                                <img src="{$good[goods_id]|goods_thum_images=100,100}"/>
+                            </a>
+                        </div>
+                        <div class="fon_or fl">
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$good[goods_id]))}">
+                                <h2 class="similar-product-text">{$good[goods_name]}</h2>
+                            </a>
+                        </div>
+                        <div class="price_or fr">
+                            <p>x{$good['goods_num']}</p>
+                        </div>
+                    </div>
+                </volist>
+            </div>
+        </div>
+    </div>
+</div>
+
+<if condition="empty($info.confirm_time)">
+<div class="head_acc ma-to-20" id="delivery-info">
+    <ul>
+        <li class="red" style="float: right">
+            <a href="javascript:void(0)" onclick="order_confirm({$info.id})">确认收货</a>
+        </li>
+    </ul>
+</div>
+</if>
+</body>
+</html>
+<script>
+    //确定收货
+    function order_confirm(id){
+        layer.confirm("你确定收到货了吗?",{
+            btn:['确定','取消']
+        },function(){
+            $.ajax({
+                type : 'post',
+                url : '/index.php?m=Mobile&c=Store&a=invoice_confirm&id='+id,
+                dataType : 'json',
+                success : function(data){
+                    if(data.status == 1){
+                        showErrorMsg(data.msg);
+                        location.reload();
+                    }else{
+                        showErrorMsg(data.msg);
+                    }
+                },
+                error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    showErrorMsg('网络失败，请刷新页面后重试');
+                }
+            })
+        }, function(index){
+            layer.close(index);
+        });
+    }
+</script>

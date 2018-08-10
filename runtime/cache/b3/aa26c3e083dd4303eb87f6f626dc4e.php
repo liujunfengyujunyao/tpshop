@@ -1,0 +1,3 @@
+<?php
+//000000000000a:18:{s:8:"site_url";s:21:"http://www.tp-shop.cn";s:9:"record_no";s:17:"粤ICP17092251号";s:10:"store_name";s:15:"肽风尚商城";s:10:"store_logo";s:67:"/public/upload/logo/2017/09-20/06bef7c5190326d724a8631bc36cf55c.png";s:11:"store_title";s:27:"肽风尚｜官方商城｜";s:10:"store_desc";s:21:"肽风尚官方商城";s:13:"store_keyword";s:30:"肽风尚 商城 官方 面膜";s:7:"contact";s:0:"";s:5:"phone";s:12:"020-86210199";s:7:"address";s:49:"嘉禾鹤龙一横路28号金泰创意园H栋3楼";s:2:"qq";s:9:"123456789";s:3:"qq2";s:9:"123456789";s:3:"qq3";s:9:"123456789";s:6:"mobile";s:11:"13392698171";s:8:"province";s:5:"28240";s:4:"city";s:5:"28241";s:8:"district";s:5:"28330";s:11:"form_submit";s:2:"ok";}
+?>

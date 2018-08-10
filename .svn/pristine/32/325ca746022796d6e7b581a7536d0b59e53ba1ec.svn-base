@@ -1,0 +1,44 @@
+<if condition="count($cartList) eq 0">
+	<!--购物车为空-s-->
+	<div class="noneshopcar">
+		<img src="__STATIC__/images/noneshopcar.png" width="80"/><br />
+		<h5>购物车还什么都没有哦~</h5>
+	</div>
+	<!--购物车为空-e-->
+	<else />
+	<!--购物车有商品-s-->
+	<div class="hasshopcar u-fn-cart u-mn-cart">
+		<foreach name="cartList" item="v" key="k">
+			<div class="mn-c-box J-sdb-cb js_cart_top">
+				<dl class="c-store mb15">
+					<dt class="c-store-tt fixed">{$v.add_time|date="Y-m-d H:i:s",###}</dt>
+					<dd class="c-list">
+						<div class="c-prod">
+							<div class="c-item fixed js_cart_pro_list">
+								<a href="javascript:void(0);" class="del js_delete" onclick="header_cart_del({$v.id});"></a>
+
+								<p class="i pull-left mr5">
+									<a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}">
+										<img src="{$v.goods_id|goods_thum_images=50,50}" height="50" width="50" alt="" title="">
+									</a>
+								</p>
+
+								<p class="n pull-left">
+									<a href="{:U('Home/Goods/goodsInfo',array('id'=>$v[goods_id]))}">{$v[goods_name]}</a>
+								</p>
+
+								<p class="pull-left js_mini_num"> * {$v[goods_num]} 件 </p>
+								<p class="p pull-right mt5 style-red"><em>￥</em><span><b>{$v[member_goods_price]}</b></span></p>
+							</div>
+						</div>
+					</dd>
+				</dl>
+			</div>
+		</foreach>
+		<div class="buyall-price">
+			<p>已选<span class="style-red"><b>{$cart_total_price[num]}</b></span> 件，共计：<span class="style-red"><b>￥{$cart_total_price[total_fee]}</b></span></p>
+			<a href="{:U('Home/Cart/cart')}" class="btn btn-danger">去购物车</a>
+		</div>
+	</div>
+	<!--购物车有商品-e-->
+</if>

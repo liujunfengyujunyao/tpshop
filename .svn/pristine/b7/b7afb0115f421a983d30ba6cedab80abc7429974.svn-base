@@ -1,0 +1,322 @@
+<include file="public/header" title="订单详情" body="g4"/>
+<include file="public/header_nav" title="订单详情" href="javascript:history.back(-1)"/>
+
+<div class="edit_gtfix">
+        <div class="namephone fl">
+            <div class="top">
+                <div class="le fl">{$order_info.consignee}</div>
+                <div class="lr fl">{$order_info.mobile}</div>
+            </div>
+            <div class="bot">
+                <i class="dwgp"></i>
+                <span>{$region_list[$order_info['province']]},{$region_list[$order_info['city']]},{$region_list[$order_info['district']]},{$order_info.address}</span>
+            </div>
+        </div>
+        <div class="fr youjter">
+        </div>
+        <div class="ttrebu">
+            <img src="__STATIC__/images/tt.png"/>
+        </div>
+</div>
+<div class="packeg p">
+    <div class="maleri30">
+        <div class="fl">
+            <if condition="$order_info.order_prom_type eq 4">
+                <h1><span >订单类型：</span><span class="bgnum"></span><span>预售订单</span></h1>
+            </if>
+            <h1></h1>
+        </div>
+        <div class="fr">
+            <span>{$order_info.order_status_desc}</span>
+        </div>
+    </div>
+</div>
+<!--订单商品列表-s-->
+<div class="ord_list p">
+    <div class="maleri30">
+        <volist name="order_info.goods_list" id="good">
+            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$good[goods_id]))}">
+                <div class="shopprice">
+                    <div class="img_or fl">
+                        <img src="{$good[goods_id]|goods_thum_images=100,100}"/>
+                    </div>
+                    <div class="fon_or fl">
+                        <h2 class="similar-product-text">{$good[goods_name]}</h2>
+                        <div><span class="bac">{$good['spec_key_name']}</span></div>
+                    </div>
+                    <div class="price_or fr">
+                        <p><span>￥</span><span>{$good['member_goods_price']}</span></p>
+                        <p>x{$good['goods_num']}</p>
+                    </div>
+                </div>
+            </a>
+        </volist>
+    </div>
+</div>
+
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>基本信息</h2>
+        </div>
+        <div class="xx-list">
+            <p class="p">
+                <span class="fl">订单编号</span>
+                <span class="fr">{$order_info.order_sn}</span>
+            </p>
+            <p class="p">
+                <span class="fl">下单时间</span>
+                <span class="fr"><span>{:date('Y-m-d  H:i:s', $order_info.add_time)}</span></span>
+            </p>
+            <p class="p">
+                <span class="fl">收货地址</span>
+                <span class="fr">{$region_list[$order_info[province]]}&nbsp;{$region_list[$order_info[city]]}&nbsp;{$region_list[$order_info[district]]}&nbsp;{$order_info[address]}</span>
+            </p>
+            <p class="p">
+                <span class="fl">收货人</span>
+                <span class="fr"><span>{$order_info.consignee}</span><span>{$order_info.mobile}</span></span>
+            </p>
+            <p class="p">
+                <span class="fl">支付方式</span>
+                <span class="fr">
+                    <if condition="$order_info[pay_status] eq 1 and empty($order_info.pay_name)">
+                        其他支付
+                        <else/>
+                        {$order_info.pay_name}
+                    </if>
+                </span>
+            </p>
+            <p class="p">
+                <span class="fl">配送方式</span>
+                <if condition="$order_info.shop_way eq 1">
+                    <span class="fr">{$order_info.shipping_name}</span>
+                <elseif condition="$order_info.shop_way eq 2" />
+                    <span class="fr">工厂店配送</span>
+                <elseif condition="$order_info.shop_way eq 3" />
+                    <span class="fr">工厂店自提</span>
+                </if>
+            </p>
+            <if condition="$order_info.shop_way eq 2 || $order_info.shop_way eq 3">
+                <p class="p">
+                    <span class="fl">服务工厂店</span>
+                    <span class="fr">{$order_info.shipping_name}</span>
+                </p>
+            </if>
+            <p class="p">
+                <span class="fl">买家留言</span>
+                <span class="fr">{$order_info.user_note}</span>
+            </p>
+            <if condition="$order_info.order_prom_type eq 4">
+                <if condition="$order_info.pre_sell_is_finished eq 2">
+                    <p class="p">
+                        <span class="fl">订单关闭</span>
+                        <span class="fr">商家取消活动，返还订金</span>
+                    </p>
+                </if>
+                <if condition="$order_info.pre_sell_is_finished eq 1">
+                    <if condition="time() gt $order_info.pre_sell_retainage_end">
+                        <p class="p">
+                            <span class="fl">订单关闭</span>
+                            <span class="fr">已过支付尾款时间</span>
+                        </p>
+                    </if>
+                </if>
+            </if>
+        </div>
+    </div>
+</div>
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>价格信息</h2>
+        </div>
+        <div class="xx-list">
+            <if condition="$order_info.order_prom_type neq 4">
+                <p class="p">
+                    <span class="fl">商品总价</span>
+                    <span class="fr"><span>￥</span><span>{$order_info.goods_price}</span>元</span>
+                </p>
+                <p class="p">
+                    <span class="fl">运费</span>
+                    <span class="fr"><span>￥</span><span>{$order_info.shipping_price}</span>元</span>
+                </p>
+                <p class="p">
+                    <span class="fl">优惠券</span>
+                    <span class="fr"><span>-￥</span><span>{$order_info.coupon_price}</span>元</span>
+                </p>
+                <p class="p">
+                    <span class="fl">活动优惠</span>
+                    <span class="fr"><span>-￥</span><span>{$order_info.order_prom_amount}</span>元</span>
+                </p>
+                <p class="p">
+                    <span class="fl">积分</span>
+                    <span class="fr"><span>-￥</span><span>{$order_info.integral_money}</span>元</span>
+                </p>
+            </if>
+            <p class="p">
+                <span class="fl">余额</span>
+                <span class="fr"><span>-￥</span><span>{$order_info.user_money}</span>元</span>
+            </p>
+            <!-- 预售商品 start -->
+            <if condition="$order_info.order_prom_type eq 4 AND $order_info.paid_money gt 0" >
+                <if condition="$order_info.pay_status eq 1">
+                    <p class="p">
+                        <span class="fl">已付尾款</span>
+                        <span class="fr"><span>-￥</span><span>{$order_info.order_amount}</span>元</span>
+                    </p>
+                </if>
+                <p class="p">
+                    <span class="fl">已付订金</span>
+                    <span class="fr"><span>-￥</span><span>{$order_info.paid_money}</span>元</span>
+                </p>
+                <p class="p">
+                    <span class="fl">发货时间</span>
+                    <span class="fr"><span>{$order_info.pre_sell_deliver_goods}</span></span>
+                </p>
+            </if>
+            <!-- 预售商品 end -->
+            <p class="p">
+                <span class="fl">应付总额</span>
+                <span class="fr red"><span>￥</span><span>{$order_info.order_amount}</span>元</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!--取消订单-s-->
+<!-- <div class="losepay closeorder" style="display: none;">
+    <div class="maleri30">
+        <p class="con-lo">取消订单后,存在促销关系的子订单及优惠可能会一并取消。是否继续？</p>
+        <div class="qx-rebd">
+            <a class="ax">取消</a>
+            <if condition="$order_info.pay_status eq 0">
+                <a class="are" onclick="cancel_order({$order_info.order_id})">确定</a>
+            </if>
+            <if condition="$order_info.pay_status eq 1">
+                <a class="are" href="{:U('Order/refund_order', ['order_id'=>$order_info['order_id']])}">取消订单</a>
+            </if>
+        </div>
+    </div>
+</div> -->
+<!--取消订单-e-->
+
+<div class="mask-filter-div" style="display: none;"></div>
+
+<!--底部支付栏-s-->
+<div class="payit ma-to-20">
+    <!--<div class="fl">-->
+            <!--<p><span class="pmo">实付金额：</span>-->
+                <!--<span>￥</span><span>{$order_info.order_amount+$order_info.shipping_price}</span>-->
+            <!--</p>-->
+            <!--<p class="lastime"><span>付款剩余时间：</span><span id="lasttime"></span></p>-->
+            <!--&lt;!&ndash;<p class="deel"><a href="{:U('Mobile/User/order_del',array('order_id'=>$order_info.order_id))}">删除订单</a></p>&ndash;&gt;-->
+    <!--</div>-->
+    <div class="fr s">
+        <if condition="$order_info[pay_status] eq 0">
+            <a>等待付款</a>
+        <elseif condition="$order_info[pay_status] eq 1">
+            <if condition="$order_info[shipping_status] eq 0 && $order_info[shop_way] eq 2">
+                <if condition="$order_info['order_status'] eq 3">
+                    <a>已取消</a>
+                <else/>
+                    <p class="inspect">
+                        <a class="ddn3" style="margin-top:20px;" href="javascript:;" onclick="send_goods({$order_info['order_id']})">发货</a>
+                    </p>
+                </if>
+            <elseif condition="$order_info[shipping_status] eq 1">
+                <if condition="$order_info[order_status] eq 6">
+                    <a>工厂店已发货</a>
+                <elseif condition="$order_info[order_status] eq 1"/>
+                    <if condition="$order_info[shop_way] eq 3">
+                        <p class="inspect">
+                            <a class="ddn3" style="margin-top:20px;" href="javascript:check_safecode({$order_info['order_id']})">自提校验</a>
+                        </p>
+                    <else />
+                        <p class="inspect">
+                            <a href="javascript:void(0);" onClick="confirm({$order_info['order_id']})" >确认收货</a>
+                        </p>
+                    </if>
+                <elseif condition="$order_info[order_status] eq 4"/>
+                    <a>已完成</a>
+                <elseif condition="$order_info[order_status] eq 3"/>
+                    <a>已取消</a>
+                <elseif condition="$order_info[order_status] eq 0"/>
+                    <a>待确认</a>
+                <elseif condition="$order_info[order_status] eq 2"/>
+                    <a>用户已收货</a>
+                <else />
+
+                </if>
+            <elseif condition="$order_info[shipping_status] eq 0 && $order_info['shop_way'] eq 3">
+                <p class="inspect">
+                    <a href="javascript:void(0);" onClick="send_goods({$order_info['order_id']})" >发货</a>
+                </p>
+            <else /> 
+            </if>
+        <elseif condition="$order_info[pay_status] eq 2">
+            <a>部分支付</a>
+        <elseif condition="$order_info[pay_status] eq 3">
+            <a>已退款</a>
+        <else />
+            <a>待处理</a>
+        </if>
+    </div>
+</div>
+<!--底部支付栏-d-->
+
+<script type="text/javascript">
+    /**
+     * 校验自提码
+     * 使用 公共的 layer 弹窗插件  参考官方手册 http://layer.layui.com/
+     */
+    function check_safecode(id)
+    {
+        if(id > 0){
+            var url = "/index.php?m=Mobile&c=Store&a=check_safecode&call_back=call_back_fun&id="+id;
+            layer.open({
+                type: 2,
+                title: '自提订单',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['250px', '300px'],
+                content: url,
+            });
+        }else{
+            alert("订单选择错误");
+        }
+        
+    }
+    // 校验自提码正确 回调函数
+    function call_back_fun(v){
+        layer.closeAll(); // 关闭窗口
+        location.href = location.href;
+    }
+
+    //非自提 工厂店确认收货
+    function confirm(id){
+        layer.confirm('确定收货?', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    // 确定
+                    location.href = "/index.php?m=Mobile&c=Store&a=confirm&id="+id;
+                }, function(index){
+                    layer.close(index);
+                }
+        );
+    }
+
+    //工厂店发货并生成发货单
+    function send_goods(id){
+        layer.confirm('确定收货并生成发货单?', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    // 确定
+                    location.href = "/index.php?m=Mobile&c=Store&a=send_goods&id="+id;
+                }, function(index){
+                    layer.close(index);
+                }
+        );
+    }
+</script>
+</body>
+</html>

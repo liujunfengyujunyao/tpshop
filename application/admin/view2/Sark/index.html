@@ -1,0 +1,121 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255,255,255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>风尚美人柜管理</h3>
+                <h5>风尚美人柜的索引与管理</h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color:#2CA8A3; background-color: #EDFBF8; width:99%; height:100%;">
+        <div id="checkZoom" class="title">
+            <i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>风尚美人柜操作,在此管理.</li>
+        </ul>
+    </div>
+
+    <!-- 风尚美人柜列表 -->
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>风尚美人柜列表</h3>
+                <h5>(共<span id="count"></span>条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <form class="navbar-form form-inline" id="search-form1" method="post" onsunbmit="return false">
+                <div class="sDiv">
+                    <div class="sDiv2">
+                        <input size="30" name="key_word" value="{$Request.param.key_word}" placeholder="美人柜编号" class="qsbox" type="text"/>
+                        <input class="btn" value="搜索" onclick="ajax_get_table('search-form1',1)" type="submit"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th class="sign" axis="colo">
+                            <div style="width:24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="center" abbr="sark_id" axis="col3">
+                            <div style="text-align: center; width: 60px;">ID</div>
+                        </th>
+                        <th align="center" abbr="sark_code" axis="col4">
+                            <div style="text-align: center; width: 100px;">风尚美人柜编号</div>
+                        </th>
+                        <th align="center" abbr="store_name" axis="col5">
+                            <div style="text-align: center; width:100px;">工厂店名字</div>
+                        </th>
+                        <th align="center" abbr="add_time" axis="col6">
+                            <div style="text-align: center; width: 100px;">添加时间</div>
+                        </th>
+                        <th align="center" abbr="confirm_time" axis="col7">
+                            <div style="text-align: center; width: 100px;">工厂店确认时间</div>
+                        </th>
+                        <th align="center" axis="col8" class="handle">
+                            <div style="text-align: center; width: 100px;">操作</div>
+                        </th>
+                        <th style="width: 100%" axis="col9">
+                            <div></div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="tDiv">
+            <div class="tDiv2">
+                <div class="fbutton">
+                    <a href="{:U('Admin/Sark/sark_info')}">
+                        <div class="add" title="添加风尚美人柜">
+                            <span><i class="fa fa-plus">添加风尚美人柜</i></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div class="bDiv" style="height:auto;" id="ajax_return"></div>
+
+        <!-- 分页位置 -->
+        {$show}
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        //点击刷新页面
+        $('.fa-refresh').click(function(){
+            location.href = location.href;
+        });
+        ajax_get_table('search-form1',1);
+    });
+
+    //ajax抓取页面form为表单id,page为当前第几页
+    function ajax_get_table(form,page){
+        cur_page = page;
+        $.ajax({
+            type: "POST",
+            url:"/index.php?m=Admin&c=Sark&a=ajaxSarkList&p="+page,
+            data: $('#'+form).serialize(),
+            success: function(data){
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+</script>
+</body>
+</html>

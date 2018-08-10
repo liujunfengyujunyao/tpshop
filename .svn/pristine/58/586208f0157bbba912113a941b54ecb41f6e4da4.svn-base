@@ -1,0 +1,72 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的消息</title>
+    <meta name="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__STATIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="__STATIC__/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
+    <script src="__PUBLIC__/js/layer/layer.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config['shop_info_store_logo']}" media="screen" />
+</head>
+
+<body>
+<!-- 头部顶栏 start -->
+<include file="user/header" />
+<!-- 头部顶栏 end -->
+
+<!--主要内容开始-->
+<div id="account">
+    <div class="container">
+        <adv  pid="406" limit="1" item="v">
+            <a href="{$v['ad_link']}"><img src="{$v['ad_code']}" width="100%"/></a>
+        </adv>
+    </div>
+
+    <div class="container mine">
+        <div class="row my_mall">
+            <include file="user/menu" />
+            <div class="col-md-10 col-sm-9 col-lg-10 message_l_r">
+                <div class="message_l_title">
+                    <ul>
+                        <li><a href="{:U('Home/User/message_notice')}"><span>全部消息</span></a></li>
+                        <li><a href="{:U('Home/User/message_notice',array('type'=>1))}">系统消息</a></li>
+                        <li><a href="{:U('Home/User/message_notice',array('type'=>2))}">活动通知</a></li>
+                    </ul>
+                </div>
+                <div class="message_l_con">
+                    <ul class="message_l_t">
+                        <li class="m_title">标题</li>
+                        <li class="m_time">发表时间</li>
+                    </ul>
+
+                    <empty name="list">
+                        <ul class="mes_em"><p>--暂无消息--</p></ul>
+                    </empty>
+                    <volist name="list" id="vo">
+                        <ul class="message_l_c">
+                            <li class="m_title"><a href="{:U('User/message_info',array('id'=>$vo['message_id']))}">{$vo.message|getSubstr=0,18}</a></li>
+                            <li class="m_time">{$vo.send_time|date='Y-m-d H:i',###}</li>
+                        </ul>
+                    </volist>
+                </div>
+
+                <div class="eva_page text-right">
+                    {$page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+
+<!--footer-s-->
+<include file="public/footer" />
+<!--footer-e-->
+</body>
+</html>

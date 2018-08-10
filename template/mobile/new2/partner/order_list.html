@@ -1,0 +1,70 @@
+<include file="public/header" title="订单管理" body="g4"/>
+<include file="public/header_nav" title="订单管理" href="javascript:history.back(-1)"/>
+
+<!-- 订单列表Start -->
+<div class="ajax_return">
+    <if condition="empty($orderList)">
+        <!-- 没有内容 Start -->
+        <div class="comment_con p">
+            <div class="nonenothing">
+                <img src="__STATIC__/images/none.png"/>
+                <p>暂无记录</p>
+            </div>
+        </div>
+        <!-- 没有内容 End -->
+        <else/>
+        <!-- 列表Start -->
+        <foreach name="orderList" item="vo">
+            <div class="mypackeg ma-to-20 getmore">
+                <div class="packeg p">
+                    <div class="maleri30">
+                        <div class="fl">
+                            <h1><span></span><span class="bgnum"></span></h1>
+
+                            <p class="bgnum"><span>订单编号：{$vo.order_sn}</span></p>
+                        </div>
+                        <div class="fr">
+                            <span>收益：￥{$vo.money}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop-mfive p">
+                    <div class="maleri30">
+                        <foreach name="vo.goods_list" item="goods">
+                            <div class="sc_list se_sclist paycloseto" style="border-top: 1px solid #e5e5e5;">
+                                <div class="shopimg fl">
+                                    <img src="{$goods[goods_id]|goods_thum_images=200,200}"/>
+                                </div>
+                                <div class="deleshow fr">
+                                    <div class="deletes">
+                                        <span class="similar-product-text">{$goods[goods_name]|getSubstr=0,20}</span>
+                                    </div>
+                                    <div class="prices wiconfine">
+                                        <p class="sc_pri"><span>￥{$goods['member_goods_price']}</span></p>
+                                    </div>
+                                    <div class="qxatten wiconfine">
+                                        <p class="weight"><span>数量</span>&nbsp;<span>{$goods[goods_num]}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </foreach>
+                    </div>
+                </div>
+
+                <div class="shop-rebuy-price p">
+                    <div class="maleri30">
+                        <span class="price-alln">
+                            <span class="red">￥{$vo['total_amount']}</span><span class="threel" id="goodsnum">共{$vo.count_goods_num}件</span>
+                        </span>
+                        <a class="shop-rebuy paysoon" href="{:U('/Mobile/Partner/orderInfo',array('id'=>$vo['order_id']))}">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </foreach>
+        <!-- 列表End -->
+    </if>
+</div>
+<!-- 订单列表End -->
+</body>
+</html>

@@ -1,0 +1,34 @@
+<foreach name="address_list" item="v"  key="k">
+    <if condition="$v[is_default] eq 1"> <!-- 默认选中的地址 -->
+        <div class="row receivea">
+            <div class="col-xs-7 order-address-list address_current">
+                <label>
+                    <input type="radio" name="address_id" value="{$v[address_id]}" data-province-id="{$v[province]}" data-city-id="{$v[city]}" data-district-id="{$v[district]}" onclick="swidth_address(this);" checked="checked">
+                    <span class="xing">
+                        {$v[consignee]} {$regionList[$v[province]]} {$regionList[$v[city]]} {$regionList[$v[district]]} {$regionList[$v[twon]]} {$v[address]}
+                        <span class="call">{$v[mobile]}</span>
+                    </span>
+                </label>
+            </div>
+            <div class="col-xs-5 address">
+                <a href="javascript:void(0)" onclick="add_edit_address({$v[address_id]});">修改地址</a></div>
+            </div>
+            <script>
+                ajax_pickup({$v[province]}, {$v[city]}, {$v[district]}, 0);
+            </script>
+    <else />
+        <div class="row receivea <if condition="$k gt 2">hidden-address</if>">
+            <div class="col-xs-7 order-address-list">
+                <label>
+                    <input type="radio" data-province-id="{$v[province]}" data-city-id="{$v[city]}" data-district-id="{$v[district]}" onclick="swidth_address(this);" name="address_id" value="{$v[address_id]}">
+                    <span class="xing">
+                        {$v[consignee]} {$regionList[$v[province]]} {$regionList[$v[city]]} {$regionList[$v[district]]} {$regionList[$v[twon]]} {$v[address]}
+                        <span class="call">{$v[mobile]}</span>
+                    </span>
+                </label>
+            </div>
+            <div class="col-xs-5 address">
+                <a href="javascript:void(0)" onclick="add_edit_address({$v[address_id]});">修改地址</a></div>
+        </div>
+    </if>
+</foreach>

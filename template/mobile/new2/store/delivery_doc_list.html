@@ -1,0 +1,55 @@
+<include file="public/header" title="发货单" body="g4"/>
+<include file="public/header_nav" title="发货单" href="javascript:history.back(-1)"/>
+<script src="__PUBLIC__/static/js/layer/layer.js" type="text/javascript"></script>
+
+<div class="allaccounted" id="apply">
+    <div class="maleri30">
+        <if condition="empty($list)">
+            <div class="ma-to-20">
+                <div class="nonenothing">
+                    <img src="__STATIC__/images/none.png"/>
+                    <p>暂无记录</p>
+                </div>
+            </div>
+        <else/>
+            <div class="allpion">
+                <div class="fll_acc fll_acc-h">
+                    <ul>
+                        <li class="orderid-h">订单编号</li>
+                        <li class="price-h">配送方式</li>
+                        <li class="time-h">收货人</li>
+                    </ul>
+                </div>
+                <foreach name="list" item="vo">
+                    <div class="fll_acc">
+                        <div class="des-h">
+                            <span>{$vo.order_sn}</span>
+                            <!-- <span>
+                                
+                            </span> -->
+                            <span style="float: right; margin-right:30px;">{$vo.consignee}</span>
+                        </div>
+                        <ul>
+                            <li class="orderid-h">
+                                <p>{$vo.create_time|date="Y-m-d H:i:s",###}</p>
+                            </li>
+                            <li class="price-h" style="color:black;">
+                                <if condition="$vo.shop_way eq 2">
+                                    工厂店配送
+                                 <else/>
+                                    工厂店自提
+                                </if>
+                            </li>
+                            <li class="time-h">
+                                <a href="{:U('Mobile/Store/delivery_doc_info', array('id'=>$vo['id']))}">查看详情</a>
+                            </li>
+                        </ul>
+                    </div>
+                </foreach>
+            </div>
+
+        </if>
+    </div>
+</div>
+</body>
+</html>
