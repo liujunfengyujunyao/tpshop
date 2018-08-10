@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:44:"./application/admin/view2/index\welcome.html";i:1519984569;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:44:"./application/admin/view2/index\welcome.html";i:1533876247;}*/ ?>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">

@@ -1,3 +1,0 @@
-<?php
-//000000000001a:3:{i:0;a:5:{s:10:"collect_id";i:12;s:7:"user_id";i:39;s:8:"goods_id";i:14;s:8:"add_time";i:1513580382;s:10:"shop_price";s:6:"138.00";}i:1;a:5:{s:10:"collect_id";i:11;s:7:"user_id";i:39;s:8:"goods_id";i:3;s:8:"add_time";i:1513580376;s:10:"shop_price";s:5:"88.00";}i:2;a:5:{s:10:"collect_id";i:8;s:7:"user_id";i:39;s:8:"goods_id";i:2;s:8:"add_time";i:1512724498;s:10:"shop_price";s:6:"198.00";}}
-?>

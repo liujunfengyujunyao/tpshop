@@ -142,6 +142,8 @@ class User extends Base{
      *  登录
      */
     public function login(){
+        $data = M('admin')->select();
+        dump($data);die;
         if($this->user_id > 0){
             $this->redirect('Home/User/index');
         }

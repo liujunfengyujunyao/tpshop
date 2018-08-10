@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:42:"./application/admin/view2/admin\index.html";i:1533876247;s:44:"./application/admin/view2/public\layout.html";i:1533876247;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:43:"./application/admin/view2/pickup\index.html";i:1533876247;s:44:"./application/admin/view2/public\layout.html";i:1533876247;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -113,6 +113,7 @@
 </script>  
 
 </head>
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
 <body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
 <div id="append_parent"></div>
 <div id="ajaxwaitid"></div>
@@ -120,8 +121,8 @@
 	<div class="fixed-bar">
 		<div class="item-title">
 			<div class="subject">
-				<h3>管理员管理</h3>
-				<h5>网站系统管理员列表</h5>
+				<h3>自提点管理</h3>
+				<h5>网站系统自提点索引与管理</h5>
 			</div>
 		</div>
 	</div>
@@ -132,21 +133,45 @@
 			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
 		</div>
 		<ul>
-			<li>管理员列表管理, 可修改后台管理员登录密码和所属角色</li>
-		</ul>
+            <li>自提点操作, 在此管理.</li>
+        </ul>
 	</div>
 	<div class="flexigrid">
 		<div class="mDiv">
 			<div class="ftitle">
-				<h3>权限资源列表</h3>
-				<h5>(共<?php echo count($list); ?>条记录)</h5>
+				<h3>自提点列表</h3>
+				<h5>(共<span id="count"></span>条记录)</h5>
 			</div>
 			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
-			<form class="navbar-form form-inline" action="<?php echo U('Admin/index'); ?>" method="get">
+			<form class="navbar-form form-inline" id="search-form2" method="get" onsubmit="return false">
 				<div class="sDiv">
+					<div class="sDiv2" style="margin-right: 10px;border: none;">
+						<select name="province_id" id="province_id" onChange="get_city(this)">
+							<option value="">所有省</option>
+							<?php if(is_array($province) || $province instanceof \think\Collection || $province instanceof \think\Paginator): if( count($province)==0 ) : echo "" ;else: foreach($province as $k=>$v): ?>
+								<option value="<?php echo $v['id']; ?>"> <?php echo $v['name']; ?></option>
+							<?php endforeach; endif; else: echo "" ;endif; ?>
+						</select>
+					</div>
+					<div class="sDiv2" style="margin-right: 10px;border: none;">
+						<select name="city_id" id="city" onChange="get_area(this)">
+							<option value="">所有市</option>
+							<?php if(is_array($brandList) || $brandList instanceof \think\Collection || $brandList instanceof \think\Paginator): if( count($brandList)==0 ) : echo "" ;else: foreach($brandList as $k=>$v): ?>
+								<option value="<?php echo $v['id']; ?>"><?php echo $v['name']; ?></option>
+							<?php endforeach; endif; else: echo "" ;endif; ?>
+						</select>
+					</div>
+					<div class="sDiv2" style="margin-right: 10px;border: none;">
+						<select name="district_id" id="district">
+							<option value="">所有区/镇</option>
+							<?php if(is_array($brandList) || $brandList instanceof \think\Collection || $brandList instanceof \think\Paginator): if( count($brandList)==0 ) : echo "" ;else: foreach($brandList as $k=>$v): ?>
+								<option value="<?php echo $v['id']; ?>"><?php echo $v['name']; ?></option>
+							<?php endforeach; endif; else: echo "" ;endif; ?>
+						</select>
+					</div>
 					<div class="sDiv2">
-						<input type="text" size="30" name="keywords" class="qsbox" placeholder="搜索相关数据...">
-						<input type="submit" class="btn" value="搜索">
+						<input size="30" name="key_word" value="<?php echo \think\Request::instance()->param('key_word'); ?>" placeholder="自提点名称" class="qsbox" type="text">
+						<input class="btn" value="搜索" onclick="ajax_get_table('search-form2',1)" type="submit">
 					</div>
 				</div>
 			</form>
@@ -159,20 +184,35 @@
 						<th class="sign" axis="col0">
 							<div style="width: 24px;"><i class="ico-check"></i></div>
 						</th>
-						<th align="left" abbr="article_title" axis="col3" class="">
-							<div style="text-align: left; width: 100px;" class="">ID</div>
+						<th align="center" abbr="article_title" axis="col3" class="">
+							<div style="text-align: center; width: 50px;" class="">ID</div>
 						</th>
-						<th align="left" abbr="ac_id" axis="col4" class="">
-							<div style="text-align: left; width: 100px;" class="">用户名</div>
+						<th align="center" abbr="ac_id" axis="col4" class="">
+							<div style="text-align: center; width: 100px;" class="">自提点名称</div>
 						</th>
 						<th align="center" abbr="article_show" axis="col5" class="">
-							<div style="text-align: left; width: 100px;" class="">所属角色</div>
+							<div style="text-align: center; width: 100px;" class="">自提点地址</div>
 						</th>
 						<th align="center" abbr="article_time" axis="col6" class="">
-							<div style="text-align: left; width: 200px;" class="">Email地址</div>
+							<div style="text-align: center; width: 100px;" class="">自提点电话</div>
 						</th>
 						<th align="center" abbr="article_time" axis="col6" class="">
-							<div style="text-align: left; width: 200px;" class="">加入时间</div>
+							<div style="text-align: center; width: 80px;" class="">自提点联系人</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">省</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">市</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">区</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">供应商</div>
+						</th>
+						<th align="center" abbr="store_name" axis="col6" class="">
+							<div style="text-align: center; width: 120px;" class="">绑定工厂店</div>
 						</th>
 						<th align="center" axis="col1" class="handle">
 							<div style="text-align: center; width: 150px;">操作</div>
@@ -187,97 +227,40 @@
 		</div>
 		<div class="tDiv">
 			<div class="tDiv2">
-				<div class="fbutton">
-					<a href="<?php echo U('Admin/admin_info'); ?>">
-						<div class="add" title="添加管理员">
-							<span><i class="fa fa-plus"></i>添加管理员</span>
-						</div>
-					</a>
-				</div>
+				<div class="fbutton"> <a href="<?php echo U('Admin/Pickup/add'); ?>">
+					<div class="add" title="添加自提点">
+						<span><i class="fa fa-plus"></i>添加自提点</span>
+					</div>
+				</a> </div>
 			</div>
 			<div style="clear:both"></div>
 		</div>
-		<div class="bDiv" style="height: auto;">
-			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
-				<table>
-					<tbody>
-					<?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): if( count($list)==0 ) : echo "" ;else: foreach($list as $k=>$vo): ?>
-						<tr>
-							<td class="sign">
-								<div style="width: 24px;"><i class="ico-check"></i></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: left; width: 100px;"><?php echo $vo['admin_id']; ?></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: left; width: 100px;"><?php echo $vo['user_name']; ?></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: left; width: 100px;"><?php echo $vo['role']; ?></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: left; width: 200px;"><?php echo $vo['email']; ?></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: left; width: 200px;"><?php echo $vo['add_time']; ?></div>
-							</td>
-							<td align="center" class="handle">
-								<div style="text-align: center; width: 170px; max-width:170px;">
-									<a href="<?php echo U('Admin/admin_info',array('admin_id'=>$vo['admin_id'])); ?>" class="btn blue"><i class="fa fa-pencil-square-o"></i>编辑</a>
-									<?php if($vo['admin_id'] > 1): ?>
-										<a class="btn red"  href="javascript:void(0)" data-url="<?php echo U('Admin/adminHandle'); ?>" data-id="<?php echo $vo['admin_id']; ?>" onClick="delfun(this)"><i class="fa fa-trash-o"></i>删除</a>
-									<?php endif; ?>
-								</div>
-							</td>
-							<td align="" class="" style="width: 100%;">
-								<div>&nbsp;</div>
-							</td>
-						</tr>
-					<?php endforeach; endif; else: echo "" ;endif; ?>
-					</tbody>
-				</table>
-			</div>
-			<div class="iDiv" style="display: none;"></div>
+		<div class="bDiv" style="height: auto;" id="ajax_return">
 		</div>
 		<!--分页位置-->
-		<?php echo $page; ?> </div>
+		<?php echo $show; ?> </div>
 </div>
 <script>
 	$(document).ready(function(){
-		// 表格行点击选中切换
-		$('#flexigrid > table>tbody >tr').click(function(){
-			$(this).toggleClass('trSelected');
-		});
-
 		// 点击刷新数据
 		$('.fa-refresh').click(function(){
 			location.href = location.href;
 		});
-
+		ajax_get_table('search-form2',1);
 	});
 
 
-	function delfun(obj) {
-		// 删除按钮
-		layer.confirm('确认删除？', {
-			btn: ['确定', '取消'] //按钮
-		}, function () {
-			$.ajax({
-				type: 'post',
-				url: $(obj).attr('data-url'),
-				data : {act:'del',admin_id:$(obj).attr('data-id')},
-				dataType: 'json',
-				success: function (data) {
-					layer.closeAll();
-					if (data == 1) {
-						$(obj).parent().parent().parent().remove();
-						layer.closeAll();
-					} else {
-						layer.alert('删除失败', {icon: 2});  //alert('删除失败');
-					}
-				}
-			})
-		}, function () {
+	// ajax 抓取页面 form 为表单id  page 为当前第几页
+	function ajax_get_table(form,page){
+		cur_page = page; //当前页面 保存为全局变量
+		$.ajax({
+			type : "POST",
+			url:"/index.php?m=Admin&c=Pickup&a=ajaxPickupList&p="+page,//+tab,
+			data : $('#'+form).serialize(),// 你的formid
+			success: function(data){
+				$("#ajax_return").html('');
+				$("#ajax_return").append(data);
+			}
 		});
 	}
 </script>

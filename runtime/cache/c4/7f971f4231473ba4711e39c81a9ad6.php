@@ -1,3 +1,0 @@
-<?php
-//000000000000a:3:{i:0;a:3:{s:6:"img_id";i:27;s:8:"goods_id";i:20;s:9:"image_url";s:68:"/public/upload/goods/2017/09-26/3cd8d6eb3d773a86f523de952d4e54c5.png";}i:1;a:3:{s:6:"img_id";i:28;s:8:"goods_id";i:20;s:9:"image_url";s:68:"/public/upload/goods/2017/09-26/e5abe39ba5e7d2d9e2e4d024ec60351d.png";}i:2;a:3:{s:6:"img_id";i:29;s:8:"goods_id";i:20;s:9:"image_url";s:68:"/public/upload/goods/2017/09-26/d3b6880dc0a98c51d0a97333847c34d4.png";}}
-?>

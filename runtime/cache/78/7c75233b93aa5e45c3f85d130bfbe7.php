@@ -1,3 +1,0 @@
-<?php
-//000000000000a:12:{s:12:"smtfs_server";s:11:"smtp.qq.com";s:10:"smtfs_port";s:2:"25";s:10:"smtfs_user";s:13:"123456@qq.com";s:9:"smtfs_pwd";s:6:"123456";s:18:"regis_smtfs_enable";s:1:"0";s:10:"test_eamil";s:16:"644159953@qq.com";s:8:"inc_type";s:4:"smtp";s:11:"smtp_server";s:12:"smtp.163.com";s:9:"smtp_port";s:2:"25";s:9:"smtp_user";s:20:"taifengshang@163.com";s:8:"smtp_pwd";s:16:"taifengshang0479";s:17:"regis_smtp_enable";s:1:"1";}
-?>

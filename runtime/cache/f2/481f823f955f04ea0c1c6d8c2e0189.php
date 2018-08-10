@@ -1,5 +1,5 @@
 <?php
-//000000000000s:56322:"<!DOCTYPE html>
+//000000000000s:46504:"<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -13,17 +13,9 @@
     <link rel="shortcut icon" type="image/x-icon" href="/public/static/images/favicon.ico" media="screen"/>
     <link rel="stylesheet" href="/template/pc/rainbow/static/css/location.css" type="text/css">
     <!-- 新浪获取ip地址 -start-->
-            <script src="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=127.0.0.1"></script>
-        <script type="text/JavaScript">
-            doCookieArea(remote_ip_info);
-        </script>
     </head>
 <body>
 <!-- 新浪获取ip地址 -start-->
-    <script src="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=127.0.0.1"></script>
-    <script type="text/JavaScript">
-        doCookieArea(remote_ip_info);
-    </script>
 <!--header-s-->
     <div class="tpshop-tm-hander tp_h_alone p">
         <!--导航栏-s-->
@@ -48,25 +40,25 @@
                     </div>
                     <!-- 收货地址，物流运费 -end-->
                         <div class="fl nologin">
-                            <a class="red" href="/Home/user/login.html">Hi.请登录</a>
-                            <a href="/Home/user/reg.html">免费注册</a>
+                            <a class="red" href="/index.php/Home/user/login.html">Hi.请登录</a>
+                            <a href="/index.php/Home/user/reg.html">免费注册</a>
                         </div>
                         <div class="fl islogin">
-                            <a class="red userinfo" href="/Home/user/index.html" ></a>
-                            <a  href="/Home/user/logout.html"  title="退出" target="_self">安全退出</a>
+                            <a class="red userinfo" href="/index.php/Home/user/index.html" ></a>
+                            <a  href="/index.php/Home/user/logout.html"  title="退出" target="_self">安全退出</a>
                         </div>
                 </div>
                 <div class="top-ri-header fr">
                     <ul>
-                        <li><a target="_blank" href="/Home/Order/order_list.html">我的订单</a></li>
+                        <li><a target="_blank" href="/index.php/Home/Order/order_list.html">我的订单</a></li>
                         <li class="spacer"></li>
-                        <li><a target="_blank" href="/Home/User/visit_log.html">我的浏览</a></li>
+                        <li><a target="_blank" href="/index.php/Home/User/visit_log.html">我的浏览</a></li>
                         <li class="spacer"></li>
-                        <li><a target="_blank" href="/Home/User/coupon.html">我的优惠券</a></li>
+                        <li><a target="_blank" href="/index.php/Home/User/coupon.html">我的优惠券</a></li>
                         <li class="spacer"></li>
-                        <li><a target="_blank" href="/Home/User/goods_collect.html">我的收藏</a></li>
+                        <li><a target="_blank" href="/index.php/Home/User/goods_collect.html">我的收藏</a></li>
                         <!-- <li class="spacer"></li>
-                        <li><a target="_blank" title="点击这里给我发消息" href="/Home/Article/detail/article_id/22.html" target="_blank">在线客服</a></li>
+                        <li><a target="_blank" title="点击这里给我发消息" href="/index.php/Home/Article/detail/article_id/22.html" target="_blank">在线客服</a></li>
                         <li class="spacer"></li> -->
                         <!--<li class="hover-ba-navdh">-->
                             <!--<div class="nav-dh">-->
@@ -75,10 +67,10 @@
                                 <!--<div class="conta-hv-nav">-->
                                     <!--<ul>-->
                                         <!--<li>-->
-                                            <!--<a href="/Home/Activity/group_list.html">团购</a>-->
+                                            <!--<a href="/index.php/Home/Activity/group_list.html">团购</a>-->
                                         <!--</li>-->
                                         <!--<li>-->
-                                            <!--<a href="/Home/Activity/flash_sale_list.html">抢购</a>-->
+                                            <!--<a href="/index.php/Home/Activity/flash_sale_list.html">抢购</a>-->
                                         <!--</li>-->
                                     <!--</ul>-->
                                 <!--</div>-->
@@ -92,11 +84,11 @@
         <div class="nav-middan-z p">
             <div class="header w1224 p">
                 <div class="ecsc-logo">
-                    <a href="/home/Index/index.html" class="logo"> <img src="/public/upload/logo/2017/09-20/06bef7c5190326d724a8631bc36cf55c.png"></a>
+                    <a href="/index.php/home/Index/index.html" class="logo"> <img src="/public/upload/logo/2017/09-20/06bef7c5190326d724a8631bc36cf55c.png"></a>
                 </div>
                 <!--搜索-s-->
                 <div class="ecsc-search">
-                    <form id="searchForm" name="" method="get" action="/Home/Goods/search.html" class="ecsc-search-form">
+                    <form id="searchForm" name="" method="get" action="/index.php/Home/Goods/search.html" class="ecsc-search-form">
                         <input autocomplete="off" name="q" id="q" type="text" value="" placeholder="搜索关键字" class="ecsc-search-input">
                         <button type="submit" class="ecsc-search-button" onclick="if($.trim($('#q').val()) != '') $('#searchForm').submit();"><i></i></button>
                         <div class="candidate p">
@@ -152,7 +144,7 @@
                                         type:'post',
                                         dataType:'json',
                                         data: {key: search_key},
-                                        url:"/Home/Api/searchKey.html",
+                                        url:"/index.php/Home/Api/searchKey.html",
                                         success:function(data){
                                             if(data.status == 1){
                                                 var html = '';
@@ -174,22 +166,22 @@
                     <div class="keyword">
                         <ul>
                                                             <li>
-                                    <a href="/Home/Goods/search/q/%E9%9C%9C.html" target="_blank">霜</a>
+                                    <a href="/index.php/Home/Goods/search/q/%E9%9C%9C.html" target="_blank">霜</a>
                                 </li>
                                                             <li>
-                                    <a href="/Home/Goods/search/q/%E4%B9%B3.html" target="_blank">乳</a>
+                                    <a href="/index.php/Home/Goods/search/q/%E4%B9%B3.html" target="_blank">乳</a>
                                 </li>
                                                             <li>
-                                    <a href="/Home/Goods/search/q/%E9%9D%A2%E8%86%9C.html" target="_blank">面膜</a>
+                                    <a href="/index.php/Home/Goods/search/q/%E9%9D%A2%E8%86%9C.html" target="_blank">面膜</a>
                                 </li>
                                                             <li>
-                                    <a href="/Home/Goods/search/q/%E5%8E%9F%E6%B6%B2.html" target="_blank">原液</a>
+                                    <a href="/index.php/Home/Goods/search/q/%E5%8E%9F%E6%B6%B2.html" target="_blank">原液</a>
                                 </li>
                                                             <li>
-                                    <a href="/Home/Goods/search/q/%E4%BF%AE%E6%8A%A4%E6%B6%B2.html" target="_blank">修护液</a>
+                                    <a href="/index.php/Home/Goods/search/q/%E4%BF%AE%E6%8A%A4%E6%B6%B2.html" target="_blank">修护液</a>
                                 </li>
                                                             <li>
-                                    <a href="/Home/Goods/search/q/%E5%96%B7%E9%9B%BE.html" target="_blank">喷雾</a>
+                                    <a href="/index.php/Home/Goods/search/q/%E5%96%B7%E9%9B%BE.html" target="_blank">喷雾</a>
                                 </li>
                                                     </ul>
                     </div>
@@ -199,7 +191,7 @@
                 
                 <div class="shopingcar-index fr">
                     <div class="u-g-cart fr fixed" id="hd-my-cart">
-                        <a href="/Home/Cart/cart.html">
+                        <a href="/index.php/Home/Cart/cart.html">
                             <div class="c-n fl" >
                                 <i class="share-shopcar-index"></i>
                                 <span>我的购物车<em class="sc_z" id="cart_quantity"></em></span>
@@ -216,7 +208,7 @@
             <div class="w1224 p">
                 <div class="categorys2 home_categorys">
                     <!--<div class="dt">
-                        <a href="/Home/Goods/all_category.html" target="_blank"><i class="share-a_a2"></i>全部商品分类</a>
+                        <a href="/index.php/Home/Goods/all_category.html" target="_blank"><i class="share-a_a2"></i>全部商品分类</a>
                     </div>-->
                     <!--全部商品分类-s-->
                     <!--<div class="dd">
@@ -227,7 +219,7 @@
                                     <div class="cata-nav-name">
                                         <h3>
                                             <div class="contiw-cer"><span class="share-icon-1"></span></div>
-                                            <a href="/Home/Goods/goodsList/id/1.html" title="肽风尚-护">肽风尚-护</a>
+                                            <a href="/index.php/Home/Goods/goodsList/id/1.html" title="肽风尚-护">肽风尚-护</a>
                                         </h3>
                                     </div>
                                     <b>&gt;</b>
@@ -237,49 +229,49 @@
                                         <div class="subitems">
                                                                                             <dl>&lt;!&ndash; 2级循环点&ndash;&gt;
                                                     <dt>
-                                                        <a href="/Home/Goods/goodsList/id/4.html" target="_blank">清洁系列<i>&gt;</i></a>
+                                                        <a href="/index.php/Home/Goods/goodsList/id/4.html" target="_blank">清洁系列<i>&gt;</i></a>
                                                     </dt>
                                                     <dd>
                                                                                                             </dd>
                                                 </dl>
                                                                                                 <dl>&lt;!&ndash; 2级循环点&ndash;&gt;
                                                     <dt>
-                                                        <a href="/Home/Goods/goodsList/id/5.html" target="_blank">补水系列<i>&gt;</i></a>
+                                                        <a href="/index.php/Home/Goods/goodsList/id/5.html" target="_blank">补水系列<i>&gt;</i></a>
                                                     </dt>
                                                     <dd>
                                                                                                             </dd>
                                                 </dl>
                                                                                                 <dl>&lt;!&ndash; 2级循环点&ndash;&gt;
                                                     <dt>
-                                                        <a href="/Home/Goods/goodsList/id/9.html" target="_blank">粉底系列<i>&gt;</i></a>
+                                                        <a href="/index.php/Home/Goods/goodsList/id/9.html" target="_blank">粉底系列<i>&gt;</i></a>
                                                     </dt>
                                                     <dd>
                                                                                                             </dd>
                                                 </dl>
                                                                                                 <dl>&lt;!&ndash; 2级循环点&ndash;&gt;
                                                     <dt>
-                                                        <a href="/Home/Goods/goodsList/id/10.html" target="_blank">美白系列<i>&gt;</i></a>
+                                                        <a href="/index.php/Home/Goods/goodsList/id/10.html" target="_blank">美白系列<i>&gt;</i></a>
                                                     </dt>
                                                     <dd>
                                                                                                             </dd>
                                                 </dl>
                                                                                                 <dl>&lt;!&ndash; 2级循环点&ndash;&gt;
                                                     <dt>
-                                                        <a href="/Home/Goods/goodsList/id/11.html" target="_blank">抗衰系列<i>&gt;</i></a>
+                                                        <a href="/index.php/Home/Goods/goodsList/id/11.html" target="_blank">抗衰系列<i>&gt;</i></a>
                                                     </dt>
                                                     <dd>
                                                                                                             </dd>
                                                 </dl>
                                                                                                 <dl>&lt;!&ndash; 2级循环点&ndash;&gt;
                                                     <dt>
-                                                        <a href="/Home/Goods/goodsList/id/13.html" target="_blank">喷雾系列<i>&gt;</i></a>
+                                                        <a href="/index.php/Home/Goods/goodsList/id/13.html" target="_blank">喷雾系列<i>&gt;</i></a>
                                                     </dt>
                                                     <dd>
                                                                                                             </dd>
                                                 </dl>
                                                                                                 <dl>&lt;!&ndash; 2级循环点&ndash;&gt;
                                                     <dt>
-                                                        <a href="/Home/Goods/goodsList/id/15.html" target="_blank">面膜系列<i>&gt;</i></a>
+                                                        <a href="/index.php/Home/Goods/goodsList/id/15.html" target="_blank">面膜系列<i>&gt;</i></a>
                                                     </dt>
                                                     <dd>
                                                                                                             </dd>
@@ -304,7 +296,7 @@
                                     <div class="cata-nav-name">
                                         <h3>
                                             <div class="contiw-cer"><span class="share-icon-2"></span></div>
-                                            <a href="/Home/Goods/goodsList/id/2.html" title="肽风尚-养">肽风尚-养</a>
+                                            <a href="/index.php/Home/Goods/goodsList/id/2.html" title="肽风尚-养">肽风尚-养</a>
                                         </h3>
                                     </div>
                                     <b>&gt;</b>
@@ -332,7 +324,7 @@
                                     <div class="cata-nav-name">
                                         <h3>
                                             <div class="contiw-cer"><span class="share-icon-3"></span></div>
-                                            <a href="/Home/Goods/goodsList/id/3.html" title="肽风尚-调">肽风尚-调</a>
+                                            <a href="/index.php/Home/Goods/goodsList/id/3.html" title="肽风尚-调">肽风尚-调</a>
                                         </h3>
                                     </div>
                                     <b>&gt;</b>
@@ -360,7 +352,7 @@
                                     <div class="cata-nav-name">
                                         <h3>
                                             <div class="contiw-cer"><span class="share-icon-7"></span></div>
-                                            <a href="/Home/Goods/goodsList/id/7.html" title="体验品">体验品</a>
+                                            <a href="/index.php/Home/Goods/goodsList/id/7.html" title="体验品">体验品</a>
                                         </h3>
                                     </div>
                                     <b>&gt;</b>
@@ -390,7 +382,7 @@
                 <!--导航栏-s-->
                  <!--<div class="navitems" id="nav">-->
                      <ul class="navitems clearfix" id="navitems">
-                         <li class="selected"><a href="/home/Index/index.html">首页</a></li>
+                         <li class="selected"><a href="/index.php/home/Index/index.html">首页</a></li>
                                                       <li >
                              <a href="/index.php/Home/Goods/goodsList/id/1" target="_blank"  >肽风尚●护</a>
                              </li>
@@ -423,17 +415,17 @@
         <div class="carousel-inner">
         	                <div class="item active" style="background:;">
                     <a href=""  >
-                        <img  src="/public/upload/ad/2017/11-03/10921e0e7d2e1868038545466d699bb3.jpg" title="" style="">
+                        <img  src="/public/upload/ad/2018/05-04/d93a1f797abaf6bd699811131c538abd.png" title="" style="">
                     </a>
                 </div>
                             <div class="item " style="background:;">
                     <a href=""  >
-                        <img  src="/public/upload/ad/2017/11-03/a531ecf9ba6c07e9ccd031db430fc4e2.jpg" title="" style="">
+                        <img  src="/public/upload/ad/2018/05-04/21ff306e82a4bfd0f1b52fcc4d572445.png" title="" style="">
                     </a>
                 </div>
                             <div class="item " style="background:;">
                     <a href=""  >
-                        <img  src="/public/upload/ad/2017/11-03/d9d69fd6ee43937480ea6d44c4a75a05.jpg" title="" style="">
+                        <img  src="/public/upload/ad/2018/05-04/2f20fbcac7aeddba6044a05b74d97cf1.png" title="" style="">
                     </a>
                 </div>
                     </div>
@@ -463,194 +455,9 @@
     </div>
 
 <!--------楼层-开始-------------->
-        <!--商品楼层-s-->
-        <div class="layer-floor " id="floor1">
-            <div class="w1224">
-            <div class="top_title_layer p">
-                <div class="part-title">肽风尚-护</div>
-                <div class="part-hot">
-                    <ul>
-                                                    <li>
-                                <a href="/Home/Goods/goodsList/id/4.html">清洁系列</a>
-                            </li>
-                                                    <li>
-                                <a href="/Home/Goods/goodsList/id/5.html">补水系列</a>
-                            </li>
-                                                    <li>
-                                <a href="/Home/Goods/goodsList/id/9.html">粉底系列</a>
-                            </li>
-                                                    <li>
-                                <a href="/Home/Goods/goodsList/id/10.html">美白系列</a>
-                            </li>
-                                                    <li>
-                                <a href="/Home/Goods/goodsList/id/11.html">抗衰系列</a>
-                            </li>
-                                                    <li>
-                                <a href="/Home/Goods/goodsList/id/13.html">喷雾系列</a>
-                            </li>
-                                                    <li>
-                                <a href="/Home/Goods/goodsList/id/15.html">面膜系列</a>
-                            </li>
-                                            </ul>
-                </div>
-            </div>
-            <div class="main_layer p">
-                <div class="hoste_le">  
-					                    
-                </div>
-                <div class="hoste_ri">
-                    <ul>
-                                                        <li>
-                                    <a href="/Home/Goods/goodsInfo/id/1.html">
-                                        <img class="picture_main" src="/public/upload/goods/thumb/1/goods_thumb_1_200_200.png"/>
-                                        <span class="name_main">饱润肽焕颜气垫CC霜（自然色）</span>
-                                        <!--<span class="intro_main">粉底系列</span>-->
-                                        <span class="price_main"><i>￥</i>178.00</span>
-                                    </a>
-                                </li>
-                                                            <li>
-                                    <a href="/Home/Goods/goodsInfo/id/20.html">
-                                        <img class="picture_main" src="/public/images/icon_goods_thumb_empty_300.png"/>
-                                        <span class="name_main">饱润肽冰爽夏日喷雾</span>
-                                        <!--<span class="intro_main">喷雾系列</span>-->
-                                        <span class="price_main"><i>￥</i>0.01</span>
-                                    </a>
-                                </li>
-                                                            <li>
-                                    <a href="/Home/Goods/goodsInfo/id/19.html">
-                                        <img class="picture_main" src="/public/images/icon_goods_thumb_empty_300.png"/>
-                                        <span class="name_main">饱润肽雪肌焕彩素颜霜</span>
-                                        <!--<span class="intro_main">粉底系列</span>-->
-                                        <span class="price_main"><i>￥</i>168.00</span>
-                                    </a>
-                                </li>
-                                                            <li>
-                                    <a href="/Home/Goods/goodsInfo/id/18.html">
-                                        <img class="picture_main" src="/public/images/icon_goods_thumb_empty_300.png"/>
-                                        <span class="name_main">饱润肽焕颜亮肤面膜</span>
-                                        <!--<span class="intro_main">面膜系列</span>-->
-                                        <span class="price_main"><i>￥</i>188.00</span>
-                                    </a>
-                                </li>
-                                                            <li>
-                                    <a href="/Home/Goods/goodsInfo/id/17.html">
-                                        <img class="picture_main" src="/public/images/icon_goods_thumb_empty_300.png"/>
-                                        <span class="name_main">饱润肽水漾修护面膜</span>
-                                        <!--<span class="intro_main">面膜系列</span>-->
-                                        <span class="price_main"><i>￥</i>168.00</span>
-                                    </a>
-                                </li>
-                                                            <li>
-                                    <a href="/Home/Goods/goodsInfo/id/16.html">
-                                        <img class="picture_main" src="/public/images/icon_goods_thumb_empty_300.png"/>
-                                        <span class="name_main">饱润肽雪肌精华乳</span>
-                                        <!--<span class="intro_main">美白系列</span>-->
-                                        <span class="price_main"><i>￥</i>218.00</span>
-                                    </a>
-                                </li>
-                                                            <li>
-                                    <a href="/Home/Goods/goodsInfo/id/15.html">
-                                        <img class="picture_main" src="/public/images/icon_goods_thumb_empty_300.png"/>
-                                        <span class="name_main">饱润肽隔离BB霜（象牙白）</span>
-                                        <!--<span class="intro_main">粉底系列</span>-->
-                                        <span class="price_main"><i>￥</i>128.00</span>
-                                    </a>
-                                </li>
-                                                            <li>
-                                    <a href="/Home/Goods/goodsInfo/id/7.html">
-                                        <img class="picture_main" src="/public/images/icon_goods_thumb_empty_300.png"/>
-                                        <span class="name_main">饱润肽水光精华液</span>
-                                        <!--<span class="intro_main">补水系列</span>-->
-                                        <span class="price_main"><i>￥</i>58.00</span>
-                                    </a>
-                                </li>
-                                                </ul>
-                </div>
-            </div>
-        </div>
-        </div>
-    <!--商品楼层-e-->
-        <!--商品楼层-s-->
-        <div class="layer-floor " id="floor2">
-            <div class="w1224">
-            <div class="top_title_layer p">
-                <div class="part-title">肽风尚-养</div>
-                <div class="part-hot">
-                    <ul>
-                                            </ul>
-                </div>
-            </div>
-            <div class="main_layer p">
-                <div class="hoste_le">  
-					                    
-                </div>
-                <div class="hoste_ri">
-                    <ul>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-        </div>
-    <!--商品楼层-e-->
-        <!--商品楼层-s-->
-        <div class="layer-floor " id="floor3">
-            <div class="w1224">
-            <div class="top_title_layer p">
-                <div class="part-title">肽风尚-调</div>
-                <div class="part-hot">
-                    <ul>
-                                            </ul>
-                </div>
-            </div>
-            <div class="main_layer p">
-                <div class="hoste_le">  
-					                    
-                </div>
-                <div class="hoste_ri">
-                    <ul>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-        </div>
-    <!--商品楼层-e-->
-        <!--商品楼层-s-->
-        <div class="layer-floor " id="floor4">
-            <div class="w1224">
-            <div class="top_title_layer p">
-                <div class="part-title">体验品</div>
-                <div class="part-hot">
-                    <ul>
-                                            </ul>
-                </div>
-            </div>
-            <div class="main_layer p">
-                <div class="hoste_le">  
-					                    
-                </div>
-                <div class="hoste_ri">
-                    <ul>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-        </div>
-    <!--商品楼层-e-->
         <!--楼层导航-s-->
     <div class="floornav_left">
         <ul>
-                            <li class="elevators">
-                    <a >1F<span class="cofin_floor">肽风尚-护</span></a>
-                </li>
-                            <li class="elevators">
-                    <a >2F<span class="cofin_floor">肽风尚-养</span></a>
-                </li>
-                            <li class="elevators">
-                    <a >3F<span class="cofin_floor">肽风尚-调</span></a>
-                </li>
-                            <li class="elevators">
-                    <a >4F<span class="cofin_floor">体验品</span></a>
-                </li>
                     </ul>
     </div>
     <!--楼层导航-e-->
@@ -704,23 +511,23 @@
 		            			                <li class="foot-th">
 		                    新手上路		                </li>
 		                		                    <li>
-		                    			                    		<a href="/Home/Article/detail/article_id/1419.html">购物流程</a>
+		                    			                    		<a href="/index.php/Home/Article/detail/article_id/1419.html">购物流程</a>
 		                    			                    </li>
 		                		                    <li>
-		                    			                    		<a href="/Home/Article/detail/article_id/1420.html">售后服务</a>
+		                    			                    		<a href="/index.php/Home/Article/detail/article_id/1420.html">售后服务</a>
 		                    			                    </li>
 		                		            </ul>
 		        		            <ul>
 		            			                <li class="foot-th">
 		                    关于我们		                </li>
 		                		                    <li>
-		                    			                    		<a href="/Home/Article/detail/article_id/1416.html">公司简介</a>
+		                    			                    		<a href="/index.php/Home/Article/detail/article_id/1416.html">公司简介</a>
 		                    			                    </li>
 		                		                    <li>
-		                    			                    		<a href="/Home/Article/detail/article_id/1417.html">发展历程</a>
+		                    			                    		<a href="/index.php/Home/Article/detail/article_id/1417.html">发展历程</a>
 		                    			                    </li>
 		                		                    <li>
-		                    			                    		<a href="/Home/Article/detail/article_id/1418.html">品牌荣誉</a>
+		                    			                    		<a href="/index.php/Home/Article/detail/article_id/1418.html">品牌荣誉</a>
 		                    			                    </li>
 		                		            </ul>
 		        		            <ul>
@@ -802,32 +609,32 @@ var _hmt = _hmt || [];
                                             <dl class="foot-con">
                             <dt>新手上路</dt>
                                                         <dd>
-                                                                <a href="/Home/Article/detail/article_id/1419.html">购物流程</a>
+                                                                <a href="/index.php/Home/Article/detail/article_id/1419.html">购物流程</a>
                                  -->
-                                <!-- <a target="_blank" href="/Home/Article/detail/article_id/1419.html">购物流程</a> -->
+                                <!-- <a target="_blank" href="/index.php/Home/Article/detail/article_id/1419.html">购物流程</a> -->
                            <!--  </dd>
                                                         <dd>
-                                                                <a href="/Home/Article/detail/article_id/1420.html">售后服务</a>
+                                                                <a href="/index.php/Home/Article/detail/article_id/1420.html">售后服务</a>
                                  -->
-                                <!-- <a target="_blank" href="/Home/Article/detail/article_id/1420.html">售后服务</a> -->
+                                <!-- <a target="_blank" href="/index.php/Home/Article/detail/article_id/1420.html">售后服务</a> -->
                            <!--  </dd>
                                                     </dl>
                                             <dl class="foot-con">
                             <dt>关于我们</dt>
                                                         <dd>
-                                                                <a href="/Home/Article/detail/article_id/1416.html">公司简介</a>
+                                                                <a href="/index.php/Home/Article/detail/article_id/1416.html">公司简介</a>
                                  -->
-                                <!-- <a target="_blank" href="/Home/Article/detail/article_id/1416.html">公司简介</a> -->
+                                <!-- <a target="_blank" href="/index.php/Home/Article/detail/article_id/1416.html">公司简介</a> -->
                            <!--  </dd>
                                                         <dd>
-                                                                <a href="/Home/Article/detail/article_id/1417.html">发展历程</a>
+                                                                <a href="/index.php/Home/Article/detail/article_id/1417.html">发展历程</a>
                                  -->
-                                <!-- <a target="_blank" href="/Home/Article/detail/article_id/1417.html">发展历程</a> -->
+                                <!-- <a target="_blank" href="/index.php/Home/Article/detail/article_id/1417.html">发展历程</a> -->
                            <!--  </dd>
                                                         <dd>
-                                                                <a href="/Home/Article/detail/article_id/1418.html">品牌荣誉</a>
+                                                                <a href="/index.php/Home/Article/detail/article_id/1418.html">品牌荣誉</a>
                                  -->
-                                <!-- <a target="_blank" href="/Home/Article/detail/article_id/1418.html">品牌荣誉</a> -->
+                                <!-- <a target="_blank" href="/index.php/Home/Article/detail/article_id/1418.html">品牌荣誉</a> -->
                            <!--  </dd>
                                                     </dl>
                                             <dl class="foot-con">
@@ -866,7 +673,7 @@ var _hmt = _hmt || [];
                     </div>
                 </li>
                 <li class="re_phone">
-                    <a target="_blank" href="/Mobile/Index/index.html" >手机商城</a>
+                    <a target="_blank" href="/index.php/Mobile/Index/index.html" >手机商城</a>
                     <div class="rtipscont rstoretips" style="">
                         <span class="arrowr-bg"></span>
                         <span class="arrowr"></span>

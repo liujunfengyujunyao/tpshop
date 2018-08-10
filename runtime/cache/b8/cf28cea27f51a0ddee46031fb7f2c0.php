@@ -1,3 +1,3 @@
 <?php
-//000000000000a:17:{s:6:"switch";s:1:"1";s:9:"condition";s:1:"2";s:4:"name";s:15:"我的分销商";s:7:"pattern";s:1:"2";s:10:"order_rate";s:3:"100";s:10:"first_name";s:9:"工厂店";s:10:"first_rate";s:2:"27";s:11:"second_name";s:9:"合伙人";s:11:"second_rate";s:2:"13";s:10:"third_name";s:6:"公司";s:10:"third_rate";s:2:"60";s:4:"date";s:1:"1";s:11:"form_submit";s:2:"ok";s:7:"qr_back";s:0:"";s:11:"qr_big_back";s:0:"";s:16:"qrcode_menu_word";s:0:"";s:17:"qrcode_input_word";s:0:"";}
+//000000000000a:18:{s:6:"switch";s:1:"1";s:9:"condition";s:1:"2";s:4:"name";s:15:"我的分销商";s:7:"pattern";s:1:"2";s:10:"order_rate";s:3:"100";s:10:"first_name";s:9:"工厂店";s:10:"first_rate";s:2:"32";s:11:"second_name";s:9:"合伙人";s:11:"second_rate";s:2:"13";s:10:"third_name";s:6:"公司";s:10:"third_rate";s:2:"55";s:4:"date";s:1:"1";s:11:"form_submit";s:2:"ok";s:7:"qr_back";s:0:"";s:11:"qr_big_back";s:0:"";s:16:"qrcode_menu_word";s:0:"";s:17:"qrcode_input_word";s:0:"";s:11:"seller_rate";s:1:"5";}
 ?>

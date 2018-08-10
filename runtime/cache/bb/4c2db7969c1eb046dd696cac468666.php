@@ -1,3 +1,0 @@
-<?php
-//000000000001a:1:{i:0;a:12:{s:4:"code";s:6:"weixin";s:4:"name";s:12:"微信登录";s:7:"version";s:3:"1.0";s:6:"author";s:9:"彭老师";s:6:"config";s:230:"a:2:{i:0;a:4:{s:4:"name";s:5:"appid";s:5:"label";s:17:"开放平台appid";s:4:"type";s:4:"text";s:5:"value";s:0:"";}i:1;a:4:{s:4:"name";s:6:"secret";s:5:"label";s:18:"开放平台secret";s:4:"type";s:4:"text";s:5:"value";s:0:"";}}";s:12:"config_value";s:97:"a:2:{s:5:"appid";s:18:"wxfd6784f10902d300";s:6:"secret";s:32:"06ce6b7d6cb8b5572538523f64375a74";}";s:4:"desc";s:31:"微信公众号内登录插件 ";s:6:"status";i:1;s:4:"type";s:5:"login";s:4:"icon";s:8:"logo.jpg";s:9:"bank_code";s:2:"N;";s:5:"scene";N;}}
-?>

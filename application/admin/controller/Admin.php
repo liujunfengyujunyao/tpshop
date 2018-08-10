@@ -134,7 +134,8 @@ class Admin extends Base {
         if(session('?admin_id') && session('admin_id')>0){
              $this->error("您已登录",U('Admin/Index/index'));
         }
-      
+
+
         if(IS_POST){
             $verify = new Verify();
             if (!$verify->check(I('post.vertify'), "admin_login")) {
@@ -156,6 +157,7 @@ class Admin extends Base {
                     exit(json_encode(array('status'=>1,'url'=>$url)));
                 }else{
                     exit(json_encode(array('status'=>0,'msg'=>'账号密码不正确')));
+                    // exit(json_encode(array('status'=>0,'msg'=>$condition['password'])));
                 }
             }else{
                 exit(json_encode(array('status'=>0,'msg'=>'请填写账号密码')));

@@ -13,13 +13,17 @@ return [
     // 数据库类型
     'type'           => 'mysql',
     // 服务器地址
-    'hostname'       => '218.245.1.214',
+    // 'hostname'       => '218.245.1.214',
+      'hostname'       => 'localhost',
     // 数据库名
     'database'       => 'tfs',
-    // 用户名
-    'username'       => 'tfs',
+   // 用户名
+    'username'       => 'root',
+    // 'username' => "ljf"
     // 密码
-    'password'       => 'tfstfs',
+    // 'password'       => '123456',
+    'password'       => 'root',
+    // 'password'       => 'bjyxkf@2308',
     // 端口
     'hostport'       => '3306',
     // 连接dsn
